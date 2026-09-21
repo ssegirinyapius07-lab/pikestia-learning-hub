@@ -39,6 +39,12 @@
       </div>
     </header>
 
+    {% if article.cover_image %}
+    <figure class="news-reading-cover">
+      <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" loading="eager">
+    </figure>
+    {% endif %}
+
     <div class="news-reading-body rich-content">
       {{ article.body|safe }}
     </div>
@@ -53,6 +59,11 @@
       <div class="news-related-grid">
         {% for related_article in related %}
         <a class="news-related-card" href="/news/{{ related_article.slug }}/">
+          {% if related_article.cover_image %}
+          <div class="related-media">
+            <img src="{{ related_article.cover_image.url }}" alt="{{ related_article.title }}" loading="lazy">
+          </div>
+          {% endif %}
           <span class="card-meta">{{ related_article.get_category_display }}</span>
           <strong>{{ related_article.title }}</strong>
         </a>

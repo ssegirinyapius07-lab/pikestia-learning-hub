@@ -1,6 +1,7 @@
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from django.utils import timezone
@@ -13,18 +14,10 @@ from django.contrib.auth.forms import PasswordChangeForm
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('/')
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False  # require email verification via allauth
-            user.save()
-            # allauth will send verification
-            messages.success(request, 'Check your email to verify your account.')
-            return redirect('/accounts/login/')
-    else:
-        form = RegistrationForm()
-    return render(request, 'accounts/register.html', {'form': form})
+
+    # Keep the legacy /accounts/register/ URL as a compatibility
+    # redirect, while all registration is handled by django-allauth.
+    return redirect(reverse('account_signup'))
 
 @login_required
 def profile_view(request):

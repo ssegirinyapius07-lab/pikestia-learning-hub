@@ -20,7 +20,7 @@ class LearningResourceAdmin(admin.ModelAdmin):
     list_select_related = ('topic', 'topic__subject')
     list_per_page = 25
     date_hierarchy = 'updated_at'
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('content', 'created_at', 'updated_at')
 
     fieldsets = (
         ('Learning material', {
@@ -31,18 +31,22 @@ class LearningResourceAdmin(admin.ModelAdmin):
                 'summary',
                 'objectives',
                 'key_concepts',
-                'content',
+                'content_raw',
             ),
+            'description': (
+                'Enter the source learning content as HTML. '
+                'It is sanitized automatically before being published.'
+            ),
+        }),
+        ('Sanitized content', {
+            'fields': ('content',),
+            'classes': ('collapse',),
         }),
         ('Publishing', {
             'fields': ('status', 'order'),
         }),
         ('System information', {
-            'fields': ('created_at', 'updated_at', 'content_raw'),
+            'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',),
-            'description': (
-                'content is sanitized before storage. content_raw is retained '
-                'for administrative reference.'
-            ),
         }),
     )

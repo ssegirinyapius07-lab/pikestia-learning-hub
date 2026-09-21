@@ -56,19 +56,15 @@
       </a>
 
       <div class="lead-side">
-        {% for article in latest_news %}
-          {% if article.slug != lead_news.slug %}
-            {% if forloop.counter0 < 3 %}
-            <a href="/news/{{ article.slug }}/" class="story-card">
-              <span class="story-tag">{{ article.get_category_display }}</span>
-              <h3>{{ article.title }}</h3>
-              {% if article.summary %}<p>{{ article.summary|truncatechars:100 }}</p>{% endif %}
-              <div class="story-meta">
-                {% if article.published_at %}<span>{{ article.published_at|date:"M j, Y" }}</span>{% endif %}
-              </div>
-            </a>
-            {% endif %}
-          {% endif %}
+        {% for article in secondary_news %}
+        <a href="/news/{{ article.slug }}/" class="story-card">
+          <span class="story-tag">{{ article.get_category_display }}</span>
+          <h3>{{ article.title }}</h3>
+          {% if article.summary %}<p>{{ article.summary|truncatechars:100 }}</p>{% endif %}
+          <div class="story-meta">
+            {% if article.published_at %}<span>{{ article.published_at|date:"M j, Y" }}</span>{% endif %}
+          </div>
+        </a>
         {% endfor %}
       </div>
     </div>
@@ -117,7 +113,7 @@
         <span class="story-tag">{{ resource.topic.subject.title }}</span>
         <h3>{{ resource.title }}</h3>
         <p>{{ resource.summary|truncatechars:220 }}</p>
-        <div style="margin-top:1rem;">
+        <div class="home-feature-action">
           <a href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/" class="btn btn-primary">Open resource</a>
         </div>
         {% endwith %}

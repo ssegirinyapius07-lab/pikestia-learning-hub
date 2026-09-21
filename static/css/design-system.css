@@ -171,24 +171,6 @@ img {
   margin-top: 0.18rem;
 }
 
-@media(max-width:600px) {
-  .brand-mark {
-    width: 2rem;
-    height: 2rem;
-    flex-basis: 2rem;
-    border-radius: 8px;
-    font-size: 0.98rem;
-  }
-
-  .brand-primary {
-    font-size: 1.08rem;
-  }
-
-  .brand-descriptor {
-    font-size: 0.68rem;
-  }
-}
-
 .mobile-toggle {
   display: none;
   border: 1px solid var(--border);

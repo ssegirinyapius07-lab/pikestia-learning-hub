@@ -17,7 +17,21 @@ def home_view(request):
     opportunities = Opportunity.objects.filter(status='active').filter(
         Q(deadline__isnull=True) | Q(deadline__gt=now)
     ).order_by('-published_at')[:4]
-    return render(request, 'core/home.html', {'subjects': subjects, 'featured': featured, 'opportunities': opportunities})
+    latest_news = NewsArticle.objects.filter(
+        status=NewsArticle.Status.PUBLISHED
+    ).select_related('author').order_by(
+        '-featured', '-published_at', '-created_at'
+    )[:3]
+    return render(
+        request,
+        'core/home.html',
+        {
+            'subjects': subjects,
+            'featured': featured,
+            'opportunities': opportunities,
+            'latest_news': latest_news,
+        },
+    )
 
 def explore_view(request):
     subjects = Subject.objects.filter(status='published')

@@ -145,6 +145,9 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
+# Use Pikestia branding in allauth-generated account emails.
+ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Pikestia Learning Hub] '
+
 # Local email/password accounts must still verify their email.
 # Google accounts can use Google's verified email identity directly.
 SOCIALACCOUNT_ADAPTER = 'apps.accounts.adapters.PikestiaSocialAccountAdapter'

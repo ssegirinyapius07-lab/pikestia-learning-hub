@@ -8,7 +8,7 @@ from django.core import mail
 from django.test import RequestFactory, TestCase, override_settings
 
 from allauth.account.models import EmailAddress
-from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from .adapters import PikestiaSocialAccountAdapter
 
 from .models import AuditLog
 from .views import _logout_other_sessions
@@ -50,7 +50,7 @@ class AuthenticationConfigurationTests(TestCase):
         self.assertIn('Pikestia Learning Hub', mail.outbox[0].subject)
 
     def test_social_adapter_maps_google_name(self):
-        adapter = DefaultSocialAccountAdapter()
+        adapter = PikestiaSocialAccountAdapter()
         data = {
             'email': 'googleuser@example.org',
             'name': 'Google User',

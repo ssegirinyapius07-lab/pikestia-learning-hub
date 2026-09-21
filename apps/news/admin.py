@@ -27,7 +27,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
     list_select_related = ('author',)
     ordering = ('-published_at', '-created_at')
     list_per_page = 25
-    date_hierarchy = 'published_at'
+    date_hierarchy = 'created_at'
     readonly_fields = ('body', 'created_at', 'updated_at')
 
     fieldsets = (

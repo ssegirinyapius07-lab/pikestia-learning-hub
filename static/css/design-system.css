@@ -578,8 +578,26 @@ img {
 }
 
 .card-icon {
-  font-size: 1.6rem;
-  margin-bottom: 0.5rem
+  min-height: 2rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.subject-icon-default {
+  width: 1.9rem;
+  height: 1.9rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.subject-icon-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 .card-meta {

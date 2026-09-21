@@ -236,15 +236,6 @@ img {
   position: relative;
 }
 
-.nav-dropdown::after {
-  content: "";
-  position: absolute;
-  left: -0.25rem;
-  right: -0.25rem;
-  top: 100%;
-  height: 0.75rem;
-}
-
 .nav-dropdown-toggle {
   display: inline-flex;
   align-items: center;
@@ -256,8 +247,7 @@ img {
 }
 
 .nav-dropdown-toggle:hover,
-.nav-dropdown:hover .nav-dropdown-toggle,
-.nav-dropdown:focus-within .nav-dropdown-toggle {
+.nav-dropdown.is-open .nav-dropdown-toggle {
   color: var(--text);
   background: var(--bg-muted);
 }
@@ -270,53 +260,40 @@ img {
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
-  transition: transform 0.18s ease;
+  transition: transform 0.2s ease;
 }
 
-.nav-dropdown:hover .nav-dropdown-caret,
-.nav-dropdown:focus-within .nav-dropdown-caret,
 .nav-dropdown.is-open .nav-dropdown-caret {
   transform: rotate(180deg);
 }
 
-.nav-dropdown-panel {
-  position: absolute;
-  top: calc(100% - 1px);
-  left: 50%;
-  width: min(460px, calc(100vw - 2rem));
-  padding: 0.7rem;
-  display: grid;
-  grid-template-columns: 0.9fr 1.4fr;
-  gap: 0.65rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.10), 0 4px 10px rgba(0, 0, 0, 0.06);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translate(-50%, -10px) scaleY(0.96);
-  transform-origin: top center;
-  transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.2s;
-
-
-  z-index: 80;
+/* The nested panels are content templates. The visible desktop panel is shared. */
+.desktop-nav > .nav-dropdown > .nav-dropdown-panel {
+  display: none;
 }
 
-.nav-dropdown:hover .nav-dropdown-panel,
-.nav-dropdown:focus-within .nav-dropdown-panel,
-.nav-dropdown.is-open .nav-dropdown-panel {
+.nav-dropdown-panel {
+  position: static;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(210px, 0.65fr) minmax(0, 1.6fr);
+  gap: 1rem;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translate(-50%, 0) scaleY(1);
+  transform: none;
 }
 
 .nav-dropdown-intro {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0.85rem;
+  min-height: 150px;
+  padding: 1.1rem;
   border-radius: var(--radius-sm);
   background: var(--bg-muted);
 }
@@ -343,16 +320,17 @@ img {
 }
 
 .nav-dropdown-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+  align-content: start;
 }
 
 .nav-dropdown-links a {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 0.65rem 0.7rem;
+  padding: 0.8rem 0.85rem;
   border-radius: var(--radius-sm);
   color: var(--text);
   text-decoration: none;
@@ -384,6 +362,57 @@ img {
   color: var(--text-muted);
   font-size: 0.74rem;
   line-height: 1.35;
+}
+
+.desktop-nav-shell {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.desktop-mega-panel {
+  position: fixed;
+  top: 68px;
+  left: 0;
+  width: 100vw;
+  max-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.10), 0 5px 12px rgba(0, 0, 0, 0.05);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-16px);
+  transform-origin: top center;
+  transition:
+    max-height 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.24s ease,
+    opacity 0.18s ease,
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.18s;
+  z-index: 80;
+}
+
+.desktop-mega-panel.is-open {
+  max-height: min(520px, calc(100vh - 68px));
+  padding: 0 0 1rem;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.desktop-mega-panel-inner {
+  width: min(1160px, calc(100vw - 2.5rem));
+  margin: 0 auto;
+  padding-top: 0.7rem;
+}
+
+[data-theme="dark"] .desktop-mega-panel {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.38), 0 6px 14px rgba(0, 0, 0, 0.22);
 }
 
 .header-actions {
@@ -1248,6 +1277,11 @@ img {
     display: flex;
   }
 
+  .desktop-nav-shell {
+    display: flex;
+    align-items: center;
+  }
+
   .brand {
     flex: 0 0 auto;
   }
@@ -1334,6 +1368,14 @@ img {
   }
 
   .desktop-nav {
+    display: none;
+  }
+
+  .desktop-nav-shell {
+    display: none;
+  }
+
+  .desktop-mega-panel {
     display: none;
   }
 

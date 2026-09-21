@@ -1,15 +1,61 @@
 {% extends "base.html" %}
+
+{% block title %}Search | Pikestia Learning Hub{% endblock %}
+
 {% block content %}
 <div class="container section">
-<h1>Search</h1>
-<form method="get" class="search-form-large"><input type="search" name="q" value="{{ query }}" placeholder="Search..." maxlength="100"><button class="btn btn-primary" type="submit">Search</button></form>
-{% if query %}
-<div class="grid grid-2">
-<div class="card"><h3>Subjects ({{ results.subjects|length }})</h3>{% for s in results.subjects %}<a class="list-item" href="/subjects/{{ s.slug }}/">{{ s.title }}</a>{% empty %}<p>No results</p>{% endfor %}</div>
-<div class="card"><h3>Topics ({{ results.topics|length }})</h3>{% for t in results.topics %}<a class="list-item" href="/subjects/{{ t.subject.slug }}/{{ t.slug }}/">{{ t.title }}</a>{% empty %}<p>No results</p>{% endfor %}</div>
-<div class="card"><h3>Resources ({{ results.resources|length }})</h3>{% for r in results.resources %}<a class="list-item" href="/learn/{{ r.topic.subject.slug }}/{{ r.topic.slug }}/{{ r.slug }}/">{{ r.title }}</a>{% empty %}<p>No results</p>{% endfor %}</div>
-<div class="card"><h3>Opportunities ({{ results.opportunities|length }})</h3>{% for o in results.opportunities %}<a class="list-item" href="/opportunities/{{ o.slug }}/">{{ o.title }}</a>{% empty %}<p>No results</p>{% endfor %}</div>
-</div>
-{% endif %}
+  <h1>Search</h1>
+
+  <form method="get" class="search-form-large" role="search">
+    <input
+      type="search"
+      name="q"
+      value="{{ query }}"
+      placeholder="Search Pikestia..."
+      maxlength="100"
+    >
+    <button class="btn btn-primary" type="submit">Search</button>
+  </form>
+
+  {% if query %}
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Subjects ({{ results.subjects|length }})</h3>
+      {% for subject in results.subjects %}
+      <a class="list-item" href="/subjects/{{ subject.slug }}/">{{ subject.title }}</a>
+      {% empty %}<p>No results</p>{% endfor %}
+    </div>
+
+    <div class="card">
+      <h3>Topics ({{ results.topics|length }})</h3>
+      {% for topic in results.topics %}
+      <a class="list-item" href="/subjects/{{ topic.subject.slug }}/{{ topic.slug }}/">{{ topic.title }}</a>
+      {% empty %}<p>No results</p>{% endfor %}
+    </div>
+
+    <div class="card">
+      <h3>Learning Materials ({{ results.resources|length }})</h3>
+      {% for resource in results.resources %}
+      <a class="list-item" href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
+        {{ resource.title }}
+      </a>
+      {% empty %}<p>No results</p>{% endfor %}
+    </div>
+
+    <div class="card">
+      <h3>Opportunities ({{ results.opportunities|length }})</h3>
+      {% for opportunity in results.opportunities %}
+      <a class="list-item" href="/opportunities/{{ opportunity.slug }}/">{{ opportunity.title }}</a>
+      {% empty %}<p>No results</p>{% endfor %}
+    </div>
+
+    <div class="card">
+      <h3>News ({{ results.news|length }})</h3>
+      {% for article in results.news %}
+      <a class="list-item" href="/news/{{ article.slug }}/">{{ article.title }}</a>
+      {% empty %}<p>No results</p>{% endfor %}
+    </div>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

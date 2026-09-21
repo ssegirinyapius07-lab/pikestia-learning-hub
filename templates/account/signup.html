@@ -20,11 +20,6 @@
         </div>
         {% endif %}
 
-        {% for field_name in "email,full_name,password1,password2".split(",") %}
-          {% with field=form|dictsortreversed:"name" %}
-          {% endwith %}
-        {% endfor %}
-
         <div class="auth-field">
           <label for="{{ form.email.id_for_label }}">Email address</label>
           {{ form.email }}

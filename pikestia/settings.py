@@ -145,12 +145,17 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
-# Google already verifies the email identity during OAuth.
-# Keep mandatory verification for local email/password signup,
-# but do not send a second Pikestia verification step for Google sign-in.
+# Local email/password accounts must still verify their email.
+# Google accounts can use Google's verified email identity directly.
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
+
+# Allow a verified Google identity to sign in to an existing Pikestia
+# account with the same email address instead of creating a duplicate.
+# Google is explicitly trusted here because it provides a verified email.
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 
 EMAIL_BACKEND = os.getenv(
     "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
@@ -168,6 +173,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {'access_type': 'online'},
         'OAUTH_PKCE_ENABLED': True,
         'VERIFIED_EMAIL': True,
+        'EMAIL_AUTHENTICATION': True,
     }
 }
 

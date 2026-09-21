@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'apps.practice',
     'apps.opportunities',
     'apps.bookmarks',
+    'apps.news',
     # third party AFTER
     'allauth',
     'allauth.account',

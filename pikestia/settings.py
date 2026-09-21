@@ -175,7 +175,7 @@ CSRF_COOKIE_SECURE = not DEBUG
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
+        'AUTH_PARAMS': {'access_type': 'online', 'prompt': 'select_account'},
         'OAUTH_PKCE_ENABLED': True,
         'VERIFIED_EMAIL': True,
         'EMAIL_AUTHENTICATION': True,

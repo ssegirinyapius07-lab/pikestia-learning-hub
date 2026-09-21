@@ -1,1 +1,30 @@
-{% extends "base.html" %}{% block content %}<div class="container section"><h1>Subjects</h1><div class="grid grid-3">{% for s in subjects %}<a class="card card-hover" href="/subjects/{{ s.slug }}/"><h3>{{ s.title }}</h3><p>{{ s.description|truncatechars:120 }}</p><span class="badge">{{ s.discipline }}</span></a>{% endfor %}</div></div>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Subjects | Pikestia Learning Hub{% endblock %}
+{% block content %}
+<div class="subject-index">
+  <header class="page-intro container">
+    <p class="page-kicker">Learning catalogue</p>
+    <h1>Subjects</h1>
+    <p>Explore the academic areas available on Pikestia and move from a subject into its topics and learning materials.</p>
+  </header>
+
+  <section class="container subject-index-list" aria-label="Available subjects">
+    {% for s in subjects %}
+    <a class="subject-row" href="/subjects/{{ s.slug }}/">
+      <div class="subject-row-index" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</div>
+      <div class="subject-row-content">
+        <div class="subject-row-meta">{{ s.discipline }}</div>
+        <h2>{{ s.title }}</h2>
+        {% if s.description %}<p>{{ s.description|truncatechars:180 }}</p>{% endif %}
+      </div>
+      <span class="subject-row-action" aria-hidden="true">Explore</span>
+    </a>
+    {% empty %}
+    <div class="plain-empty">
+      <h2>No subjects yet</h2>
+      <p>Published subjects will appear here as the academic catalogue grows.</p>
+    </div>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

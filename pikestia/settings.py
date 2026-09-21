@@ -173,6 +173,13 @@ SOCIALACCOUNT_PROVIDERS = {
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '').strip()
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '').strip()
 
+# Google is a trusted identity provider for Pikestia. When a Google
+# email is already attached to an existing local account, allow the
+# verified provider identity to authenticate that account and connect
+# the Google account instead of starting a second signup.
+SOCIALACCOUNT_PROVIDERS['google']['EMAIL_AUTHENTICATION'] = True
+SOCIALACCOUNT_PROVIDERS['google']['EMAIL_AUTHENTICATION_AUTO_CONNECT'] = True
+
 if GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET:
     SOCIALACCOUNT_PROVIDERS['google']['APP'] = {
         'client_id': GOOGLE_CLIENT_ID,

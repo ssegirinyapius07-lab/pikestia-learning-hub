@@ -8,6 +8,7 @@ from apps.learning.models import LearningResource
 from apps.subjects.models import Topic
 from apps.opportunities.models import Opportunity
 from apps.accounts.models import CookiePreference
+from apps.news.models import NewsArticle
 
 def home_view(request):
     subjects = Subject.objects.filter(status='published').order_by('order')[:8]
@@ -25,7 +26,7 @@ def explore_view(request):
 @ratelimit(key='ip', rate='30/m', block=True)
 def search_view(request):
     q = request.GET.get('q','').strip()[:100]
-    results = {'subjects': [], 'topics': [], 'resources': [], 'opportunities': []}
+    results = {'subjects': [], 'topics': [], 'resources': [], 'opportunities': [], 'news': []}
     if q:
         from apps.subjects.models import Subject, Topic
         from apps.learning.models import LearningResource
@@ -40,6 +41,13 @@ def search_view(request):
         ).filter(
             Q(deadline__isnull=True) | Q(deadline__gt=now)
         )[:10]
+        results['news'] = NewsArticle.objects.filter(
+            Q(title__icontains=q)
+            | Q(summary__icontains=q)
+            | Q(body__icontains=q)
+            | Q(author__full_name__icontains=q),
+            status=NewsArticle.Status.PUBLISHED,
+        ).select_related('author').order_by('-published_at')[:10]
     return render(request, 'core/search.html', {'query': q, 'results': results})
 
 def about_view(request): return render(request, 'core/about.html')

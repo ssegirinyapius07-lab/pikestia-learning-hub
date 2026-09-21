@@ -1,1 +1,63 @@
-{% extends "base.html" %}{% block content %}<div class="container section"><nav class="breadcrumb"><a href="/subjects/{{ subject.slug }}/">{{ subject.title }}</a> / <a href="/subjects/{{ subject.slug }}/{{ topic.slug }}/">{{ topic.title }}</a> / {{ resource.title }}</nav><article class="card article"><h1>{{ resource.title }}</h1><p class="lead">{{ resource.summary }}</p>{% if resource.objectives_list %}<div class="objectives"><h3>Learning Objectives</h3><ul>{% for o in resource.objectives_list %}<li>{{ o }}</li>{% endfor %}</ul></div>{% endif %}<div class="rich-content">{{ resource.content|safe }}</div>{% if resource.key_concepts %}<div class="key-concepts"><h3>Key Concepts</h3><p>{{ resource.key_concepts }}</p></div>{% endif %}<form method="post" action="/bookmarks/toggle/">{% csrf_token %}<input type="hidden" name="resource_id" value="{{ resource.id }}"><button class="btn btn-secondary" type="submit">🔖 Bookmark</button></form></article><h3>Related</h3><div class="grid grid-2">{% for r in related %}<a class="card card-hover" href="/learn/{{ subject.slug }}/{{ topic.slug }}/{{ r.slug }}/"><h4>{{ r.title }}</h4><p>{{ r.summary|truncatechars:90 }}</p></a>{% endfor %}</div></div>{% endblock %}
+{% extends "base.html" %}
+{% block title %}{{ resource.title }} | Pikestia Learning Hub{% endblock %}
+{% block content %}
+<div class="container section learning-reading">
+  <nav class="breadcrumb">
+    <a href="/subjects/{{ subject.slug }}/">{{ subject.title }}</a> /
+    <a href="/subjects/{{ subject.slug }}/{{ topic.slug }}/">{{ topic.title }}</a> /
+    {{ resource.title }}
+  </nav>
+
+  <article class="reading-layout">
+    <header class="reading-header">
+      <p class="card-meta">{{ subject.title }} · {{ topic.title }}</p>
+      <h1>{{ resource.title }}</h1>
+      {% if resource.summary %}<p class="lead">{{ resource.summary }}</p>{% endif %}
+    </header>
+
+    {% if resource.objectives_list %}
+    <div class="reading-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        {% for o in resource.objectives_list %}<li>{{ o }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="rich-content reading-content">{{ resource.content|safe }}</div>
+
+    {% if resource.key_concepts %}
+    <aside class="reading-key-concepts">
+      <h2>Key Concepts</h2>
+      <p>{{ resource.key_concepts }}</p>
+    </aside>
+    {% endif %}
+
+    <form method="post" action="/bookmarks/toggle/" class="reading-action">
+      {% csrf_token %}
+      <input type="hidden" name="resource_id" value="{{ resource.id }}">
+      <button class="btn btn-secondary" type="submit">Bookmark</button>
+    </form>
+  </article>
+
+  {% if related %}
+  <section class="related-reading">
+    <div class="section-header">
+      <h2>Related</h2>
+    </div>
+    <div class="related-reading-list">
+      {% for r in related %}
+      <a href="/learn/{{ subject.slug }}/{{ topic.slug }}/{{ r.slug }}/">
+        <div>
+          <span class="card-meta">{{ subject.title }} · {{ topic.title }}</span>
+          <h3>{{ r.title }}</h3>
+          {% if r.summary %}<p>{{ r.summary|truncatechars:120 }}</p>{% endif %}
+        </div>
+        <span aria-hidden="true">→</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

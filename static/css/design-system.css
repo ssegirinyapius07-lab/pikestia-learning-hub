@@ -520,6 +520,37 @@ img {
   text-decoration: none;
 }
 
+.account-logout-form {
+  margin: 0;
+}
+
+.account-logout-form button {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.account-logout-form button:hover,
+.account-logout-form button:focus-visible {
+  background: var(--bg-muted);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.account-logout-form button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
 .account-menu-links a:hover,
 .account-menu-links a:focus-visible {
   background: var(--bg-muted);

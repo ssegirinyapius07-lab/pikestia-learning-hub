@@ -812,6 +812,107 @@ img {
   cursor: not-allowed;
 }
 
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.news-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 250px;
+}
+
+.news-card.is-featured {
+  border-color: var(--border-strong);
+}
+
+.news-card h2 {
+  margin: 0.8rem 0 0.5rem;
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+
+.news-card h2 a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.news-card h2 a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.news-card p {
+  color: var(--text-muted);
+  margin-top: 0;
+}
+
+.news-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.news-card-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.news-article {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.news-article-header {
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.news-article-header h1 {
+  margin: 0.8rem 0 0.7rem;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.news-byline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.news-body {
+  max-width: 760px;
+  margin: 2rem auto 0;
+  font-size: 1.04rem;
+}
+
+.news-body p {
+  margin: 0 0 1.15rem;
+}
+
+.news-body img {
+  border-radius: var(--radius);
+  margin: 1.5rem 0;
+}
+
+.news-related {
+  max-width: 900px;
+  margin: 2rem auto 0;
+}
+
 .section {
   padding: 2.5rem 0
 }
@@ -848,6 +949,13 @@ img {
 }
 
 @media(max-width:800px) {
+  .news-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .news-card {
+    min-height: 220px;
+  }
   .header-inner {
     align-items: center;
   }
@@ -970,6 +1078,12 @@ img {
   .pagination {
     flex-wrap: wrap;
   }
+
+  .news-card-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 }
 
 @media(max-width:700px) {
@@ -981,7 +1095,8 @@ img {
 @media(max-width:600px) {
   .grid-4,
   .grid-3,
-  .grid-2 {
+  .grid-2,
+  .news-grid {
     grid-template-columns: 1fr;
   }
 

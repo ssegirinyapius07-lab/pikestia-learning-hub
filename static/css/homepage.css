@@ -298,6 +298,10 @@
   color: var(--text-muted);
 }
 
+.home-feature-action {
+  margin-top: 1rem;
+}
+
 .learning-list {
   display: grid;
   gap: 0.65rem;

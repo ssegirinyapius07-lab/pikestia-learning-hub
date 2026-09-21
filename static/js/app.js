@@ -147,6 +147,52 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Subtle scroll reveal and header elevation.
+  // CSS remains responsible for the visual effect; this only detects visibility.
+  document.documentElement.classList.add('js-reveal');
+
+  const revealItems = document.querySelectorAll(
+    '[data-reveal], .editorial-section, .newsroom-card, .news-reading-header, .news-related-card'
+  );
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.setAttribute('data-reveal', entry.target.getAttribute('data-reveal') || 'soft');
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealItems.forEach(function (item) {
+      if (!item.hasAttribute('data-reveal')) {
+        item.setAttribute('data-reveal', 'soft');
+      }
+      revealObserver.observe(item);
+    });
+  } else {
+    revealItems.forEach(function (item) {
+      item.setAttribute('data-reveal', 'soft');
+      item.classList.add('is-visible');
+    });
+  }
+
+  const header = document.querySelector('.header');
+
+  function updateHeaderOnScroll() {
+    if (!header) return;
+    header.classList.toggle('is-scrolled', window.scrollY > 8);
+  }
+
+  updateHeaderOnScroll();
+  window.addEventListener('scroll', updateHeaderOnScroll, { passive: true });
+
   // Professional toast notifications: dismissible immediately and auto-close
   // successful/info notices after a short reading period.
   document.querySelectorAll('.alert').forEach(function (alert) {

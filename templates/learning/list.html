@@ -26,14 +26,7 @@
       <div class="filter-search">
         <label for="materials-query">Search the library</label>
         <div class="search-form-large">
-          <input
-            id="materials-query"
-            type="search"
-            name="q"
-            value="{{ query }}"
-            placeholder="Search titles, topics, subjects, key concepts..."
-            maxlength="100"
-          >
+          <input id="materials-query" type="search" name="q" value="{{ query }}" placeholder="Search titles, topics, subjects, key concepts..." maxlength="100">
           <button type="submit" class="btn btn-primary">Search</button>
         </div>
       </div>
@@ -44,9 +37,7 @@
           <select id="subject-filter" name="subject">
             <option value="">All subjects</option>
             {% for subject in subjects %}
-            <option value="{{ subject.id }}"{% if selected_subject_id == subject.id|stringformat:"s" %} selected{% endif %}>
-              {{ subject.title }}
-            </option>
+            <option value="{{ subject.id }}"{% if selected_subject_id == subject.id|stringformat:"s" %} selected{% endif %}>{{ subject.title }}</option>
             {% endfor %}
           </select>
         </div>
@@ -56,9 +47,7 @@
           <select id="topic-filter" name="topic">
             <option value="">All topics</option>
             {% for topic in topics %}
-            <option value="{{ topic.id }}"{% if selected_topic_id == topic.id|stringformat:"s" %} selected{% endif %}>
-              {{ topic.subject.title }} — {{ topic.title }}
-            </option>
+            <option value="{{ topic.id }}"{% if selected_topic_id == topic.id|stringformat:"s" %} selected{% endif %}>{{ topic.subject.title }} — {{ topic.title }}</option>
             {% endfor %}
           </select>
         </div>
@@ -97,27 +86,23 @@
   </div>
 
   {% if resources %}
-  <div class="grid grid-3">
+  <div class="resource-index">
     {% for resource in resources %}
-    <a class="card card-hover material-card" href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
-      <div class="card-meta">{{ resource.topic.subject.title }} · {{ resource.topic.title }}</div>
-      <h3>{{ resource.title }}</h3>
-      {% if resource.summary %}<p>{{ resource.summary|truncatechars:140 }}</p>{% endif %}
-      <div class="material-card-footer">
-        <span class="badge">Learning material</span>
-        <span class="material-arrow" aria-hidden="true">→</span>
+    <a class="resource-row" href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
+      <div class="resource-row-content">
+        <div class="card-meta">{{ resource.topic.subject.title }} · {{ resource.topic.title }}</div>
+        <h3>{{ resource.title }}</h3>
+        {% if resource.summary %}<p>{{ resource.summary|truncatechars:190 }}</p>{% endif %}
+      </div>
+      <div class="resource-row-action">
+        <span>Read</span>
+        <span aria-hidden="true">→</span>
       </div>
     </a>
     {% endfor %}
   </div>
   {% else %}
-  <div class="empty-state card">
-    <div class="empty-state-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" focusable="false">
-        <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"></path>
-        <path d="M4 5.5v15M7 7h9M7 10h7"></path>
-      </svg>
-    </div>
+  <div class="plain-empty">
     <h2>No materials found</h2>
     <p>Try a different keyword, subject, or topic filter.</p>
     <a href="/learn/" class="btn btn-secondary">View all materials</a>

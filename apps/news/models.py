@@ -24,6 +24,11 @@ class NewsArticle(EditorialContent):
 
     slug = models.SlugField(max_length=280, unique=True)
     summary = models.TextField(blank=True)
+    cover_image = models.ImageField(
+        upload_to='news/covers/',
+        blank=True,
+        help_text='Optional cover image used in the newsroom and featured story cards.',
+    )
     body = models.TextField(help_text='Sanitized HTML')
     body_raw = models.TextField(
         blank=True,

@@ -13,21 +13,37 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Mobile navigation toggle.
+  // Responsive header menu.
   const toggle = document.getElementById('mobileToggle');
-  const nav = document.getElementById('mainNav');
+  const menu = document.getElementById('mainMenu');
 
-  if (toggle && nav) {
+  if (toggle && menu) {
+    function closeMenu() {
+      menu.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = 'Menu';
+    }
+
     toggle.addEventListener('click', function () {
-      const isOpen = nav.classList.toggle('open');
+      const isOpen = menu.classList.toggle('open');
       toggle.setAttribute('aria-expanded', String(isOpen));
+      toggle.textContent = isOpen ? 'Close' : 'Menu';
     });
 
-    nav.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', function () {
-        nav.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-      });
+    menu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', closeMenu);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+        closeMenu();
+      }
     });
   }
 });

@@ -13,83 +13,102 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Desktop navigation dropdowns.
-  // Keep a small close delay so the panel does not disappear while the
-  // pointer is travelling from the navigation item into the dropdown.
+  // Desktop navigation uses one continuous mega surface.
+  // Moving between top-level items changes the contents in place instead
+  // of closing one dropdown and opening another.
   const desktopNav = document.getElementById('desktopNav');
+  const desktopNavShell = document.getElementById('desktopNavShell');
+  const megaPanel = document.getElementById('desktopMegaPanel');
+  const megaPanelInner = document.getElementById('desktopMegaPanelInner');
 
-  if (desktopNav) {
-    const dropdowns = desktopNav.querySelectorAll('.nav-dropdown');
-    let closeTimer;
+  if (desktopNav && desktopNavShell && megaPanel && megaPanelInner) {
+    const dropdowns = Array.from(desktopNav.querySelectorAll('.nav-dropdown'));
+    let activeDropdown = null;
+    let closeTimer = null;
 
-    function closeDropdown(dropdown) {
-      dropdown.classList.remove('is-open');
-      const button = dropdown.querySelector('.nav-dropdown-toggle');
-      if (button) button.setAttribute('aria-expanded', 'false');
-    }
-
-    function closeAllDropdowns(except) {
-      dropdowns.forEach(function (dropdown) {
-        if (dropdown !== except) closeDropdown(dropdown);
-      });
-    }
-
-    function scheduleClose(dropdown) {
+    function clearCloseTimer() {
       window.clearTimeout(closeTimer);
+    }
+
+    function closeMegaPanel() {
+      clearCloseTimer();
+      activeDropdown = null;
+      dropdowns.forEach(function (item) {
+        item.classList.remove('is-open');
+        const button = item.querySelector('.nav-dropdown-toggle');
+        if (button) button.setAttribute('aria-expanded', 'false');
+      });
+      megaPanel.classList.remove('is-open');
+      megaPanel.setAttribute('aria-hidden', 'true');
+    }
+
+    function showMegaPanel(dropdown) {
+      clearCloseTimer();
+      activeDropdown = dropdown;
+
+      dropdowns.forEach(function (item) {
+        item.classList.toggle('is-open', item === dropdown);
+        const button = item.querySelector('.nav-dropdown-toggle');
+        if (button) button.setAttribute('aria-expanded', item === dropdown ? 'true' : 'false');
+      });
+
+      const sourcePanel = dropdown.querySelector('.nav-dropdown-panel');
+      if (!sourcePanel) return;
+
+      megaPanelInner.innerHTML = sourcePanel.innerHTML;
+      megaPanel.classList.add('is-open');
+      megaPanel.setAttribute('aria-hidden', 'false');
+    }
+
+    function scheduleClose() {
+      clearCloseTimer();
       closeTimer = window.setTimeout(function () {
-        if (!dropdown.matches(':hover') && !dropdown.contains(document.activeElement)) {
-          closeDropdown(dropdown);
+        if (!desktopNavShell.matches(':hover') && !megaPanel.matches(':hover')) {
+          closeMegaPanel();
         }
-      }, 320);
+      }, 500);
     }
 
     dropdowns.forEach(function (dropdown) {
       const button = dropdown.querySelector('.nav-dropdown-toggle');
 
       dropdown.addEventListener('mouseenter', function () {
-        if (window.matchMedia('(min-width: 801px)').matches) {
-          window.clearTimeout(closeTimer);
-          closeAllDropdowns(dropdown);
-          dropdown.classList.add('is-open');
-          if (button) button.setAttribute('aria-expanded', 'true');
-        }
+        if (!window.matchMedia('(min-width: 801px)').matches) return;
+        showMegaPanel(dropdown);
       });
 
-      dropdown.addEventListener('mouseleave', function () {
-        if (window.matchMedia('(min-width: 801px)').matches) {
-          scheduleClose(dropdown);
-        }
+      dropdown.addEventListener('focusin', function () {
+        if (!window.matchMedia('(min-width: 801px)').matches) return;
+        showMegaPanel(dropdown);
       });
 
       if (button) {
         button.addEventListener('click', function () {
           if (!window.matchMedia('(min-width: 801px)').matches) return;
 
-          const isOpen = dropdown.classList.contains('is-open');
-          window.clearTimeout(closeTimer);
-          closeAllDropdowns(dropdown);
-
-          if (isOpen) {
-            closeDropdown(dropdown);
+          if (activeDropdown === dropdown && megaPanel.classList.contains('is-open')) {
+            scheduleClose();
           } else {
-            dropdown.classList.add('is-open');
-            button.setAttribute('aria-expanded', 'true');
+            showMegaPanel(dropdown);
           }
         });
       }
     });
 
+    desktopNavShell.addEventListener('mouseenter', clearCloseTimer);
+    desktopNavShell.addEventListener('mouseleave', scheduleClose);
+    megaPanel.addEventListener('mouseenter', clearCloseTimer);
+    megaPanel.addEventListener('mouseleave', scheduleClose);
+
     document.addEventListener('click', function (event) {
-      if (!desktopNav.contains(event.target)) {
-        window.clearTimeout(closeTimer);
-        dropdowns.forEach(closeDropdown);
+      if (!desktopNavShell.contains(event.target) && !megaPanel.contains(event.target)) {
+        closeMegaPanel();
       }
     });
 
     window.addEventListener('resize', function () {
       if (!window.matchMedia('(min-width: 801px)').matches) {
-        window.clearTimeout(closeTimer);
-        dropdowns.forEach(closeDropdown);
+        closeMegaPanel();
       }
     });
   }

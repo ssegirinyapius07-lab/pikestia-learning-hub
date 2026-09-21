@@ -1121,6 +1121,7 @@ img {
   }
   .header-inner {
     align-items: center;
+    flex-wrap: wrap;
   }
 
   .brand {

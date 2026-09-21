@@ -1,1 +1,37 @@
-{% extends "base.html" %}{% block content %}<div class="container section"><a href="/opportunities/" class="link">← Opportunities</a><div class="card"><h1>{{ opp.title }}</h1><div class="badge-row"><span class="badge">{{ opp.category }}</span>{% if opp.is_verified %}<span class="badge badge-verified">Verified</span>{% endif %}{% if opp.is_remote %}<span class="badge">Remote</span>{% else %}<span class="badge">{{ opp.location }}</span>{% endif %}</div><p>{{ opp.description }}</p>{% if opp.eligibility %}<h3>Eligibility</h3><p>{{ opp.eligibility }}</p>{% endif %}{% if opp.deadline %}<p><strong>Deadline:</strong> {{ opp.deadline }}</p>{% endif %}{% if opp.source_url %}<a href="{{ opp.source_url }}" target="_blank" rel="noopener" class="btn btn-primary">Official Source: {{ opp.source_name|default:"Apply" }}</a>{% endif %}</div></div>{% endblock %}
+{% extends "base.html" %}
+{% block title %}{{ opp.title }} | Pikestia Learning Hub{% endblock %}
+{% block content %}
+<div class="container section opportunity-reading">
+  <a href="/opportunities/" class="link">← Opportunities</a>
+
+  <article class="reading-layout">
+    <header class="reading-header">
+      <p class="card-meta">{{ opp.get_category_display }}{% if opp.is_verified %} · Verified{% endif %}{% if opp.is_remote %} · Remote{% elif opp.location %} · {{ opp.location }}{% endif %}</p>
+      <h1>{{ opp.title }}</h1>
+    </header>
+
+    <div class="opportunity-facts">
+      {% if opp.deadline %}<div><span>Deadline</span><strong>{{ opp.deadline|date:"F j, Y" }}</strong></div>{% endif %}
+      {% if opp.location %}<div><span>Location</span><strong>{{ opp.location }}</strong></div>{% endif %}
+      {% if opp.source_name %}<div><span>Source</span><strong>{{ opp.source_name }}</strong></div>{% endif %}
+    </div>
+
+    <div class="rich-content opportunity-description">
+      <p>{{ opp.description }}</p>
+    </div>
+
+    {% if opp.eligibility %}
+    <section class="reading-section">
+      <h2>Eligibility</h2>
+      <p>{{ opp.eligibility }}</p>
+    </section>
+    {% endif %}
+
+    {% if opp.source_url %}
+    <div class="reading-action">
+      <a href="{{ opp.source_url }}" target="_blank" rel="noopener" class="btn btn-primary">Open official source{% if opp.source_name %}: {{ opp.source_name }}{% endif %}</a>
+    </div>
+    {% endif %}
+  </article>
+</div>
+{% endblock %}

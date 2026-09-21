@@ -37,8 +37,16 @@ def settings_view(request):
             return redirect('account_settings')
     else:
         form = ThemeForm(instance=request.user)
-    pw_form = PasswordChangeForm(request.user)
-    return render(request, 'accounts/settings.html', {'theme_form': form, 'pw_form': pw_form})
+    pw_form = PasswordChangeForm(request.user) if request.user.has_usable_password() else None
+    return render(
+        request,
+        'accounts/settings.html',
+        {
+            'theme_form': form,
+            'pw_form': pw_form,
+            'has_usable_password': request.user.has_usable_password(),
+        },
+    )
 
 @login_required
 @require_http_methods(["POST"])

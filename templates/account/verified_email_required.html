@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Verify your email | Pikestia Learning Hub{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="container auth-container">
+    <div class="auth-card card">
+      <div class="auth-status-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M3 6.5 12 13l9-6.5"></path>
+          <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+        </svg>
+      </div>
+
+      <div class="auth-header">
+        <h1>Verify your email address</h1>
+        <p>We've sent a verification email to the address on your Pikestia account.</p>
+      </div>
+
+      <div class="auth-note">
+        <strong>Check your inbox</strong>
+        <span>Open the verification email and follow the link to confirm that you own this email address.</span>
+        <span>If you don't see it, check your spam or junk folder.</span>
+      </div>
+
+      <div class="auth-actions-stack">
+        <a href="{% url 'account_login' %}" class="btn btn-primary auth-submit">Back to sign in</a>
+        <a href="{% url 'account_reset_password' %}" class="btn btn-secondary auth-submit">Reset password instead</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

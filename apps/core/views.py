@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django_ratelimit.decorators import ratelimit
 from django.db.models import Q
+from django.utils import timezone
 from apps.subjects.models import Subject
 from apps.learning.models import LearningResource
 from apps.subjects.models import Topic
@@ -11,7 +12,10 @@ from apps.accounts.models import CookiePreference
 def home_view(request):
     subjects = Subject.objects.filter(status='published').order_by('order')[:8]
     featured = LearningResource.objects.filter(status='published').select_related('topic','topic__subject').order_by('-created_at')[:6]
-    opportunities = Opportunity.objects.filter(status='active').order_by('-published_at')[:4]
+    now = timezone.now()
+    opportunities = Opportunity.objects.filter(status='active').filter(
+        Q(deadline__isnull=True) | Q(deadline__gt=now)
+    ).order_by('-published_at')[:4]
     return render(request, 'core/home.html', {'subjects': subjects, 'featured': featured, 'opportunities': opportunities})
 
 def explore_view(request):
@@ -29,7 +33,13 @@ def search_view(request):
         results['subjects'] = Subject.objects.filter(Q(title__icontains=q) | Q(description__icontains=q), status='published')[:10]
         results['topics'] = Topic.objects.filter(Q(title__icontains=q) | Q(summary__icontains=q), status='published').select_related('subject')[:10]
         results['resources'] = LearningResource.objects.filter(Q(title__icontains=q) | Q(summary__icontains=q), status='published')[:10]
-        results['opportunities'] = Opportunity.objects.filter(Q(title__icontains=q) | Q(description__icontains=q), status='active')[:10]
+        now = timezone.now()
+        results['opportunities'] = Opportunity.objects.filter(
+            Q(title__icontains=q) | Q(description__icontains=q),
+            status='active',
+        ).filter(
+            Q(deadline__isnull=True) | Q(deadline__gt=now)
+        )[:10]
     return render(request, 'core/search.html', {'query': q, 'results': results})
 
 def about_view(request): return render(request, 'core/about.html')

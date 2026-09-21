@@ -32,8 +32,41 @@
       <button class="mobile-toggle" id="mobileToggle" aria-expanded="false" aria-controls="mainMenu">Menu</button>
       <div class="menu-panel" id="mainMenu">
         <nav class="nav" id="mainNav" aria-label="Main">
-        <a href="/explore/" class="nav-link">Explore</a>
-        <div class="nav-dropdown resource-menu">
+        <div class="nav-dropdown">
+          <button type="button" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+            <span>Explore</span>
+            <svg class="nav-dropdown-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="m4 6 4 4 4-4"></path>
+            </svg>
+          </button>
+          <div class="nav-dropdown-panel" role="menu">
+            <div class="nav-dropdown-intro">
+              <span class="nav-dropdown-eyebrow">Discover</span>
+              <strong>Explore Pikestia</strong>
+              <span>Find learning, opportunities and useful insights.</span>
+            </div>
+            <div class="nav-dropdown-links">
+              <a href="/explore/" role="menuitem">
+                <span class="nav-dropdown-link-title">Explore</span>
+                <span class="nav-dropdown-link-meta">Discover what is available</span>
+              </a>
+              <a href="/subjects/" role="menuitem">
+                <span class="nav-dropdown-link-title">Subjects</span>
+                <span class="nav-dropdown-link-meta">Browse academic areas</span>
+              </a>
+              <a href="/opportunities/" role="menuitem">
+                <span class="nav-dropdown-link-title">Opportunities</span>
+                <span class="nav-dropdown-link-meta">Scholarships, internships and more</span>
+              </a>
+              <a href="/news/" role="menuitem">
+                <span class="nav-dropdown-link-title">News &amp; Insights</span>
+                <span class="nav-dropdown-link-meta">Keep up with useful information</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-dropdown">
           <button type="button" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
             <span>Resources</span>
             <svg class="nav-dropdown-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
@@ -62,8 +95,50 @@
             </div>
           </div>
         </div>
+
         <a href="/opportunities/" class="nav-link">Opportunities</a>
-        <a href="/news/" class="nav-link">News</a>
+
+        <div class="nav-dropdown">
+          <button type="button" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+            <span>News</span>
+            <svg class="nav-dropdown-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="m4 6 4 4 4-4"></path>
+            </svg>
+          </button>
+          <div class="nav-dropdown-panel" role="menu">
+            <div class="nav-dropdown-intro">
+              <span class="nav-dropdown-eyebrow">News &amp; Insights</span>
+              <strong>Stay informed</strong>
+              <span>Read published stories and explore topics.</span>
+            </div>
+            <div class="nav-dropdown-links">
+              <a href="/news/" role="menuitem">
+                <span class="nav-dropdown-link-title">Latest</span>
+                <span class="nav-dropdown-link-meta">All published news and insights</span>
+              </a>
+              <a href="/news/?category=academic" role="menuitem">
+                <span class="nav-dropdown-link-title">Academic</span>
+                <span class="nav-dropdown-link-meta">Education and learning</span>
+              </a>
+              <a href="/news/?category=technology" role="menuitem">
+                <span class="nav-dropdown-link-title">Technology</span>
+                <span class="nav-dropdown-link-meta">Technology and digital developments</span>
+              </a>
+              <a href="/news/?category=career" role="menuitem">
+                <span class="nav-dropdown-link-title">Career</span>
+                <span class="nav-dropdown-link-meta">Career and professional insights</span>
+              </a>
+              <a href="/news/?category=campus" role="menuitem">
+                <span class="nav-dropdown-link-title">Campus</span>
+                <span class="nav-dropdown-link-meta">Campus and university stories</span>
+              </a>
+              <a href="/news/?category=community" role="menuitem">
+                <span class="nav-dropdown-link-title">Community</span>
+                <span class="nav-dropdown-link-meta">Community stories and perspectives</span>
+              </a>
+            </div>
+          </div>
+        </div>
         </nav>
         <div class="header-actions">
         <form action="/search/" method="get" class="search-form" role="search">

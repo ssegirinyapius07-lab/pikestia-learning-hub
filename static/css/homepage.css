@@ -1064,3 +1064,591 @@
     transform: none;
   }
 }
+
+
+/* Editorial refinement: fewer boxes, stronger photography, clearer content hierarchy */
+.page-intro {
+  padding-top: 3.2rem;
+  padding-bottom: 1.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-kicker {
+  margin: 0 0 0.65rem;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.page-intro h1 {
+  max-width: 900px;
+  margin: 0;
+  font-size: clamp(2.6rem, 6vw, 4.8rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.page-intro > p:last-child {
+  max-width: 760px;
+  margin: 0.9rem 0 0;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.subject-index-list,
+.topic-list,
+.resource-index,
+.opportunity-list {
+  margin-top: 1.4rem;
+}
+
+.subject-row,
+.topic-row,
+.resource-row,
+.opportunity-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  gap: 1.1rem;
+  align-items: start;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.subject-row:last-child,
+.topic-row:last-child,
+.resource-row:last-child,
+.opportunity-row:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.subject-row:hover,
+.topic-row:hover,
+.resource-row:hover,
+.opportunity-row:hover {
+  text-decoration: none;
+}
+
+.subject-row:hover h2,
+.topic-row:hover h3,
+.resource-row:hover h3,
+.opportunity-row:hover h2 {
+  color: var(--accent);
+}
+
+.subject-row-index,
+.topic-row-index {
+  padding-top: 0.2rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.subject-row-meta,
+.resource-row .card-meta,
+.opportunity-row-meta {
+  margin-bottom: 0.3rem;
+  color: var(--text-muted);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.subject-row h2,
+.topic-row h3,
+.resource-row h3,
+.opportunity-row h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  transition: color 0.2s ease;
+}
+
+.subject-row p,
+.topic-row p,
+.resource-row p,
+.opportunity-row p {
+  max-width: 760px;
+  margin: 0.45rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.subject-row-action,
+.topic-row-action,
+.resource-row-action,
+.opportunity-row-deadline {
+  align-self: center;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.resource-row-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.opportunity-row {
+  grid-template-columns: minmax(0, 1fr) 135px;
+}
+
+.opportunity-row-meta {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.opportunity-row-meta span + span::before {
+  content: "·";
+  margin-right: 0.55rem;
+}
+
+.opportunity-row-deadline {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-top: 0.2rem;
+}
+
+.opportunity-row-deadline small {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.opportunity-row-deadline strong {
+  color: var(--text);
+}
+
+.opportunity-filters {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.opportunity-reading .reading-header {
+  padding-bottom: 1.5rem;
+}
+
+.reading-layout {
+  max-width: 820px;
+  margin: 1.8rem auto 0;
+}
+
+.reading-header {
+  border-bottom: 1px solid var(--border);
+}
+
+.reading-header h1 {
+  margin: 0.55rem 0 0.75rem;
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+}
+
+.reading-header .lead {
+  max-width: 760px;
+  margin: 0 0 1.2rem;
+}
+
+.reading-objectives,
+.reading-key-concepts,
+.reading-section {
+  margin-top: 1.8rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+.reading-objectives h2,
+.reading-key-concepts h2,
+.reading-section h2 {
+  margin: 0 0 0.65rem;
+  font-size: 1rem;
+}
+
+.reading-objectives ul {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: var(--text-muted);
+}
+
+.reading-objectives li + li {
+  margin-top: 0.4rem;
+}
+
+.reading-content,
+.opportunity-description {
+  margin-top: 1.8rem;
+}
+
+.reading-action {
+  margin-top: 1.5rem;
+}
+
+.related-reading {
+  max-width: 820px;
+  margin: 3rem auto 0;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--border);
+}
+
+.related-reading-list {
+  display: grid;
+}
+
+.related-reading-list a {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.related-reading-list a:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.related-reading-list a:hover h3 {
+  color: var(--accent);
+}
+
+.related-reading-list h3 {
+  margin: 0.2rem 0 0;
+  font-size: 1.05rem;
+  transition: color 0.2s ease;
+}
+
+.related-reading-list p {
+  margin: 0.3rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.plain-empty {
+  padding: 2.2rem 0;
+  border-top: 1px dashed var(--border-strong);
+  border-bottom: 1px dashed var(--border-strong);
+  color: var(--text-muted);
+}
+
+.plain-empty h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+.plain-empty p {
+  margin: 0.4rem 0 0;
+}
+
+/* Homepage: keep the lead visual, remove unnecessary boxes */
+.lead-story,
+.story-card,
+.learning-feature,
+.home-action-card,
+.subject-tile,
+.opportunity-board {
+  box-shadow: none;
+}
+
+.lead-story {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.story-card {
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+
+.lead-story:hover,
+.story-card:hover {
+  box-shadow: none;
+}
+
+.lead-story .story-content {
+  padding-top: 0.2rem;
+}
+
+.story-card .story-content {
+  padding-top: 0.15rem;
+}
+
+.story-media {
+  position: relative;
+  isolation: isolate;
+}
+
+.story-media::after,
+.newsroom-card-media::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 30%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.22), transparent);
+  pointer-events: none;
+}
+
+.story-media-lead {
+  height: clamp(225px, 32vw, 390px);
+  margin: 0 0 1.1rem;
+  border-radius: var(--radius);
+}
+
+.story-media-small {
+  height: 170px;
+  margin: 0 0 0.9rem;
+  border-radius: var(--radius);
+}
+
+.story-media img,
+.newsroom-card-media img,
+.related-media img {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), filter 0.55s ease;
+}
+
+.story-card:hover .story-media img,
+.newsroom-card:hover .newsroom-card-media img,
+.related-reading-list a:hover + * img {
+  transform: scale(1.03);
+}
+
+.story-media img,
+.newsroom-card-media img {
+  object-position: center;
+}
+
+.learning-feature {
+  padding: 0 1.4rem 0 0;
+  border: 0;
+  border-right: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+
+.learning-list {
+  gap: 0;
+}
+
+.learning-list a {
+  padding: 0.85rem 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+
+.learning-list a:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.subjects-strip {
+  gap: 0;
+}
+
+.subject-tile {
+  min-height: 92px;
+  padding: 0.8rem 0.9rem;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+
+.subject-tile:nth-last-child(-n + 4) {
+  border-bottom: 1px solid var(--border);
+}
+
+.subject-tile:hover {
+  background: transparent;
+  box-shadow: none;
+}
+
+.opportunity-board {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.home-bottom-grid {
+  gap: 2rem;
+}
+
+.home-action-card {
+  padding: 1.2rem 0;
+  border: 0;
+  border-top: 2px solid var(--text);
+  border-radius: 0;
+  background: transparent;
+}
+
+.home-action-card h3 {
+  font-size: 1.2rem;
+}
+
+.newsroom-card {
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.newsroom-card:hover {
+  box-shadow: none;
+}
+
+.newsroom-card-content {
+  padding: 1rem 0 0;
+}
+
+.newsroom-card.is-lead .newsroom-card-content {
+  padding: 1rem 0 1.2rem;
+}
+
+.newsroom-card-media {
+  position: relative;
+  height: 210px;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.newsroom-card.is-lead .newsroom-card-media {
+  height: clamp(250px, 38vw, 430px);
+}
+
+.news-related-card {
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+
+.news-related-card:hover {
+  background: transparent;
+}
+
+.related-media {
+  margin: 0 0 0.85rem;
+  height: 155px;
+  border-radius: var(--radius);
+}
+
+.news-reading-cover {
+  border: 0;
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+
+.news-reading-cover img {
+  display: block;
+  max-height: 650px;
+}
+
+@media (max-width: 900px) {
+  .learning-feature {
+    padding: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.2rem;
+  }
+
+  .subject-tile:nth-last-child(-n + 4) {
+    border-bottom: 0;
+  }
+
+  .subject-tile:nth-last-child(-n + 2) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .newsroom-card-media {
+    height: 190px;
+  }
+
+  .newsroom-card.is-lead .newsroom-card-media {
+    height: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-intro {
+    padding-top: 2.4rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .subject-row,
+  .topic-row,
+  .resource-row {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .subject-row-action,
+  .topic-row-action {
+    display: none;
+  }
+
+  .opportunity-row {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .opportunity-row-deadline {
+    align-items: flex-start;
+  }
+
+  .story-media-lead {
+    height: 220px;
+  }
+
+  .story-media-small {
+    height: 160px;
+  }
+
+  .newsroom-card-media,
+  .newsroom-card.is-lead .newsroom-card-media {
+    height: 220px;
+  }
+
+  .news-reading-cover img {
+    max-height: 360px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .story-media img,
+  .newsroom-card-media img,
+  .related-media img,
+  .subject-row h2,
+  .topic-row h3,
+  .resource-row h3,
+  .opportunity-row h2,
+  .related-reading-list h3 {
+    transition: none;
+  }
+}

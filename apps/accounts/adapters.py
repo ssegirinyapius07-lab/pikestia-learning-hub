@@ -12,23 +12,24 @@ class PikestiaSocialAccountAdapter(DefaultSocialAccountAdapter):
 
         given = (data.get('given_name') or '').strip()
         family = (data.get('family_name') or '').strip()
-        return ' '.join(part for part in (given, family) if part)
+        return ' '.join(part for part in (given, family) if part).strip()
 
     def populate_user(self, request, sociallogin, data):
         user = super().populate_user(request, sociallogin, data)
-        if hasattr(user, 'full_name') and not user.full_name:
-            user.full_name = self._name_from_data(data)
+        if hasattr(user, 'full_name'):
+            name = self._name_from_data(data)
+            if name:
+                user.full_name = name
         return user
 
     def pre_social_login(self, request, sociallogin):
-        """Populate an empty name on an already-existing Pikestia account."""
+        """Keep a connected Google profile name synchronized with Pikestia."""
         super().pre_social_login(request, sociallogin)
 
-        user = sociallogin.user
-        if not hasattr(user, 'full_name') or user.full_name:
+        if sociallogin.account.provider != 'google':
             return
 
         name = self._name_from_data(sociallogin.account.extra_data)
-        if name:
-            user.full_name = name
-            user.save(update_fields=['full_name'])
+        if name and hasattr(sociallogin.user, 'full_name') and sociallogin.user.full_name != name:
+            sociallogin.user.full_name = name
+            sociallogin.user.save(update_fields=['full_name'])

@@ -1,1 +1,35 @@
-{% extends "base.html" %}{% block content %}<div class="container section"><h1>Settings</h1><div class="grid grid-2"><div class="card"><h3>Theme (server-side persistent)</h3><form method="post" action="/accounts/settings/theme/">{% csrf_token %}{{ theme_form.as_p }}<button class="btn btn-primary" type="submit">Save Theme</button></form><p>Your theme syncs across devices when logged in.</p></div><div class="card"><h3>Password</h3><form method="post" action="/accounts/settings/password/">{% csrf_token %}{{ pw_form.as_p }}<button class="btn btn-primary" type="submit">Change Password</button></form></div></div></div>{% endblock %}
+{% extends "base.html" %}
+{% block content %}
+<div class="container section">
+  <h1>Settings</h1>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Theme</h3>
+      <form method="post" action="/accounts/settings/theme/">
+        {% csrf_token %}
+        {{ theme_form.as_p }}
+        <button class="btn btn-primary" type="submit">Save Theme</button>
+      </form>
+      <p>Your theme syncs across devices when you are logged in.</p>
+    </div>
+
+    <div class="card">
+      <h3>Password</h3>
+
+      {% if has_usable_password %}
+      <p>Your Pikestia password is separate from your Google sign-in.</p>
+      <form method="post" action="/accounts/settings/password/">
+        {% csrf_token %}
+        {{ pw_form.as_p }}
+        <button class="btn btn-primary" type="submit">Change Password</button>
+      </form>
+      {% else %}
+      <p>You signed in with Google. Pikestia does not require you to create or enter a password for this account.</p>
+      <p>You can optionally create a Pikestia password later as an additional sign-in method.</p>
+      <a class="btn btn-secondary" href="{% url 'account_set_password' %}">Set a Password</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

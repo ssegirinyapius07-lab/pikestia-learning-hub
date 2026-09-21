@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Google sign up | Pikestia Learning Hub{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="container auth-container">
+    <div class="auth-card card">
+      <div class="auth-header">
+        <h1>Complete your account</h1>
+        <p>Confirm the details below to finish creating your Pikestia account.</p>
+      </div>
+
+      {% if provider %}
+      <div class="auth-provider-note">
+        <strong>{{ provider.name }}</strong>
+        <span>Google account</span>
+      </div>
+      {% endif %}
+
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="auth-errors" role="alert">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for field in form %}
+        <div class="auth-field">
+          {{ field.label_tag }}
+          {{ field }}
+          {% if field.help_text %}<p class="auth-help">{{ field.help_text }}</p>{% endif %}
+          {% for error in field.errors %}<p class="auth-field-error">{{ error }}</p>{% endfor %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary auth-submit">Complete sign up</button>
+      </form>
+
+      <p class="auth-footer-text">Already have an account? <a href="{% url 'account_login' %}">Sign in</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

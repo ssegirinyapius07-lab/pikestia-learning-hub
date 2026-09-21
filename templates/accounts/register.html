@@ -1,1 +1,81 @@
-{% extends "base.html" %}{% block content %}<div class="container section narrow"><div class="card"><h1>Create account</h1><p>Optional - browse without account, save with account.</p><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary" type="submit">Register</button></form><p><a href="/accounts/login/">Already have account? Login</a></p><hr><a href="/accounts/google/login/" class="btn btn-secondary">Continue with Google</a></div></div>{% endblock %}
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block title %}Create account | Pikestia Learning Hub{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="container auth-container">
+    <div class="auth-card card">
+      <div class="auth-header">
+        <a href="/" class="auth-brand" aria-label="Pikestia Learning Hub home">
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <span>
+            <strong>Pikestia</strong>
+            <span>Learning Hub</span>
+          </span>
+        </a>
+        <h1>Create your account</h1>
+        <p>Save materials, track your learning and keep everything in one place.</p>
+      </div>
+
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="auth-errors" role="alert">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <div class="auth-field">
+          <label for="{{ form.email.id_for_label }}">Email address</label>
+          {{ form.email }}
+          {% for error in form.email.errors %}<p class="auth-field-error">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div class="auth-field">
+          <label for="{{ form.full_name.id_for_label }}">Full name</label>
+          {{ form.full_name }}
+          {% for error in form.full_name.errors %}<p class="auth-field-error">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div class="auth-field">
+          <label for="{{ form.password1.id_for_label }}">Password</label>
+          {{ form.password1 }}
+          {% for error in form.password1.errors %}<p class="auth-field-error">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div class="auth-field">
+          <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+          {{ form.password2 }}
+          {% for error in form.password2.errors %}<p class="auth-field-error">{{ error }}</p>{% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary auth-submit">Create account</button>
+      </form>
+
+      {% get_providers as socialaccount_providers %}
+      {% for provider in socialaccount_providers %}
+        {% if provider.id == "google" %}
+        <div class="auth-divider"><span>or</span></div>
+        <form method="post" action="{% provider_login_url provider.id process="login" %}" class="auth-social-form">
+          {% csrf_token %}
+          <button type="submit" class="auth-google-button">
+            <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="#4285F4" d="M21.35 12.2c0-.67-.06-1.31-.17-1.92H12v3.64h5.23a4.47 4.47 0 0 1-1.94 2.93v2.43h3.14c1.84-1.69 2.92-4.18 2.92-7.08Z"/>
+              <path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.35l-3.14-2.43c-.87.58-1.98.93-3.31.93-2.54 0-4.69-1.72-5.46-4.03H3.3v2.5A9.74 9.74 0 0 0 12 21.5Z"/>
+              <path fill="#FBBC05" d="M6.54 13.62A5.84 5.84 0 0 1 6.23 12c0-.56.1-1.1.31-1.62v-2.5H3.3A9.76 9.76 0 0 0 2.25 12c0 1.57.38 3.05 1.05 4.38l3.24-2.5Z"/>
+              <path fill="#EA4335" d="M12 6.35c1.43 0 2.71.49 3.72 1.45l2.78-2.78C16.84 3.4 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.7 5.38l3.24 2.5C7.31 8.07 9.46 6.35 12 6.35Z"/>
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+        </form>
+        {% endif %}
+      {% endfor %}
+
+      <p class="auth-footer-text">Already have an account? <a href="/accounts/login/">Sign in</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

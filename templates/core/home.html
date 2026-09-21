@@ -46,23 +46,37 @@
 
     <div class="editorial-lead">
       <a href="/news/{{ lead_news.slug }}/" class="lead-story">
-        <span class="story-tag">{{ lead_news.get_category_display }}</span>
+        {% if lead_news.cover_image %}
+        <div class="story-media story-media-lead">
+          <img src="{{ lead_news.cover_image.url }}" alt="{{ lead_news.title }}" loading="eager">
+        </div>
+        {% endif %}
+        <div class="story-content">
+          <span class="story-tag">{{ lead_news.get_category_display }}</span>
         <h3>{{ lead_news.title }}</h3>
         {% if lead_news.summary %}<p>{{ lead_news.summary|truncatechars:260 }}</p>{% endif %}
-        <div class="story-meta">
-          {% if lead_news.author %}<span>{{ lead_news.author.full_name|default:lead_news.author.email }}</span>{% endif %}
-          {% if lead_news.published_at %}<span class="story-meta-separator">{{ lead_news.published_at|date:"M j, Y" }}</span>{% endif %}
+          <div class="story-meta">
+            {% if lead_news.author %}<span>{{ lead_news.author.full_name|default:lead_news.author.email }}</span>{% endif %}
+            {% if lead_news.published_at %}<span class="story-meta-separator">{{ lead_news.published_at|date:"M j, Y" }}</span>{% endif %}
+          </div>
         </div>
       </a>
 
       <div class="lead-side">
         {% for article in secondary_news %}
         <a href="/news/{{ article.slug }}/" class="story-card">
-          <span class="story-tag">{{ article.get_category_display }}</span>
+          {% if article.cover_image %}
+          <div class="story-media story-media-small">
+            <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" loading="lazy">
+          </div>
+          {% endif %}
+          <div class="story-content">
+            <span class="story-tag">{{ article.get_category_display }}</span>
           <h3>{{ article.title }}</h3>
           {% if article.summary %}<p>{{ article.summary|truncatechars:100 }}</p>{% endif %}
-          <div class="story-meta">
-            {% if article.published_at %}<span>{{ article.published_at|date:"M j, Y" }}</span>{% endif %}
+            <div class="story-meta">
+              {% if article.published_at %}<span>{{ article.published_at|date:"M j, Y" }}</span>{% endif %}
+            </div>
           </div>
         </a>
         {% endfor %}
@@ -84,12 +98,19 @@
     <div class="latest-grid">
       {% for article in latest_news|slice:":3" %}
       <a href="/news/{{ article.slug }}/" class="story-card latest-story">
-        <span class="story-tag">{{ article.get_category_display }}</span>
+        {% if article.cover_image %}
+        <div class="story-media story-media-small">
+          <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" loading="lazy">
+        </div>
+        {% endif %}
+        <div class="story-content">
+          <span class="story-tag">{{ article.get_category_display }}</span>
         <h3>{{ article.title }}</h3>
         {% if article.summary %}<p>{{ article.summary|truncatechars:150 }}</p>{% endif %}
-        <div class="story-meta">
-          {% if article.author %}<span>{{ article.author.full_name|default:article.author.email }}</span>{% endif %}
-          {% if article.published_at %}<span class="story-meta-separator">{{ article.published_at|date:"M j, Y" }}</span>{% endif %}
+          <div class="story-meta">
+            {% if article.author %}<span>{{ article.author.full_name|default:article.author.email }}</span>{% endif %}
+            {% if article.published_at %}<span class="story-meta-separator">{{ article.published_at|date:"M j, Y" }}</span>{% endif %}
+          </div>
         </div>
       </a>
       {% endfor %}

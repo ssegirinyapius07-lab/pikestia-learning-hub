@@ -1678,6 +1678,21 @@ form p {
 }
 
 /* Authentication pages */
+.auth-body .header-inner {
+  justify-content: center;
+}
+
+.auth-body .desktop-nav,
+.auth-body .mobile-nav,
+.auth-body .header-actions,
+.auth-body .mobile-toggle {
+  display: none;
+}
+
+.auth-body .brand {
+  margin: 0 auto;
+}
+
 .auth-page {
   min-height: calc(100vh - 68px);
   display: flex;

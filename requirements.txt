@@ -1,0 +1,6 @@
+Django>=4.2,<6.0
+django-allauth>=0.60
+python-dotenv
+bleach
+requests
+Pillow

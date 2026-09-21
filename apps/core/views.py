@@ -1,0 +1,88 @@
+from django.shortcuts import render, redirect
+from django.views.decorators.http import require_http_methods
+from django_ratelimit.decorators import ratelimit
+from django.db.models import Q
+from apps.subjects.models import Subject
+from apps.learning.models import LearningResource
+from apps.subjects.models import Topic
+from apps.opportunities.models import Opportunity
+from apps.accounts.models import CookiePreference
+
+def home_view(request):
+    subjects = Subject.objects.filter(status='published').order_by('order')[:8]
+    featured = LearningResource.objects.filter(status='published').select_related('topic','topic__subject').order_by('-created_at')[:6]
+    opportunities = Opportunity.objects.filter(status='active').order_by('-published_at')[:4]
+    return render(request, 'core/home.html', {'subjects': subjects, 'featured': featured, 'opportunities': opportunities})
+
+def explore_view(request):
+    subjects = Subject.objects.filter(status='published')
+    return render(request, 'core/explore.html', {'subjects': subjects})
+
+@ratelimit(key='ip', rate='30/m', block=True)
+def search_view(request):
+    q = request.GET.get('q','').strip()[:100]
+    results = {'subjects': [], 'topics': [], 'resources': [], 'opportunities': []}
+    if q:
+        from apps.subjects.models import Subject, Topic
+        from apps.learning.models import LearningResource
+        from apps.opportunities.models import Opportunity
+        results['subjects'] = Subject.objects.filter(Q(title__icontains=q) | Q(description__icontains=q), status='published')[:10]
+        results['topics'] = Topic.objects.filter(Q(title__icontains=q) | Q(summary__icontains=q), status='published').select_related('subject')[:10]
+        results['resources'] = LearningResource.objects.filter(Q(title__icontains=q) | Q(summary__icontains=q), status='published')[:10]
+        results['opportunities'] = Opportunity.objects.filter(Q(title__icontains=q) | Q(description__icontains=q), status='active')[:10]
+    return render(request, 'core/search.html', {'query': q, 'results': results})
+
+def about_view(request): return render(request, 'core/about.html')
+def contact_view(request): return render(request, 'core/contact.html')
+def privacy_view(request): return render(request, 'core/legal/privacy.html')
+def cookie_policy_view(request): return render(request, 'core/legal/cookies.html')
+def terms_view(request): return render(request, 'core/legal/terms.html')
+def acceptable_use_view(request): return render(request, 'core/legal/acceptable_use.html')
+def copyright_view(request): return render(request, 'core/legal/copyright.html')
+
+@require_http_methods(["POST"])
+def set_theme_view(request):
+    mode = request.POST.get('display_mode')
+    if mode not in ('light','dark','system'):
+        return redirect('/')
+    if request.user.is_authenticated:
+        request.user.display_mode = mode
+        from django.utils import timezone
+        request.user.last_theme_sync = timezone.now()
+        request.user.save(update_fields=['display_mode','last_theme_sync'])
+    request.session['display_mode'] = mode
+    resp = redirect(request.META.get('HTTP_REFERER','/'))
+    resp.set_cookie('display_mode', mode, max_age=60*60*24*365, samesite='Lax', secure=False, httponly=False)
+    return resp
+
+@require_http_methods(["POST"])
+def set_cookie_consent_view(request):
+    choice = request.POST.get('choice')
+    analytics = choice == 'all' or request.POST.get('analytics') == 'on'
+    marketing = choice == 'all' or request.POST.get('marketing') == 'on'
+    if choice == 'reject':
+        analytics = False
+        marketing = False
+    # store
+    if request.user.is_authenticated:
+        pref, _ = CookiePreference.objects.get_or_create(user=request.user)
+        pref.analytics = analytics
+        pref.marketing = marketing
+        pref.save()
+    else:
+        session_key = request.session.session_key or ''
+        pref, _ = CookiePreference.objects.get_or_create(session_key=session_key, user=None)
+        pref.analytics = analytics
+        pref.marketing = marketing
+        pref.save()
+    resp = redirect(request.META.get('HTTP_REFERER','/'))
+    import json
+    resp.set_cookie('cookie_consent', json.dumps({'analytics': analytics, 'marketing': marketing}), max_age=60*60*24*365, samesite='Lax')
+    return resp
+
+def error_400(request, exception=None): return render(request, 'errors/400.html', status=400)
+def error_401(request, exception=None): return render(request, 'errors/401.html', status=401)
+def error_403(request, exception=None): return render(request, 'errors/403.html', status=403)
+def error_404(request, exception=None): return render(request, 'errors/404.html', status=404)
+def error_429(request, exception=None): return render(request, 'errors/429.html', status=429)
+def error_500(request): return render(request, 'errors/500.html', status=500)

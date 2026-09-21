@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Pikestia Learning Hub - Explore. Learn. Practice. Grow.{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="container hero-inner">
+    <h1><span class="hero-brand">PIKESTIA</span><span class="hero-sub">Learning Hub</span></h1>
+    <p class="hero-tagline">Explore. Learn. Practice. Grow.</p>
+    <form action="/search/" method="get" class="hero-search" role="search">
+      <input type="search" name="q" placeholder="Search learning materials, topics, subjects..." maxlength="100" autofocus>
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    <div class="pill-row">
+      {% for s in subjects %}<a href="/subjects/{{ s.slug }}/" class="pill">{{ s.title }}</a>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="section-header"><h2>Popular Subjects</h2><a href="/subjects/" class="link">View all →</a></div>
+  <div class="grid grid-4">
+    {% for s in subjects %}
+    <a href="/subjects/{{ s.slug }}/" class="card card-hover">
+      <div class="card-icon">{{ s.icon|default:"📚" }}</div>
+      <h3>{{ s.title }}</h3><p>{{ s.description|truncatechars:90 }}</p><span class="badge">{{ s.discipline }}</span>
+    </a>
+    {% empty %}<p>No subjects yet. Admin can add from /admin/</p>{% endfor %}
+  </div>
+</section>
+
+<section class="section container">
+  <div class="section-header"><h2>Featured Learning Materials</h2><a href="/learn/" class="link">Browse →</a></div>
+  <div class="grid grid-3">
+    {% for r in featured %}
+    <a href="/learn/{{ r.topic.subject.slug }}/{{ r.topic.slug }}/{{ r.slug }}/" class="card card-hover">
+      <div class="card-meta">{{ r.topic.subject.title }} • {{ r.topic.title }}</div>
+      <h3>{{ r.title }}</h3><p>{{ r.summary|truncatechars:110 }}</p>
+    </a>
+    {% empty %}<p>No resources yet.</p>{% endfor %}
+  </div>
+</section>
+
+<section class="section container">
+  <div class="grid grid-2">
+    <div class="card">
+      <h2>Practice & Revision</h2><p>Topic-based questions to reinforce your learning.</p><a href="/practice/" class="btn btn-secondary">Start Practicing</a>
+    </div>
+    <div class="card">
+      <h2>Student Opportunities</h2><p>Scholarships, internships, hackathons, workshops.</p>
+      <div class="stack">
+        {% for o in opportunities %}<a href="/opportunities/{{ o.slug }}/" class="list-item"><strong>{{ o.title }}</strong> <span class="badge">{{ o.category }}</span>{% if o.is_verified %} <span class="badge badge-verified">Verified</span>{% endif %}</a>{% endfor %}
+      </div>
+      <a href="/opportunities/" class="btn btn-secondary">View all</a>
+    </div>
+  </div>
+</section>
+
+<section class="section container card">
+  <h2>Why Pikestia?</h2>
+  <div class="grid grid-3">
+    <div><h4>Student-first</h4><p>Built for undergraduates, not administration. Clean, fast, accessible.</p></div>
+    <div><h4>Structured Learning</h4><p>Subject → Topic → Material → Practice → Further Reading.</p></div>
+    <div><h4>Privacy Respectful</h4><p>Browse without account. Data collected only when needed.</p></div>
+  </div>
+</section>
+{% endblock %}

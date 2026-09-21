@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ display_mode }}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Pikestia Learning Hub{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/design-system.css">
+  <script>
+    // System theme handling - applied immediately
+    (function () {
+      const stored = "{{ display_mode }}";
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      let theme = stored;
+      if (stored === 'system') theme = prefersDark ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.dataset.stored = stored;
+    })();
+  </script>
+</head>
+
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="brand"><span class="brand-primary">Pikestia</span> <span class="brand-descriptor">Learning
+          Hub</span></a>
+      <nav class="nav" aria-label="Main">
+        <a href="/explore/" class="nav-link">Explore</a>
+        <a href="/subjects/" class="nav-link">Subjects</a>
+        <a href="/learn/" class="nav-link">Learn</a>
+        <a href="/practice/" class="nav-link">Practice</a>
+        <a href="/opportunities/" class="nav-link">Opportunities</a>
+      </nav>
+      <div class="header-actions">
+        <form action="/search/" method="get" class="search-form" role="search">
+          <input type="search" name="q" placeholder="Search materials..." aria-label="Search" maxlength="100" required>
+          <button type="submit" aria-label="Search">⌕</button>
+        </form>
+        <div class="theme-switcher" role="group" aria-label="Theme">
+          <form method="post" action="/theme/set/" class="inline-form">{% csrf_token %}<input type="hidden"
+              name="display_mode" value="light"><button type="submit" title="Light">☀️</button></form>
+          <form method="post" action="/theme/set/" class="inline-form">{% csrf_token %}<input type="hidden"
+              name="display_mode" value="dark"><button type="submit" title="Dark">🌙</button></form>
+          <form method="post" action="/theme/set/" class="inline-form">{% csrf_token %}<input type="hidden"
+              name="display_mode" value="system"><button type="submit" title="System">💻</button></form>
+        </div>
+        {% if user.is_authenticated %}
+        <a href="/bookmarks/" class="btn btn-ghost">Bookmarks</a>
+        <a href="/accounts/profile/" class="btn btn-ghost">{{ user.email }}</a>
+        <a href="/accounts/settings/" class="btn btn-secondary">Settings</a>
+        <a href="/accounts/logout/" class="btn btn-ghost">Logout</a>
+        {% else %}
+        <a href="/accounts/login/" class="btn btn-ghost">Login</a>
+        <a href="/accounts/register/" class="btn btn-primary">Sign up</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main">
+    {% if messages %}
+    <div class="container">
+      {% for message in messages %}<div class="alert alert-{{ message.tags }}">{{ message }}</div>{% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h4>Pikestia</h4>
+        <p>University-focused learning platform. Explore. Learn. Practice. Grow.</p>
+      </div>
+      <div>
+        <h5>Learn</h5><a href="/subjects/">Subjects</a><a href="/learn/">Resources</a><a href="/practice/">Practice</a>
+      </div>
+      <div>
+        <h5>Opportunities</h5><a href="/opportunities/">All</a><a
+          href="/opportunities/?category=scholarship">Scholarships</a><a
+          href="/opportunities/?category=internship">Internships</a>
+      </div>
+      <div>
+        <h5>Legal</h5><a href="/privacy/">Privacy</a><a href="/cookies/">Cookies</a><a href="/terms/">Terms</a><a
+          href="/acceptable-use/">Acceptable Use</a><a href="/copyright/">Copyright</a><a href="/about/">About</a><a
+          href="/contact/">Contact</a>
+      </div>
+    </div>
+    <div class="container footer-bottom">© {% now "Y" %} Pikestia Learning Hub. All rights reserved.</div>
+  </footer>
+
+  {% if not cookie_consent %}
+  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookie consent">
+    <div class="cookie-content">
+      <p>We use essential cookies for security and functionality. Optional analytics help us improve. <a
+          href="/cookies/">Learn more</a></p>
+      <div class="cookie-actions">
+        <form method="post" action="/cookies/set/" class="inline-form">{% csrf_token %}<input type="hidden"
+            name="choice" value="all"><button class="btn btn-primary" type="submit">Accept All</button></form>
+        <form method="post" action="/cookies/set/" class="inline-form">{% csrf_token %}<input type="hidden"
+            name="choice" value="reject"><button class="btn btn-secondary" type="submit">Reject Optional</button></form>
+        <a href="/cookies/" class="btn btn-ghost">Manage</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <script src="/static/js/theme.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+
+</html>

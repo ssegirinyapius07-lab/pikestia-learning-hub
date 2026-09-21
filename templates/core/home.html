@@ -1,95 +1,226 @@
 {% extends "base.html" %}
-{% block title %}Pikestia Learning Hub - Explore. Learn. Practice. Grow.{% endblock %}
+{% block title %}Pikestia Learning Hub — Learn. Discover. Grow.{% endblock %}
 {% block content %}
-<section class="hero">
-  <div class="container hero-inner">
-    <h1><span class="hero-brand">PIKESTIA</span><span class="hero-sub">Learning Hub</span></h1>
-    <p class="hero-tagline">Explore. Learn. Practice. Grow.</p>
-    <form action="/search/" method="get" class="hero-search" role="search">
-      <input type="search" name="q" placeholder="Search learning materials, topics, subjects..." maxlength="100" autofocus>
-      <button type="submit" class="btn btn-primary">Search</button>
-    </form>
-    <div class="pill-row">
-      {% for s in subjects %}<a href="/subjects/{{ s.slug }}/" class="pill">{{ s.title }}</a>{% endfor %}
-    </div>
-  </div>
-</section>
+<div class="editorial-home">
 
-<section class="section container">
-  <div class="section-header"><h2>Popular Subjects</h2><a href="/subjects/" class="link">View all →</a></div>
-  <div class="grid grid-4">
-    {% for s in subjects %}
-    <a href="/subjects/{{ s.slug }}/" class="card card-hover">
-      <div class="card-icon" aria-hidden="true">
-        {% if s.icon %}
-        <span class="subject-icon-name">{{ s.icon }}</span>
+  <section class="home-masthead">
+    <div class="container home-masthead-grid">
+      <div>
+        <p class="home-kicker">Pikestia Learning Hub</p>
+        <h1>
+          <span>Learn with purpose.</span>
+          <span class="home-masthead-muted">Stay informed. Move forward.</span>
+        </h1>
+        <p class="home-intro">
+          University-focused learning, useful opportunities and thoughtful stories brought together in one place.
+        </p>
+        <form action="/search/" method="get" class="home-search" role="search">
+          <input type="search" name="q" placeholder="Search subjects, learning materials, opportunities and news..." maxlength="100" aria-label="Search Pikestia">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+      </div>
+
+      <aside class="home-masthead-aside">
+        <strong>What is happening on Pikestia?</strong>
+        <p>Explore academic resources, discover student opportunities and read current university-focused stories.</p>
+        {% if subjects %}
+        <div class="home-topic-row">
+          {% for subject in subjects|slice:":5" %}
+          <a href="/subjects/{{ subject.slug }}/" class="badge">{{ subject.title }}</a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </aside>
+    </div>
+  </section>
+
+  {% if lead_news %}
+  <section class="editorial-section container">
+    <div class="editorial-section-header">
+      <div>
+        <h2>Featured</h2>
+        <p>The stories shaping the conversation.</p>
+      </div>
+      <a href="/news/" class="link">View all news →</a>
+    </div>
+
+    <div class="editorial-lead">
+      <a href="/news/{{ lead_news.slug }}/" class="lead-story">
+        <span class="story-tag">{{ lead_news.get_category_display }}</span>
+        <h3>{{ lead_news.title }}</h3>
+        {% if lead_news.summary %}<p>{{ lead_news.summary|truncatechars:260 }}</p>{% endif %}
+        <div class="story-meta">
+          {% if lead_news.author %}<span>{{ lead_news.author.full_name|default:lead_news.author.email }}</span>{% endif %}
+          {% if lead_news.published_at %}<span class="story-meta-separator">{{ lead_news.published_at|date:"M j, Y" }}</span>{% endif %}
+        </div>
+      </a>
+
+      <div class="lead-side">
+        {% for article in latest_news %}
+          {% if article.slug != lead_news.slug %}
+            {% if forloop.counter0 < 3 %}
+            <a href="/news/{{ article.slug }}/" class="story-card">
+              <span class="story-tag">{{ article.get_category_display }}</span>
+              <h3>{{ article.title }}</h3>
+              {% if article.summary %}<p>{{ article.summary|truncatechars:100 }}</p>{% endif %}
+              <div class="story-meta">
+                {% if article.published_at %}<span>{{ article.published_at|date:"M j, Y" }}</span>{% endif %}
+              </div>
+            </a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if latest_news %}
+  <section class="editorial-section container">
+    <div class="editorial-section-header">
+      <div>
+        <h2>Latest</h2>
+        <p>Fresh stories and practical insights.</p>
+      </div>
+      <a href="/news/" class="link">Browse the newsroom →</a>
+    </div>
+
+    <div class="latest-grid">
+      {% for article in latest_news|slice:":3" %}
+      <a href="/news/{{ article.slug }}/" class="story-card latest-story">
+        <span class="story-tag">{{ article.get_category_display }}</span>
+        <h3>{{ article.title }}</h3>
+        {% if article.summary %}<p>{{ article.summary|truncatechars:150 }}</p>{% endif %}
+        <div class="story-meta">
+          {% if article.author %}<span>{{ article.author.full_name|default:article.author.email }}</span>{% endif %}
+          {% if article.published_at %}<span class="story-meta-separator">{{ article.published_at|date:"M j, Y" }}</span>{% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="editorial-section container">
+    <div class="editorial-section-header">
+      <div>
+        <h2>Learning</h2>
+        <p>Build knowledge from subject to practice.</p>
+      </div>
+      <a href="/learn/" class="link">Explore learning →</a>
+    </div>
+
+    <div class="learning-showcase">
+      <div class="learning-feature">
+        {% if featured %}
+        {% with resource=featured|first %}
+        <span class="story-tag">{{ resource.topic.subject.title }}</span>
+        <h3>{{ resource.title }}</h3>
+        <p>{{ resource.summary|truncatechars:220 }}</p>
+        <div style="margin-top:1rem;">
+          <a href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/" class="btn btn-primary">Open resource</a>
+        </div>
+        {% endwith %}
         {% else %}
-        <svg class="subject-icon-default" viewBox="0 0 24 24" focusable="false">
-          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"></path>
-          <path d="M4 5.5v15M7 7h9M7 10h9"></path>
-        </svg>
+        <div class="home-empty">Learning materials will appear here as they are published.</div>
         {% endif %}
       </div>
-      <h3>{{ s.title }}</h3><p>{{ s.description|truncatechars:90 }}</p><span class="badge">{{ s.discipline }}</span>
-    </a>
-    {% empty %}<p>No subjects yet. Admin can add from /admin/</p>{% endfor %}
-  </div>
-</section>
 
-<section class="section container">
-  <div class="section-header"><h2>Featured Learning Materials</h2><a href="/learn/" class="link">Browse all materials →</a></div>
-  <div class="grid grid-3">
-    {% for r in featured %}
-    <a href="/learn/{{ r.topic.subject.slug }}/{{ r.topic.slug }}/{{ r.slug }}/" class="card card-hover">
-      <div class="card-meta">{{ r.topic.subject.title }} • {{ r.topic.title }}</div>
-      <h3>{{ r.title }}</h3><p>{{ r.summary|truncatechars:110 }}</p>
-    </a>
-    {% empty %}<p>No resources yet.</p>{% endfor %}
-  </div>
-</section>
-
-{% if latest_news %}
-<section class="section container">
-  <div class="section-header">
-    <h2>Latest News &amp; Insights</h2>
-    <a href="/news/" class="link">View all news →</a>
-  </div>
-  <div class="grid grid-3">
-    {% for article in latest_news %}
-    <a href="/news/{{ article.slug }}/" class="card card-hover news-home-card">
-      <div class="card-meta">{{ article.get_category_display }}</div>
-      <h3>{{ article.title }}</h3>
-      {% if article.summary %}<p>{{ article.summary|truncatechars:120 }}</p>{% endif %}
-      <span class="text-muted">
-        {% if article.published_at %}{{ article.published_at|date:"M j, Y" }}{% endif %}
-      </span>
-    </a>
-    {% endfor %}
-  </div>
-</section>
-{% endif %}
-
-<section class="section container">
-  <div class="grid grid-2">
-    <div class="card">
-      <h2>Practice & Revision</h2><p>Topic-based questions to reinforce your learning.</p><a href="/practice/" class="btn btn-secondary">Start Practicing</a>
-    </div>
-    <div class="card">
-      <h2>Student Opportunities</h2><p>Scholarships, internships, hackathons, workshops.</p>
-      <div class="stack">
-        {% for o in opportunities %}<a href="/opportunities/{{ o.slug }}/" class="list-item"><strong>{{ o.title }}</strong> <span class="badge">{{ o.category }}</span>{% if o.is_verified %} <span class="badge badge-verified">Verified</span>{% endif %}</a>{% endfor %}
+      <div class="learning-list">
+        {% for resource in featured|slice:":5" %}
+        <a href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
+          <div>
+            <strong>{{ resource.title }}</strong>
+            <span>{{ resource.topic.subject.title }} · {{ resource.topic.title }}</span>
+          </div>
+          <span aria-hidden="true">Read</span>
+        </a>
+        {% endfor %}
       </div>
-      <a href="/opportunities/" class="btn btn-secondary">View all</a>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="section container card">
-  <h2>Why Pikestia?</h2>
-  <div class="grid grid-3">
-    <div><h4>Student-first</h4><p>Built for undergraduates, not administration. Clean, fast, accessible.</p></div>
-    <div><h4>Structured Learning</h4><p>Subject → Topic → Material → Practice → Further Reading.</p></div>
-    <div><h4>Privacy Respectful</h4><p>Browse without account. Data collected only when needed.</p></div>
-  </div>
-</section>
+  <section class="editorial-section container">
+    <div class="editorial-section-header">
+      <div>
+        <h2>Subjects</h2>
+        <p>Browse the academic areas available on Pikestia.</p>
+      </div>
+      <a href="/subjects/" class="link">View all subjects →</a>
+    </div>
+
+    {% if subjects %}
+    <div class="subjects-strip">
+      {% for subject in subjects|slice:":8" %}
+      <a href="/subjects/{{ subject.slug }}/" class="subject-tile">
+        <div>
+          <strong>{{ subject.title }}</strong>
+          <small>{{ subject.discipline }}</small>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="home-empty">Subjects will appear here as your academic catalogue grows.</div>
+    {% endif %}
+  </section>
+
+  <section class="editorial-section container">
+    <div class="editorial-rail">
+      <div>
+        <div class="editorial-section-header">
+          <div>
+            <h2>Opportunities</h2>
+            <p>Scholarships, internships, competitions and more.</p>
+          </div>
+          <a href="/opportunities/" class="link">View all →</a>
+        </div>
+
+        <div class="opportunity-board">
+          {% for opportunity in opportunities %}
+          <a href="/opportunities/{{ opportunity.slug }}/" class="opportunity-item">
+            <div>
+              <strong>{{ opportunity.title }}</strong>
+              <span>{{ opportunity.get_category_display }}{% if opportunity.is_remote %} · Remote{% elif opportunity.location %} · {{ opportunity.location }}{% endif %}</span>
+            </div>
+            <div>
+              {% if opportunity.is_verified %}<span class="badge badge-verified">Verified</span>{% endif %}
+              {% if opportunity.deadline %}<span>{{ opportunity.deadline|date:"M j" }}</span>{% endif %}
+            </div>
+          </a>
+          {% empty %}
+          <div class="home-empty">New opportunities will appear here when they are published.</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="home-action-card">
+        <h3>Practice</h3>
+        <p>Reinforce what you learn with topic-based questions and revision activities.</p>
+        <a href="/practice/" class="btn btn-secondary">Start practicing</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="editorial-section container">
+    <div class="home-bottom-grid">
+      <div class="home-action-card">
+        <h3>Learn</h3>
+        <p>Move through subjects, topics and learning materials at your own pace.</p>
+        <a href="/learn/" class="btn btn-secondary">Open learning</a>
+      </div>
+      <div class="home-action-card">
+        <h3>Discover</h3>
+        <p>Find academic areas, useful resources and opportunities worth exploring.</p>
+        <a href="/explore/" class="btn btn-secondary">Explore Pikestia</a>
+      </div>
+      <div class="home-action-card">
+        <h3>News</h3>
+        <p>Read published stories covering academic, technology, career and campus topics.</p>
+        <a href="/news/" class="btn btn-secondary">Read news</a>
+      </div>
+    </div>
+  </section>
+
+</div>
 {% endblock %}

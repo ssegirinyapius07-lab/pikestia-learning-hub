@@ -33,6 +33,8 @@ class Opportunity(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        verbose_name = 'Opportunity'
+        verbose_name_plural = 'Opportunities'
         ordering=['-published_at']
         indexes=[models.Index(fields=['status']), models.Index(fields=['category']), models.Index(fields=['deadline'])]
 

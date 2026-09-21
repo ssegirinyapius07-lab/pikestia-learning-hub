@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from django.utils import timezone
+from django.contrib.sessions.models import Session
 from django_ratelimit.decorators import ratelimit
 from .forms import RegistrationForm, ThemeForm
 from .models import User, AuditLog
@@ -61,14 +62,46 @@ def update_theme_ajax(request):
         return redirect(request.META.get('HTTP_REFERER','/'))
     return redirect('/')
 
+
+
+def _logout_other_sessions(request, user):
+    """Delete all active sessions for this user except the current device."""
+    current_session_key = request.session.session_key
+    if not current_session_key:
+        return 0
+
+    revoked = 0
+    for session in Session.objects.filter(expire_date__gt=timezone.now()):
+        if session.session_key == current_session_key:
+            continue
+
+        session_data = session.get_decoded()
+        if str(session_data.get('_auth_user_id')) == str(user.pk):
+            session.delete()
+            revoked += 1
+
+    return revoked
+
 @login_required
 @require_http_methods(["POST"])
 def change_password_view(request):
     form = PasswordChangeForm(request.user, request.POST)
     if form.is_valid():
         user = form.save()
+
+        # Keep the device that performed the password change signed in.
+        # Django also invalidates sessions with the previous password hash;
+        # explicitly deleting the stored sessions makes that revocation
+        # immediate and keeps the session table clean.
         update_session_auth_hash(request, user)
-        messages.success(request, 'Password changed successfully')
+        revoked_count = _logout_other_sessions(request, user)
+
+        AuditLog.objects.create(
+            user=user,
+            action='password_change',
+            metadata={'other_sessions_revoked': revoked_count},
+        )
+        messages.success(request, 'Password changed successfully. Other active sessions were signed out.')
     else:
         messages.error(request, 'Password change failed')
     return redirect('account_settings')

@@ -29,7 +29,7 @@ class LearningResourceListTests(TestCase):
             summary='Programming basics.',
             status=Topic.Status.PUBLISHED,
         )
-        cls.databases = Topic.objects.create(
+        cls.database_topic = Topic.objects.create(
             subject=cls.it,
             title='Database Systems',
             slug='database-systems',
@@ -46,7 +46,7 @@ class LearningResourceListTests(TestCase):
 
         for number in range(20):
             LearningResource.objects.create(
-                topic=cls.programming if number < 10 else cls.databases,
+                topic=cls.programming if number < 10 else cls.database_topic,
                 title=f'Programming Material {number + 1}',
                 slug=f'material-{number + 1}',
                 summary='Python and programming concepts.' if number == 0 else 'University study material.',

@@ -8,8 +8,8 @@
     <div class="container newsroom-masthead-grid">
       <div>
         <p class="newsroom-kicker">Pikestia Newsroom</p>
-        <h1>News &amp; Insights</h1>
-        <p>Stories, developments, ideas and practical information for the Pikestia community.</p>
+        <h1>Study, campus &amp; current news</h1>
+        <p>University-focused stories covering learning, academic life, technology, careers, opportunities and the wider issues that matter to students.</p>
       </div>
       <div class="newsroom-stat">
         <strong>{{ page_obj.paginator.count }}</strong>
@@ -21,27 +21,15 @@
   <section class="container">
     <div class="newsroom-toolbar">
       <form method="get" class="newsroom-search" role="search">
-        <input
-          type="search"
-          name="q"
-          value="{{ query }}"
-          placeholder="Search the newsroom..."
-          maxlength="100"
-          aria-label="Search the newsroom"
-        >
-        {% if selected_category %}
-        <input type="hidden" name="category" value="{{ selected_category }}">
-        {% endif %}
+        <input type="search" name="q" value="{{ query }}" placeholder="Search the newsroom..." maxlength="100" aria-label="Search the newsroom">
+        {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
         <button type="submit" class="btn btn-primary">Search</button>
       </form>
 
       <nav class="newsroom-categories" aria-label="News categories">
         <a href="/news/" class="newsroom-category{% if not selected_category %} is-active{% endif %}">All</a>
         {% for value, label in categories %}
-        <a
-          href="/news/?category={{ value }}"
-          class="newsroom-category{% if selected_category == value %} is-active{% endif %}"
-        >{{ label }}</a>
+        <a href="/news/?category={{ value }}" class="newsroom-category{% if selected_category == value %} is-active{% endif %}">{{ label }}</a>
         {% endfor %}
       </nav>
     </div>
@@ -49,48 +37,60 @@
 
   <section class="container newsroom-results">
     {% if articles %}
-    <div class="newsroom-grid">
-      {% for article in articles %}
-      <a href="/news/{{ article.slug }}/" class="newsroom-card{% if forloop.first %} is-lead{% endif %}">
-        {% if article.cover_image %}
-        <div class="newsroom-card-media">
-          <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+    {% with lead=articles.0 %}
+    <div class="news-front">
+      <a href="/news/{{ lead.slug }}/" class="news-front-lead">
+        {% if lead.cover_image %}
+        <div class="news-front-image">
+          <img src="{{ lead.cover_image.url }}" alt="{{ lead.title }}" loading="eager">
         </div>
         {% endif %}
-        <div class="newsroom-card-content">
-          <div class="newsroom-card-label">
-          <span class="badge">{{ article.get_category_display }}</span>
-          {% if article.featured %}<span class="badge">Featured</span>{% endif %}
+        <div class="news-front-copy">
+          <span class="story-tag">{{ lead.get_category_display }}</span>
+          <h2>{{ lead.title }}</h2>
+          {% if lead.summary %}<p>{{ lead.summary|truncatechars:260 }}</p>{% endif %}
+          <span class="continue-reading">Continue reading <span aria-hidden="true">→</span></span>
         </div>
+      </a>
 
-        {% if forloop.first %}
-        <h2>{{ article.title }}</h2>
-        {% else %}
-        <h3>{{ article.title }}</h3>
-        {% endif %}
-
-        {% if article.summary %}
-        <p>{{ article.summary|truncatechars:190 }}</p>
-        {% endif %}
-
-          <div class="newsroom-card-meta">
-            <span>
-            {% if article.author and article.author.full_name %}
-              {{ article.author.full_name }}
-            {% elif article.author %}
-              {{ article.author.email }}
-            {% else %}
-              Pikestia Editorial
-            {% endif %}
+      <div class="news-front-list" aria-label="Latest stories">
+        {% for article in articles|slice:"1:6" %}
+        <a href="/news/{{ article.slug }}/" class="news-headline-row">
+          <span class="news-headline-number">{{ forloop.counter|stringformat:"02d" }}</span>
+          <span class="news-headline-copy">
+            <span class="news-headline-category">{{ article.get_category_display }}</span>
+            <strong>{{ article.title }}</strong>
+            {% if article.published_at %}<time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"M j, Y" }}</time>{% endif %}
           </span>
-          {% if article.published_at %}
-          <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"M j, Y" }}</time>
-          {% endif %}
-          </div>
+          <span class="news-headline-arrow" aria-hidden="true">→</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endwith %}
+
+    {% if articles|length > 6 %}
+    <div class="news-secondary-list">
+      <div class="section-header">
+        <h2>More stories</h2>
+      </div>
+      {% for article in articles|slice:"6:" %}
+      <a href="/news/{{ article.slug }}/" class="news-secondary-row">
+        {% if article.cover_image %}
+        <div class="news-secondary-image">
+          <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" loading="lazy">
+        </div>
+        {% endif %}
+        <div>
+          <span class="news-headline-category">{{ article.get_category_display }}</span>
+          <h3>{{ article.title }}</h3>
+          {% if article.summary %}<p>{{ article.summary|truncatechars:170 }}</p>{% endif %}
+          <span class="continue-reading">Continue reading <span aria-hidden="true">→</span></span>
         </div>
       </a>
       {% endfor %}
     </div>
+    {% endif %}
     {% else %}
     <div class="newsroom-placeholder">
       <h2>No articles found</h2>

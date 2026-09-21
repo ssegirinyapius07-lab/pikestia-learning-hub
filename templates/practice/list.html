@@ -1,1 +1,114 @@
-{% extends "base.html" %}{% block content %}<div class="container section"><h1>Practice & Revision</h1><div class="stack">{% for q in questions %}<div class="card"><div class="card-meta">{{ q.topic.subject.title }} • {{ q.topic.title }} • {{ q.difficulty }}</div><p><strong>{{ q.question }}</strong></p>{% if q.options %}<ul>{% for opt in q.options %}<li>{{ opt }}</li>{% endfor %}</ul>{% endif %}</div>{% endfor %}</div></div>{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Practice & Revision | Pikestia Learning Hub{% endblock %}
+
+{% block content %}
+<section class="library-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a> / Practice & Revision</div>
+    <div class="library-hero-inner">
+      <div>
+        <p class="card-meta">Practice & Revision</p>
+        <h1>Practice & Revision</h1>
+        <p class="lead">Strengthen your understanding with topic-based questions and self-assessment.</p>
+      </div>
+      <div class="library-count" aria-label="{{ questions|length }} practice questions shown">
+        <strong>{{ questions|length }}</strong>
+        <span>questions shown</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="library-toolbar">
+    <form method="get" class="library-filters" role="search">
+      <div class="filter-search">
+        <label for="practice-query">Search practice</label>
+        <div class="search-form-large">
+          <input
+            id="practice-query"
+            type="search"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search questions, topics, or subjects..."
+            maxlength="100"
+          >
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+
+      <div class="filter-grid">
+        <div>
+          <label for="practice-subject-filter">Subject</label>
+          <select id="practice-subject-filter" name="subject">
+            <option value="">All subjects</option>
+            {% for subject in subjects %}
+            <option value="{{ subject.id }}"{% if selected_subject_id == subject.id|stringformat:"s" %} selected{% endif %}>
+              {{ subject.title }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label for="practice-topic-filter">Topic</label>
+          <select id="practice-topic-filter" name="topic">
+            <option value="">All topics</option>
+            {% for topic in topics %}
+            <option value="{{ topic.id }}"{% if selected_topic_id == topic.id|stringformat:"s" %} selected{% endif %}>
+              {{ topic.subject.title }} — {{ topic.title }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <label>&nbsp;</label>
+          <div class="filter-buttons">
+            <button type="submit" class="btn btn-secondary">Apply filters</button>
+            <a href="/practice/" class="btn btn-ghost">Clear</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  {% if questions %}
+  <div class="grid grid-2">
+    {% for question in questions %}
+    <article class="card practice-index-card">
+      <div class="practice-question-meta">
+        <span class="card-meta">{{ question.topic.subject.title }} · {{ question.topic.title }}</span>
+        <span class="badge">{{ question.get_type_display }}</span>
+        <span class="badge">{{ question.difficulty|title }}</span>
+      </div>
+      <h2>{{ question.question|truncatechars:180 }}</h2>
+      {% if question.type == 'mcq' %}
+      <p class="text-muted">Multiple-choice practice</p>
+      {% elif question.type == 'short' %}
+      <p class="text-muted">Short-answer practice</p>
+      {% else %}
+      <p class="text-muted">Exercise and written practice</p>
+      {% endif %}
+      <a class="btn btn-secondary" href="/practice/{{ question.topic.subject.slug }}/{{ question.topic.slug }}/">
+        Practice this topic
+      </a>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state card">
+    <div class="empty-state-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"></path>
+        <path d="M4 5.5v15M7 7h9M7 10h7"></path>
+      </svg>
+    </div>
+    <h2>No practice questions found</h2>
+    <p>Try a different search or remove one of the filters.</p>
+    <a href="/practice/" class="btn btn-secondary">View all practice</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

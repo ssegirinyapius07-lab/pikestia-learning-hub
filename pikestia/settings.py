@@ -147,6 +147,8 @@ ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 # Local email/password accounts must still verify their email.
 # Google accounts can use Google's verified email identity directly.
+SOCIALACCOUNT_ADAPTER = 'apps.accounts.adapters.PikestiaSocialAccountAdapter'
+
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_AUTO_SIGNUP = True

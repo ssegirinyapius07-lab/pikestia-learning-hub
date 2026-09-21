@@ -13,6 +13,7 @@ urlpatterns = [
     path('', include('apps.practice.urls')),
     path('', include('apps.opportunities.urls')),
     path('', include('apps.bookmarks.urls')),
+    path('', include('apps.news.urls')),
 ]
 
 if settings.DEBUG:

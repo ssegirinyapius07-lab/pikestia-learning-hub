@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account %}
+
+{% block title %}Confirm email | Pikestia Learning Hub{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="container auth-container">
+    <div class="auth-card card">
+      {% if confirmation %}
+      <div class="auth-status-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M5 12.5 10 17l9-10"></path>
+        </svg>
+      </div>
+
+      <div class="auth-header">
+        <h1>Confirm your email</h1>
+        {% user_display confirmation.email_address.user as user_display %}
+        <p>Please confirm that <strong>{{ confirmation.email_address.email }}</strong> belongs to {{ user_display }}.</p>
+      </div>
+
+      {% if can_confirm %}
+      <form method="post" action="{% url 'account_confirm_email' confirmation.key %}" class="auth-form">
+        {% csrf_token %}
+        {{ redirect_field }}
+        <button type="submit" class="btn btn-primary auth-submit">Confirm email address</button>
+      </form>
+      {% else %}
+      <div class="auth-note">
+        <strong>This email cannot be confirmed here</strong>
+        <span>The verification link may already be associated with another account.</span>
+      </div>
+      {% endif %}
+      {% else %}
+      <div class="auth-status-icon is-warning" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 8v5"></path>
+          <path d="M12 16h.01"></path>
+        </svg>
+      </div>
+
+      <div class="auth-header">
+        <h1>Verification link unavailable</h1>
+        <p>This email verification link is invalid or has expired.</p>
+      </div>
+
+      <div class="auth-note">
+        <strong>Need a new link?</strong>
+        <span>Sign in to manage the email addresses on your account, or return to the sign-up page to start again.</span>
+      </div>
+
+      <div class="auth-actions-stack">
+        <a href="{% url 'account_login' %}" class="btn btn-primary auth-submit">Back to sign in</a>
+        <a href="{% url 'account_signup' %}" class="btn btn-secondary auth-submit">Return to sign up</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

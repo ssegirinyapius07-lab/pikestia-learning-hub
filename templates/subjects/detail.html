@@ -1,1 +1,42 @@
-{% extends "base.html" %}{% block content %}<div class="container section"><a href="/subjects/" class="link">← Subjects</a><h1>{{ subject.title }}</h1><p>{{ subject.description }}</p><div class="grid grid-2">{% for t in topics %}<a class="card card-hover" href="/subjects/{{ subject.slug }}/{{ t.slug }}/"><h3>{{ t.title }}</h3><p>{{ t.summary|truncatechars:140 }}</p></a>{% endfor %}</div></div>{% endblock %}
+{% extends "base.html" %}
+{% block title %}{{ subject.title }} | Pikestia Learning Hub{% endblock %}
+{% block content %}
+<div class="subject-detail">
+  <div class="container">
+    <div class="breadcrumb"><a href="/subjects/">Subjects</a> / {{ subject.title }}</div>
+
+    <header class="page-intro subject-detail-intro">
+      <p class="page-kicker">{{ subject.discipline }}</p>
+      <h1>{{ subject.title }}</h1>
+      {% if subject.description %}<p>{{ subject.description }}</p>{% endif %}
+    </header>
+
+    <section class="topic-index" aria-labelledby="topics-heading">
+      <div class="editorial-section-header">
+        <div>
+          <h2 id="topics-heading">Topics</h2>
+          <p>Choose a topic to continue learning.</p>
+        </div>
+      </div>
+
+      <div class="topic-list">
+        {% for t in topics %}
+        <a class="topic-row" href="/subjects/{{ subject.slug }}/{{ t.slug }}/">
+          <div class="topic-row-index" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</div>
+          <div class="topic-row-content">
+            <h3>{{ t.title }}</h3>
+            {% if t.summary %}<p>{{ t.summary|truncatechars:220 }}</p>{% endif %}
+          </div>
+          <span class="topic-row-action" aria-hidden="true">Open topic</span>
+        </a>
+        {% empty %}
+        <div class="plain-empty">
+          <h2>No topics yet</h2>
+          <p>Published topics for this subject will appear here.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}

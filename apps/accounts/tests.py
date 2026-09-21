@@ -3,8 +3,9 @@ from types import SimpleNamespace
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sessions.models import Session
+from django.utils import timezone
 from django.core import mail
-from django.test import TestCase, override_settings
+from django.test import RequestFactory, TestCase, override_settings
 
 from allauth.account.models import EmailAddress
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
@@ -55,8 +56,10 @@ class AuthenticationConfigurationTests(TestCase):
             'name': 'Google User',
         }
 
+        request = RequestFactory().get('/accounts/login/')
+
         user = adapter.populate_user(
-            self.client.request().wsgi_request,
+            request,
             SimpleNamespace(
                 user=User(email='googleuser@example.org'),
                 account=SimpleNamespace(extra_data=data),
@@ -84,8 +87,10 @@ class SecurityBehaviorTests(TestCase):
 
         other_session_key = device_b.session.session_key
         self.assertTrue(
-            Session.objects.filter(session_key=other_session_key, expire_date__gt=settings.SESSION_COOKIE_AGE).exists()
-            or Session.objects.filter(session_key=other_session_key).exists()
+            Session.objects.filter(
+                session_key=other_session_key,
+                expire_date__gt=timezone.now(),
+            ).exists()
         )
 
         response = device_a.post(

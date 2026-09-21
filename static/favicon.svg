@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>Pikestia Learning Hub</title>
+  <rect width="64" height="64" rx="14" fill="#152033"/>
+  <path d="M19 14h16.5C45.2 14 51 19.1 51 27.2c0 8.1-5.8 13.3-15.5 13.3H28v9.5h-9V14Zm9 8.5v9.5h7.8c4.4 0 6.8-1.7 6.8-4.8s-2.4-4.7-6.8-4.7H28Z" fill="#ffffff"/>
+  <path d="M19 50h9" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+</svg>

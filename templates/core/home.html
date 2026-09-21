@@ -48,6 +48,27 @@
   </div>
 </section>
 
+{% if latest_news %}
+<section class="section container">
+  <div class="section-header">
+    <h2>Latest News &amp; Insights</h2>
+    <a href="/news/" class="link">View all news →</a>
+  </div>
+  <div class="grid grid-3">
+    {% for article in latest_news %}
+    <a href="/news/{{ article.slug }}/" class="card card-hover news-home-card">
+      <div class="card-meta">{{ article.get_category_display }}</div>
+      <h3>{{ article.title }}</h3>
+      {% if article.summary %}<p>{{ article.summary|truncatechars:120 }}</p>{% endif %}
+      <span class="text-muted">
+        {% if article.published_at %}{{ article.published_at|date:"M j, Y" }}{% endif %}
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
 <section class="section container">
   <div class="grid grid-2">
     <div class="card">

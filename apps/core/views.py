@@ -37,6 +37,10 @@ def home_view(request):
         published_news.filter(featured=True).first()
         or (latest_news[0] if latest_news else None)
     )
+    secondary_news = [
+        article for article in latest_news
+        if not lead_news or article.pk != lead_news.pk
+    ][:2]
 
     return render(
         request,
@@ -47,6 +51,7 @@ def home_view(request):
             'opportunities': opportunities,
             'latest_news': latest_news,
             'lead_news': lead_news,
+            'secondary_news': secondary_news,
         },
     )
 

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Check your email | Pikestia Learning Hub{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="container auth-container">
+    <div class="auth-card card">
+      <div class="auth-status-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M4 5.5h16v13H4z"></path>
+          <path d="m4 6 8 7 8-7"></path>
+        </svg>
+      </div>
+
+      <div class="auth-header">
+        <h1>Check your email</h1>
+        <p>We've sent a verification email to the address you used to create your Pikestia account.</p>
+      </div>
+
+      <div class="auth-note">
+        <strong>One more step</strong>
+        <span>Open the verification email and follow the link to finish creating your account.</span>
+        <span>If you do not see it in your inbox, check your spam or junk folder.</span>
+      </div>
+
+      <div class="auth-actions-stack">
+        <a href="{% url 'account_login' %}" class="btn btn-primary auth-submit">Back to sign in</a>
+        <a href="{% url 'account_signup' %}" class="btn btn-secondary auth-submit">Return to sign up</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

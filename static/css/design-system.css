@@ -2222,3 +2222,69 @@ form p {
     align-items: flex-start;
   }
 }
+
+
+/* Subtle scroll-reveal motion for polished editorial presentation. */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.62s ease,
+    transform 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js-reveal [data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.js-reveal [data-reveal="soft"] {
+  transform: translateY(10px);
+}
+
+.js-reveal [data-reveal="soft"].is-visible {
+  transform: translateY(0);
+}
+
+.js-reveal .reveal-stagger > [data-reveal] {
+  --reveal-delay: 0ms;
+}
+
+.js-reveal .reveal-stagger > [data-reveal]:nth-child(2) {
+  --reveal-delay: 70ms;
+}
+
+.js-reveal .reveal-stagger > [data-reveal]:nth-child(3) {
+  --reveal-delay: 140ms;
+}
+
+.js-reveal .reveal-stagger > [data-reveal]:nth-child(4) {
+  --reveal-delay: 210ms;
+}
+
+.js-reveal .reveal-stagger > [data-reveal]:nth-child(5) {
+  --reveal-delay: 280ms;
+}
+
+.js-reveal .reveal-stagger > [data-reveal]:nth-child(6) {
+  --reveal-delay: 350ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal [data-reveal],
+  .js-reveal [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0ms;
+  }
+}
+
+.header.is-scrolled {
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+}
+
+[data-theme="dark"] .header.is-scrolled {
+  box-shadow: 0 7px 22px rgba(0, 0, 0, 0.28);
+}

@@ -52,7 +52,13 @@
     <div class="newsroom-grid">
       {% for article in articles %}
       <a href="/news/{{ article.slug }}/" class="newsroom-card{% if forloop.first %} is-lead{% endif %}">
-        <div class="newsroom-card-label">
+        {% if article.cover_image %}
+        <div class="newsroom-card-media">
+          <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+        </div>
+        {% endif %}
+        <div class="newsroom-card-content">
+          <div class="newsroom-card-label">
           <span class="badge">{{ article.get_category_display }}</span>
           {% if article.featured %}<span class="badge">Featured</span>{% endif %}
         </div>
@@ -67,8 +73,8 @@
         <p>{{ article.summary|truncatechars:190 }}</p>
         {% endif %}
 
-        <div class="newsroom-card-meta">
-          <span>
+          <div class="newsroom-card-meta">
+            <span>
             {% if article.author and article.author.full_name %}
               {{ article.author.full_name }}
             {% elif article.author %}
@@ -80,6 +86,7 @@
           {% if article.published_at %}
           <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"M j, Y" }}</time>
           {% endif %}
+          </div>
         </div>
       </a>
       {% endfor %}

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}News | Pikestia Learning Hub{% endblock %}
+
+{% block content %}
+<section class="library-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a> / News</div>
+    <div class="library-hero-inner">
+      <div>
+        <p class="card-meta">Pikestia Newsroom</p>
+        <h1>News &amp; Insights</h1>
+        <p class="lead">Stories, developments, ideas, and useful information for the growing Pikestia community.</p>
+      </div>
+      <div class="library-count" aria-label="{{ page_obj.paginator.count }} published articles">
+        <strong>{{ page_obj.paginator.count }}</strong>
+        <span>published articles</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="library-toolbar">
+    <form method="get" class="library-filters" role="search">
+      <div class="filter-search">
+        <label for="news-query">Search the newsroom</label>
+        <div class="search-form-large">
+          <input
+            id="news-query"
+            type="search"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search headlines, stories, authors..."
+            maxlength="100"
+          >
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+
+      <div class="filter-grid news-filter-grid">
+        <div>
+          <label for="news-category">Category</label>
+          <select id="news-category" name="category">
+            <option value="">All categories</option>
+            {% for value, label in categories %}
+            <option value="{{ value }}"{% if selected_category == value %} selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="filter-actions">
+          <label>&nbsp;</label>
+          <div class="filter-buttons">
+            <button type="submit" class="btn btn-secondary">Apply filter</button>
+            <a href="/news/" class="btn btn-ghost">Clear</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  {% if articles %}
+  <div class="news-grid">
+    {% for article in articles %}
+    <article class="card news-card{% if article.featured %} is-featured{% endif %}">
+      <div class="news-card-meta">
+        <span class="badge">{{ article.get_category_display }}</span>
+        {% if article.featured %}<span class="badge">Featured</span>{% endif %}
+      </div>
+      <h2><a href="/news/{{ article.slug }}/">{{ article.title }}</a></h2>
+      {% if article.summary %}<p>{{ article.summary|truncatechars:180 }}</p>{% endif %}
+      <div class="news-card-footer">
+        <span>
+          {% if article.author and article.author.full_name %}
+            {{ article.author.full_name }}
+          {% elif article.author %}
+            {{ article.author.email }}
+          {% else %}
+            Pikestia Editorial
+          {% endif %}
+        </span>
+        <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"M j, Y" }}</time>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state card">
+    <div class="empty-state-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M4 5h16v14H4z"></path>
+        <path d="M7 8h10M7 11h10M7 14h6"></path>
+      </svg>
+    </div>
+    <h2>No articles found</h2>
+    <p>Try another search or category.</p>
+    <a href="/news/" class="btn btn-secondary">View all news</a>
+  </div>
+  {% endif %}
+
+  {% if page_obj.paginator.num_pages > 1 %}
+  <nav class="pagination" aria-label="News pages">
+    {% if page_obj.has_previous %}
+    <a class="pagination-link" href="?{% if query %}q={{ query|urlencode }}&amp;{% endif %}{% if selected_category %}category={{ selected_category }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+    {% else %}
+    <span class="pagination-link is-disabled">Previous</span>
+    {% endif %}
+
+    <div class="pagination-pages">
+      {% for number in page_obj.paginator.page_range %}
+        {% if number == page_obj.number %}
+        <span class="pagination-link is-current" aria-current="page">{{ number }}</span>
+        {% elif number >= page_obj.number|add:"-2" and number <= page_obj.number|add:"2" %}
+        <a class="pagination-link" href="?{% if query %}q={{ query|urlencode }}&amp;{% endif %}{% if selected_category %}category={{ selected_category }}&amp;{% endif %}page={{ number }}">{{ number }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_next %}
+    <a class="pagination-link" href="?{% if query %}q={{ query|urlencode }}&amp;{% endif %}{% if selected_category %}category={{ selected_category }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+    {% else %}
+    <span class="pagination-link is-disabled">Next</span>
+    {% endif %}
+  </nav>
+  {% endif %}
+</section>
+{% endblock %}

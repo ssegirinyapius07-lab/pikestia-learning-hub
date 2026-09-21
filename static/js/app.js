@@ -16,35 +16,12 @@ document.addEventListener('DOMContentLoaded', function () {
   // Mobile header menu.
   const toggle = document.getElementById('mobileToggle');
   const menu = document.getElementById('mainMenu');
-  const mobileResourceMenu = document.querySelector('.mobile-resource-menu');
-  const mobileResourceToggle = mobileResourceMenu
-    ? mobileResourceMenu.querySelector('.nav-dropdown-toggle')
-    : null;
-
-  function closeMobileResourceMenu() {
-    if (!mobileResourceMenu || !mobileResourceToggle) return;
-    mobileResourceMenu.classList.remove('is-open');
-    mobileResourceToggle.setAttribute('aria-expanded', 'false');
-  }
 
   function closeMenu() {
     if (!toggle || !menu) return;
     menu.classList.remove('open');
     toggle.setAttribute('aria-expanded', 'false');
     toggle.textContent = 'Menu';
-    closeMobileResourceMenu();
-  }
-
-  if (mobileResourceMenu && mobileResourceToggle) {
-    mobileResourceToggle.addEventListener('click', function () {
-      const isOpen = !mobileResourceMenu.classList.contains('is-open');
-      mobileResourceMenu.classList.toggle('is-open', isOpen);
-      mobileResourceToggle.setAttribute('aria-expanded', String(isOpen));
-    });
-
-    mobileResourceMenu.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', closeMenu);
-    });
   }
 
   if (toggle && menu) {
@@ -52,10 +29,6 @@ document.addEventListener('DOMContentLoaded', function () {
       const isOpen = menu.classList.toggle('open');
       toggle.setAttribute('aria-expanded', String(isOpen));
       toggle.textContent = isOpen ? 'Close' : 'Menu';
-
-      if (!isOpen) {
-        closeMobileResourceMenu();
-      }
     });
 
     menu.querySelectorAll('a').forEach(function (link) {

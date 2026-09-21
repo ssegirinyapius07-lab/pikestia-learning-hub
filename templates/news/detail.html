@@ -3,18 +3,25 @@
 {% block title %}{{ article.title }} | Pikestia Learning Hub{% endblock %}
 
 {% block content %}
-<div class="container section">
-  <div class="breadcrumb">
-    <a href="/news/">News</a> / {{ article.get_category_display }}
-  </div>
+<div class="news-article-page">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/news/">News</a> / {{ article.get_category_display }}
+    </div>
 
-  <article class="card news-article">
-    <header class="news-article-header">
-      <span class="badge">{{ article.get_category_display }}</span>
-      {% if article.featured %}<span class="badge">Featured</span>{% endif %}
+    <header class="news-reading-header">
+      <div class="news-reading-kicker">
+        <span class="badge">{{ article.get_category_display }}</span>
+        {% if article.featured %}<span class="badge">Featured</span>{% endif %}
+      </div>
+
       <h1>{{ article.title }}</h1>
-      {% if article.summary %}<p class="lead">{{ article.summary }}</p>{% endif %}
-      <div class="news-byline">
+
+      {% if article.summary %}
+      <p class="news-reading-summary">{{ article.summary }}</p>
+      {% endif %}
+
+      <div class="news-reading-byline">
         <span>
           By
           {% if article.author and article.author.full_name %}
@@ -26,33 +33,33 @@
           {% endif %}
         </span>
         {% if article.published_at %}
+        <span>·</span>
         <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"F j, Y" }}</time>
         {% endif %}
       </div>
     </header>
 
-    <div class="rich-content news-body">
+    <div class="news-reading-body rich-content">
       {{ article.body|safe }}
     </div>
-  </article>
 
-  {% if related %}
-  <section class="news-related">
-    <div class="section-header">
-      <h2>More from the newsroom</h2>
-      <a href="/news/" class="link">View all news</a>
-    </div>
+    {% if related %}
+    <section class="news-related-section">
+      <div class="section-header">
+        <h2>More from the newsroom</h2>
+        <a href="/news/" class="link">View all news →</a>
+      </div>
 
-    <div class="grid grid-2">
-      {% for related_article in related %}
-      <a class="card card-hover" href="/news/{{ related_article.slug }}/">
-        <div class="card-meta">{{ related_article.get_category_display }}</div>
-        <h3>{{ related_article.title }}</h3>
-        {% if related_article.summary %}<p>{{ related_article.summary|truncatechars:120 }}</p>{% endif %}
-      </a>
-      {% endfor %}
-    </div>
-  </section>
-  {% endif %}
+      <div class="news-related-grid">
+        {% for related_article in related %}
+        <a class="news-related-card" href="/news/{{ related_article.slug }}/">
+          <span class="card-meta">{{ related_article.get_category_display }}</span>
+          <strong>{{ related_article.title }}</strong>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}

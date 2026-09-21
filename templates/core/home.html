@@ -20,7 +20,16 @@
   <div class="grid grid-4">
     {% for s in subjects %}
     <a href="/subjects/{{ s.slug }}/" class="card card-hover">
-      <div class="card-icon">{{ s.icon|default:"📚" }}</div>
+      <div class="card-icon" aria-hidden="true">
+        {% if s.icon %}
+        <span class="subject-icon-name">{{ s.icon }}</span>
+        {% else %}
+        <svg class="subject-icon-default" viewBox="0 0 24 24" focusable="false">
+          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"></path>
+          <path d="M4 5.5v15M7 7h9M7 10h9"></path>
+        </svg>
+        {% endif %}
+      </div>
       <h3>{{ s.title }}</h3><p>{{ s.description|truncatechars:90 }}</p><span class="badge">{{ s.discipline }}</span>
     </a>
     {% empty %}<p>No subjects yet. Admin can add from /admin/</p>{% endfor %}

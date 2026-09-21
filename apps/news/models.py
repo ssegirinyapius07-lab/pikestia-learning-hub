@@ -22,6 +22,7 @@ class NewsArticle(EditorialContent):
         PUBLISHED = 'published', 'Published'
         ARCHIVED = 'archived', 'Archived'
 
+    slug = models.SlugField(max_length=280, unique=True)
     summary = models.TextField(blank=True)
     body = models.TextField(help_text='Sanitized HTML')
     body_raw = models.TextField(

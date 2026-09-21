@@ -418,6 +418,223 @@ img {
   text-decoration: none
 }
 
+.text-muted {
+  color: var(--text-muted);
+}
+
+.library-hero {
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-card), var(--bg));
+}
+
+.library-hero-inner {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.library-hero h1 {
+  margin: 0.2rem 0 0.5rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.035em;
+}
+
+.library-hero .lead {
+  max-width: 680px;
+  margin: 0;
+}
+
+.library-count {
+  min-width: 150px;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.library-count strong {
+  display: block;
+  font-size: 1.7rem;
+  line-height: 1.1;
+}
+
+.library-count span {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.library-toolbar {
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--shadow);
+}
+
+.library-filters {
+  margin: 0;
+}
+
+.filter-search {
+  margin-bottom: 1rem;
+}
+
+.filter-search label,
+.filter-grid label {
+  margin-top: 0;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.filter-actions .filter-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filter-actions .btn {
+  white-space: nowrap;
+}
+
+.active-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.active-filters-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.library-results-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.library-results-header h2 {
+  margin: 0;
+}
+
+.library-results-header p {
+  margin: 0.2rem 0 0;
+}
+
+.material-card {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.material-card h3 {
+  margin-bottom: 0.45rem;
+}
+
+.material-card p {
+  color: var(--text-muted);
+}
+
+.material-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.material-arrow {
+  color: var(--accent);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.empty-state {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.empty-state-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+}
+
+.empty-state-icon svg {
+  width: 2.2rem;
+  height: 2.2rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.pagination-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pagination-link:hover {
+  background: var(--bg-muted);
+  text-decoration: none;
+}
+
+.pagination-link.is-current {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.pagination-link.is-disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
 .section {
   padding: 2.5rem 0
 }
@@ -455,6 +672,37 @@ img {
 }
 
 @media(max-width:800px) {
+  .library-hero-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .library-count {
+    width: 100%;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-actions .filter-buttons {
+    width: 100%;
+  }
+
+  .filter-actions .btn {
+    flex: 1;
+  }
+
+  .library-results-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+  }
+}
   .header-inner {
     align-items: center;
   }

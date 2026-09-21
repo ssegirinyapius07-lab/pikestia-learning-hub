@@ -47,4 +47,22 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
+
+  // Professional toast notifications: dismissible immediately and auto-close
+  // successful/info notices after a short reading period.
+  document.querySelectorAll('.alert').forEach(function (alert) {
+    const dismiss = alert.querySelector('.alert-dismiss');
+
+    if (dismiss) {
+      dismiss.addEventListener('click', function () {
+        alert.remove();
+      });
+    }
+
+    if (alert.classList.contains('alert-success') || alert.classList.contains('alert-info')) {
+      window.setTimeout(function () {
+        alert.remove();
+      }, 5000);
+    }
+  });
 });

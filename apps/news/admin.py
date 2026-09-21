@@ -38,6 +38,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
                 'category',
                 'author',
                 'summary',
+                'cover_image',
                 'body_raw',
             ),
             'description': (

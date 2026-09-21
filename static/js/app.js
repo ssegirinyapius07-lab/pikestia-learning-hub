@@ -157,6 +157,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  revealItems.forEach(function (item) {
+    if (!item.hasAttribute('data-reveal')) {
+      item.setAttribute('data-reveal', 'soft');
+    }
+  });
+
   if (!prefersReducedMotion && 'IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver(function (entries, observer) {
       entries.forEach(function (entry) {
@@ -171,9 +177,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     revealItems.forEach(function (item) {
-      if (!item.hasAttribute('data-reveal')) {
-        item.setAttribute('data-reveal', 'soft');
-      }
       revealObserver.observe(item);
     });
   } else {

@@ -197,16 +197,65 @@ img {
 
 .theme-switcher {
   display: flex;
+  align-items: center;
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
-  overflow: hidden
+  overflow: hidden;
+  background: var(--bg-card);
 }
 
-.theme-switcher button {
+.theme-switcher .inline-form {
+  display: flex;
+}
+
+.theme-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 34px;
   border: 0;
-  background: var(--bg-card);
-  padding: 0.4rem 0.6rem;
-  cursor: pointer
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  padding: 0.4rem 0.65rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.theme-switcher .inline-form:last-child .theme-option {
+  border-right: 0;
+}
+
+.theme-option:hover {
+  background: var(--bg-muted);
+  color: var(--text);
+}
+
+.theme-option.is-active {
+  background: var(--secondary-bg);
+  color: var(--text);
+}
+
+.theme-icon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  position: relative;
+  z-index: 1;
 }
 
 .inline-form {

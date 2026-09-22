@@ -101,6 +101,13 @@ img {
   width: 100%
 }
 
+/* Desktop content frame: keep primary page content comfortably inside wide screens. */
+@media (min-width: 901px) {
+  .container {
+    max-width: 1040px;
+  }
+}
+
 .narrow {
   max-width: 560px
 }

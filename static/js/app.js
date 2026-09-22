@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Desktop navigation dropdowns.
+  // Accessible show/hide controls for password fields.\n  document.querySelectorAll('[data-password-toggle]').forEach(function (button) {\n    button.addEventListener('click', function () {\n      const field = button.closest('.password-field');\n      const input = field ? field.querySelector('input') : null;\n      if (!input) return;\n      const shouldShow = input.type === 'password';\n      input.type = shouldShow ? 'text' : 'password';\n      button.setAttribute('aria-label', shouldShow ? 'Hide password' : 'Show password');\n      button.setAttribute('title', shouldShow ? 'Hide password' : 'Show password');\n      button.classList.toggle('is-visible', shouldShow);\n    });\n  });\n\n  // Desktop navigation dropdowns.
   // Each menu remains compact, anchored to its trigger, and closes with
   // a delay so slow pointer movement into the panel does not collapse it.
   const desktopNav = document.getElementById('desktopNav');

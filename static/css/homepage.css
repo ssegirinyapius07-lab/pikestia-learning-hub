@@ -2024,3 +2024,133 @@
     white-space: normal;
   }
 }
+
+
+/* Final editorial polish: cleaner desktop composition and deliberate link states. */
+.continue-reading,
+.continue-reading:hover,
+.continue-reading:focus,
+.continue-reading:focus-visible {
+  text-decoration: none;
+}
+
+.continue-reading:hover,
+.continue-reading:focus-visible {
+  color: var(--accent-hover);
+}
+
+@media (min-width: 901px) {
+  .home-masthead {
+    padding-top: 3.2rem;
+    padding-bottom: 2.2rem;
+  }
+
+  .home-masthead-grid {
+    grid-template-columns: minmax(0, 1.75fr) minmax(300px, 0.75fr);
+    gap: 3.25rem;
+  }
+
+  .home-masthead h1 {
+    max-width: 900px;
+    font-size: clamp(3.2rem, 5.4vw, 5rem);
+  }
+
+  .home-intro {
+    max-width: 700px;
+    font-size: 1rem;
+  }
+
+  .home-masthead-aside {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1rem 0 0 1.5rem;
+    border-left: 2px solid var(--text);
+  }
+
+  .home-topic-row {
+    margin-top: 1.25rem;
+  }
+
+  .editorial-section {
+    padding-top: 3.25rem;
+  }
+
+  .editorial-section + .editorial-section {
+    padding-top: 4rem;
+  }
+
+  .editorial-lead {
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.75fr);
+    gap: 2rem;
+  }
+
+  .lead-story {
+    min-height: 0;
+  }
+
+  .lead-story .story-media-lead {
+    height: clamp(300px, 31vw, 430px);
+  }
+
+  .lead-story h3 {
+    max-width: 920px;
+    margin-top: 1.05rem;
+  }
+
+  .lead-side {
+    gap: 0;
+    border-top: 2px solid var(--text);
+  }
+
+  .lead-side .story-card {
+    padding: 1rem 0;
+  }
+
+  .lead-side .story-card + .story-card {
+    border-top: 1px solid var(--border);
+  }
+
+  .lead-side .story-media-small {
+    height: 150px;
+  }
+
+  .latest-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.75rem;
+  }
+
+  .latest-grid .story-card + .story-card {
+    border-left: 1px solid var(--border);
+    border-top: 0;
+    padding-left: 1.75rem;
+  }
+
+  .latest-grid .story-media-small {
+    height: 190px;
+  }
+
+  .learning-showcase {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    gap: 2rem;
+  }
+
+  .subjects-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .home-bottom-grid {
+    gap: 2.5rem;
+  }
+}
+
+/* Keep the homepage visual language flat and editorial rather than decorative. */
+.editorial-home .lead-story {
+  background: transparent;
+}
+
+.editorial-home .story-media::after,
+.editorial-home .newsroom-card-media::after {
+  display: none;
+}

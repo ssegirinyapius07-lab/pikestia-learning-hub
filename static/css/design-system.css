@@ -2288,3 +2288,105 @@ form p {
 [data-theme="dark"] .header.is-scrolled {
   box-shadow: 0 7px 22px rgba(0, 0, 0, 0.28);
 }
+
+
+/* Mobile viewport hardening: keep the document locked to the device width. */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+}
+
+.main {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  .main {
+    overflow-x: hidden;
+  }
+}
+
+.container,
+section,
+article,
+header,
+footer,
+main,
+div {
+  min-width: 0;
+}
+
+img,
+svg,
+video,
+iframe,
+canvas {
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+button,
+label,
+span,
+strong,
+time {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .home-masthead,
+  .editorial-section,
+  .newsroom-masthead,
+  .newsroom-results,
+  .news-reading-header,
+  .news-related-section {
+    max-width: 100%;
+  }
+
+  .story-media,
+  .news-front-image,
+  .news-secondary-image,
+  .newsroom-card-media,
+  .news-reading-cover,
+  .related-media {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .story-media img,
+  .news-front-image img,
+  .news-secondary-image img,
+  .newsroom-card-media img,
+  .news-reading-cover img,
+  .related-media img {
+    width: 100%;
+    max-width: 100%;
+  }
+}

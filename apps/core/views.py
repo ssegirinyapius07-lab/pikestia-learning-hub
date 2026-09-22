@@ -41,6 +41,14 @@ def home_view(request):
         article for article in latest_news
         if not lead_news or article.pk != lead_news.pk
     ][:2]
+    latest_stories = [
+        article for article in latest_news
+        if not lead_news or article.pk != lead_news.pk
+    ]
+    latest_stories = [
+        article for article in latest_stories
+        if article.pk not in {item.pk for item in secondary_news}
+    ][:3]
 
     return render(
         request,
@@ -49,7 +57,7 @@ def home_view(request):
             'subjects': subjects,
             'featured': featured,
             'opportunities': opportunities,
-            'latest_news': latest_news,
+            'latest_news': latest_stories,
             'lead_news': lead_news,
             'secondary_news': secondary_news,
         },

@@ -43,13 +43,13 @@
         </div>
         <div class="auth-field">
           <label for="{{ form.password1.id_for_label }}">Password</label>
-          {{ form.password1 }}
+          <div class="password-field">{{ form.password1 }}<button type="button" class="password-toggle" data-password-toggle aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg></button></div>
           {% if form.password1.help_text %}<p class="auth-help">{{ form.password1.help_text }}</p>{% endif %}
           {% for error in form.password1.errors %}<p class="auth-field-error">{{ error }}</p>{% endfor %}
         </div>
         <div class="auth-field">
           <label for="{{ form.password2.id_for_label }}">Confirm password</label>
-          {{ form.password2 }}
+          <div class="password-field">{{ form.password2 }}<button type="button" class="password-toggle" data-password-toggle aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg></button></div>
           {% for error in form.password2.errors %}<p class="auth-field-error">{{ error }}</p>{% endfor %}
         </div>
         {% if redirect_field_value %}

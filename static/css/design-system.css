@@ -2118,7 +2118,52 @@ form p {
   font-size: 0.88rem;
 }
 
-.password-field {\n  position: relative;\n}\n\n.password-field input {\n  padding-right: 3.1rem;\n}\n\n.password-toggle {\n  position: absolute;\n  right: 0.65rem;\n  bottom: 0.55rem;\n  width: 2.2rem;\n  height: 2.2rem;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0;\n  border: 0;\n  border-radius: 0.45rem;\n  background: transparent;\n  color: var(--text-muted);\n  cursor: pointer;\n}\n\n.password-toggle:hover {\n  background: var(--bg-muted);\n  color: var(--text);\n}\n\n.password-toggle:focus-visible {\n  outline: 2px solid var(--accent);\n  outline-offset: 2px;\n}\n\n.password-toggle svg {\n  width: 1.2rem;\n  height: 1.2rem;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.7;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n.auth-field input {
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 3.1rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.55rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0.45rem;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  background: var(--bg-muted);
+  color: var(--text);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.password-toggle svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.auth-field input {
   min-height: 44px;
   width: 100%;
 }

@@ -17,32 +17,213 @@ def practice_by_topic(request, subject_slug, topic_slug):
         slug=topic_slug,
         status=Topic.Status.PUBLISHED,
     )
+
     questions = list(
-        topic.questions.filter(status=PracticeQuestion.Status.PUBLISHED)
-        .order_by('id')
+        topic.questions.filter(
+            status=PracticeQuestion.Status.PUBLISHED
+        ).order_by('id')
     )
 
-    submitted = request.method == 'POST'
-    results = []
-    score = 0
-    graded_count = 0
+    session_key = f'practice_topic_{topic.id}'
 
-    if submitted:
-        for question in questions:
-            answer = request.POST.get(f'question_{question.id}', '').strip()
+    if request.method == 'GET' and session_key not in request.session:
+        question_ids = [question.id for question in questions]
+
+        if len(question_ids) > 10:
+            import random
+            question_ids = random.sample(question_ids, 10)
+
+        request.session[session_key] = {
+            'question_ids': question_ids,
+            'current_index': 0,
+            'answers': {},
+            'checked': {},
+            'score': 0,
+        }
+
+    practice_session = request.session.get(session_key)
+
+    if not questions:
+        return render(
+            request,
+            'practice/by_topic.html',
+            {
+                'topic': topic,
+                'subject': topic.subject,
+                'questions': [],
+                'submitted': False,
+                'results': [],
+                'score': 0,
+                'graded_count': 0,
+            },
+        )
+
+    if not practice_session:
+        question_ids = [question.id for question in questions]
+
+        if len(question_ids) > 10:
+            import random
+            question_ids = random.sample(question_ids, 10)
+
+        practice_session = {
+            'question_ids': question_ids,
+            'current_index': 0,
+            'answers': {},
+            'checked': {},
+            'score': 0,
+        }
+
+        request.session[session_key] = practice_session
+
+    question_map = {
+        question.id: question
+        for question in questions
+    }
+
+    selected_questions = [
+        question_map[question_id]
+        for question_id in practice_session['question_ids']
+        if question_id in question_map
+    ]
+
+    if not selected_questions:
+        del request.session[session_key]
+
+        return render(
+            request,
+            'practice/by_topic.html',
+            {
+                'topic': topic,
+                'subject': topic.subject,
+                'questions': [],
+                'submitted': False,
+                'results': [],
+                'score': 0,
+                'graded_count': 0,
+            },
+        )
+
+    current_index = practice_session.get('current_index', 0)
+
+    if current_index >= len(selected_questions):
+        current_index = len(selected_questions) - 1
+        practice_session['current_index'] = current_index
+
+    current_question = selected_questions[current_index]
+
+    submitted = False
+    is_correct = None
+    current_answer = practice_session['answers'].get(
+        str(current_question.id),
+        '',
+    )
+
+    action = request.POST.get('action', '').strip()
+
+    if request.method == 'POST':
+        answer = request.POST.get(
+            f'question_{current_question.id}',
+            '',
+        ).strip()
+
+        if action == 'check':
+            current_answer = answer
+
+            practice_session['answers'][str(current_question.id)] = answer
+            submitted = True
+
+            if current_question.type in (
+                PracticeQuestion.QType.MCQ,
+                PracticeQuestion.QType.SHORT,
+            ):
+                is_correct = (
+                    _normalise_answer(answer)
+                    == _normalise_answer(current_question.correct_answer)
+                )
+
+                was_checked = practice_session['checked'].get(
+                    str(current_question.id),
+                    False,
+                )
+
+                if not was_checked:
+                    practice_session['checked'][str(current_question.id)] = True
+
+                    if is_correct:
+                        practice_session['score'] += 1
+
+            practice_session['current_index'] = current_index
+            request.session[session_key] = practice_session
+            request.session.modified = True
+
+        elif action == 'next':
+            practice_session['current_index'] = min(
+                current_index + 1,
+                len(selected_questions) - 1,
+            )
+
+            request.session[session_key] = practice_session
+            request.session.modified = True
+
+            current_index = practice_session['current_index']
+            current_question = selected_questions[current_index]
+            current_answer = practice_session['answers'].get(
+                str(current_question.id),
+                '',
+            )
+
+            submitted = False
             is_correct = None
 
-            if question.type in (PracticeQuestion.QType.MCQ, PracticeQuestion.QType.SHORT):
-                is_correct = _normalise_answer(answer) == _normalise_answer(question.correct_answer)
-                graded_count += 1
-                if is_correct:
-                    score += 1
+        elif action == 'finish':
+            score = practice_session.get('score', 0)
+            graded_count = sum(
+                1
+                for question in selected_questions
+                if question.type in (
+                    PracticeQuestion.QType.MCQ,
+                    PracticeQuestion.QType.SHORT,
+                )
+            )
 
-            results.append({
-                'question': question,
-                'answer': answer,
-                'is_correct': is_correct,
-            })
+            request.session.pop(session_key, None)
+
+            return render(
+                request,
+                'practice/by_topic.html',
+                {
+                    'topic': topic,
+                    'subject': topic.subject,
+                    'questions': selected_questions,
+                    'current_question': None,
+                    'current_index': len(selected_questions),
+                    'total_questions': len(selected_questions),
+                    'submitted': True,
+                    'finished': True,
+                    'results': [],
+                    'score': score,
+                    'graded_count': graded_count,
+                },
+            )
+
+    total_questions = len(selected_questions)
+
+    checked = practice_session.get('checked', {}).get(
+        str(current_question.id),
+        False,
+    )
+
+    if checked:
+        submitted = True
+
+        if current_question.type in (
+            PracticeQuestion.QType.MCQ,
+            PracticeQuestion.QType.SHORT,
+        ):
+            is_correct = (
+                _normalise_answer(current_answer)
+                == _normalise_answer(current_question.correct_answer)
+            )
 
     return render(
         request,
@@ -50,11 +231,24 @@ def practice_by_topic(request, subject_slug, topic_slug):
         {
             'topic': topic,
             'subject': topic.subject,
-            'questions': questions,
+            'questions': selected_questions,
+            'current_question': current_question,
+            'current_index': current_index,
+            'total_questions': total_questions,
             'submitted': submitted,
-            'results': results,
-            'score': score,
-            'graded_count': graded_count,
+            'finished': False,
+            'current_answer': current_answer,
+            'is_correct': is_correct,
+            'checked': checked,
+            'score': practice_session.get('score', 0),
+            'graded_count': sum(
+                1
+                for question in selected_questions
+                if question.type in (
+                    PracticeQuestion.QType.MCQ,
+                    PracticeQuestion.QType.SHORT,
+                )
+            ),
         },
     )
 
@@ -97,8 +291,8 @@ def practice_list(request):
     topics = Topic.objects.filter(
         status=Topic.Status.PUBLISHED
     ).select_related('subject').order_by(
-        'subject__order',
         'subject__title',
+        'subject__order',
         'order',
         'title',
     )

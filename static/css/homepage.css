@@ -1998,3 +1998,29 @@
     line-height: 1.28;
   }
 }
+
+
+/* Mobile page gutters: keep every homepage section comfortably inside the viewport. */
+@media (max-width: 600px) {
+  .editorial-home .editorial-section.container {
+    width: calc(100% - 2rem);
+    max-width: calc(100% - 2rem);
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .editorial-home .editorial-section-header {
+    width: 100%;
+  }
+
+  .editorial-home .editorial-section-header > div {
+    width: 100%;
+  }
+
+  .editorial-home .editorial-section-header .link {
+    max-width: 100%;
+    white-space: normal;
+  }
+}

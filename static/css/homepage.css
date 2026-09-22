@@ -2040,6 +2040,15 @@
 }
 
 @media (min-width: 901px) {
+  /* Keep the homepage comfortably framed on desktop without changing mobile. */
+  .editorial-home > .container,
+  .editorial-home .editorial-section.container {
+    width: calc(100% - 5rem);
+    max-width: var(--home-max);
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   .home-masthead {
     padding-top: 3.2rem;
     padding-bottom: 2.2rem;

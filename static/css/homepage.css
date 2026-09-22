@@ -2043,7 +2043,7 @@
   /* Keep the homepage comfortably framed on desktop without changing mobile. */
   .editorial-home > .container,
   .editorial-home .editorial-section.container {
-    width: calc(100% - 3rem);
+    width: calc(100% - 2rem);
     max-width: 1160px;
     padding-left: 0;
     padding-right: 0;

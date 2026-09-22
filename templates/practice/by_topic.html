@@ -30,91 +30,110 @@
     <h2>No practice questions yet</h2>
     <p>Questions for this topic will appear here when they are published.</p>
   </div>
-  {% else %}
 
-  {% if submitted %}
+  {% elif finished %}
   <section class="practice-score card" aria-live="polite">
     <div>
-      <p class="card-meta">Your result</p>
+      <p class="card-meta">Practice complete</p>
       {% if graded_count %}
       <h2>{{ score }} / {{ graded_count }}</h2>
-      <p>{{ score }} correct out of {{ graded_count }} automatically graded questions.</p>
+      <p>You answered {{ score }} of {{ graded_count }} automatically graded questions correctly.</p>
       {% else %}
-      <h2>Submitted</h2>
-      <p>This set does not contain automatically graded questions.</p>
+      <h2>Practice complete</h2>
+      <p>This practice set did not contain automatically graded questions.</p>
       {% endif %}
     </div>
-    <a href="/practice/{{ subject.slug }}/{{ topic.slug }}/" class="btn btn-primary">Try again</a>
+    <a href="/practice/{{ subject.slug }}/{{ topic.slug }}/" class="btn btn-primary">Start again</a>
   </section>
-  {% endif %}
+
+  {% else %}
+  <div class="practice-progress card" aria-label="Practice progress">
+    <div>
+      <p class="card-meta">Practice progress</p>
+      <strong>Question {{ current_index|add:"1" }} of {{ total_questions }}</strong>
+    </div>
+    <div class="practice-progress-track" aria-hidden="true">
+      <span style="width: {% widthratio current_index|add:1 total_questions 100 %}%;"></span>
+    </div>
+  </div>
 
   <form method="post" class="practice-form">
     {% csrf_token %}
 
-    {% for question in questions %}
     <article class="card practice-question">
       <div class="practice-question-meta">
-        <span class="card-meta">Question {{ forloop.counter }}</span>
-        <span class="badge">{{ question.get_difficulty_display|default:question.difficulty|title }}</span>
-        <span class="badge">{{ question.get_type_display }}</span>
+        <span class="card-meta">Question {{ current_index|add:"1" }}</span>
+        <span class="badge">{{ current_question.get_difficulty_display|default:current_question.difficulty|title }}</span>
+        <span class="badge">{{ current_question.get_type_display }}</span>
       </div>
 
-      <h2>{{ question.question }}</h2>
+      <h2>{{ current_question.question }}</h2>
 
-      {% if question.type == 'mcq' and question.options %}
+      {% if current_question.type == 'mcq' and current_question.options %}
       <div class="practice-options">
-        {% for option in question.options %}
+        {% for option in current_question.options %}
         <label class="practice-option">
           <input
             type="radio"
-            name="question_{{ question.id }}"
+            name="question_{{ current_question.id }}"
             value="{{ option }}"
-            {% if submitted and results %}{% for result in results %}{% if result.question.id == question.id and result.answer == option %}checked{% endif %}{% endfor %}{% endif %}
+            {% if current_answer == option %}checked{% endif %}
+            {% if checked %}disabled{% endif %}
           >
           <span>{{ option }}</span>
         </label>
         {% endfor %}
       </div>
-      {% elif question.type == 'short' %}
-      <label for="question-{{ question.id }}">Your answer</label>
+      {% elif current_question.type == 'short' %}
+      <label for="question-{{ current_question.id }}">Your answer</label>
       <input
-        id="question-{{ question.id }}"
+        id="question-{{ current_question.id }}"
         type="text"
-        name="question_{{ question.id }}"
-        value="{% if submitted and results %}{% for result in results %}{% if result.question.id == question.id %}{{ result.answer }}{% endif %}{% endfor %}{% endif %}"
+        name="question_{{ current_question.id }}"
+        value="{{ current_answer }}"
         autocomplete="off"
+        {% if checked %}readonly{% endif %}
       >
       {% else %}
-      <label for="question-{{ question.id }}">Your response</label>
-      <textarea id="question-{{ question.id }}" name="question_{{ question.id }}" rows="5" placeholder="Write your answer here...">{% if submitted and results %}{% for result in results %}{% if result.question.id == question.id %}{{ result.answer }}{% endif %}{% endfor %}{% endif %}</textarea>
+      <label for="question-{{ current_question.id }}">Your response</label>
+      <textarea
+        id="question-{{ current_question.id }}"
+        name="question_{{ current_question.id }}"
+        rows="6"
+        placeholder="Write your answer here..."
+        {% if checked %}readonly{% endif %}
+      >{{ current_answer }}</textarea>
       {% endif %}
 
-      {% if submitted and results %}
-        {% for result in results %}
-          {% if result.question.id == question.id %}
-          <div class="practice-feedback {% if result.is_correct == True %}is-correct{% elif result.is_correct == False %}is-incorrect{% else %}is-review{% endif %}">
-            {% if result.is_correct == True %}
-              <strong>Correct</strong>
-            {% elif result.is_correct == False %}
-              <strong>Review this answer</strong>
-            {% else %}
-              <strong>Compare with the model answer</strong>
-            {% endif %}
-            {% if question.correct_answer %}
-            <p><strong>Model answer:</strong> {{ question.correct_answer }}</p>
-            {% endif %}
-            {% if question.explanation %}
-            <p>{{ question.explanation }}</p>
-            {% endif %}
-          </div>
-          {% endif %}
-        {% endfor %}
+      {% if checked %}
+      <div class="practice-feedback {% if is_correct == True %}is-correct{% elif is_correct == False %}is-incorrect{% else %}is-review{% endif %}">
+        {% if is_correct == True %}
+          <strong>Correct</strong>
+        {% elif is_correct == False %}
+          <strong>Review this answer</strong>
+        {% else %}
+          <strong>Compare with the model answer</strong>
+        {% endif %}
+
+        {% if current_question.correct_answer %}
+        <p><strong>Model answer:</strong> {{ current_question.correct_answer }}</p>
+        {% endif %}
+
+        {% if current_question.explanation %}
+        <p>{{ current_question.explanation }}</p>
+        {% endif %}
+      </div>
       {% endif %}
     </article>
-    {% endfor %}
 
     <div class="practice-submit">
-      <button type="submit" class="btn btn-primary">Submit answers</button>
+      {% if not checked %}
+      <button type="submit" name="action" value="check" class="btn btn-primary">Check answer</button>
+      {% elif current_index|add:"1" < total_questions %}
+      <button type="submit" name="action" value="next" class="btn btn-primary">Next question</button>
+      {% else %}
+      <button type="submit" name="action" value="finish" class="btn btn-primary">Finish practice</button>
+      {% endif %}
     </div>
   </form>
   {% endif %}

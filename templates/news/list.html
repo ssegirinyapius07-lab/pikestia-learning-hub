@@ -57,6 +57,11 @@
         {% for article in articles|slice:"1:6" %}
         <a href="/news/{{ article.slug }}/" class="news-headline-row">
           <span class="news-headline-number">{{ forloop.counter|stringformat:"02d" }}</span>
+          <span class="news-headline-thumb" aria-hidden="true">
+            {% if article.cover_image %}
+            <img src="{{ article.cover_image.url }}" alt="" loading="lazy">
+            {% endif %}
+          </span>
           <span class="news-headline-copy">
             <span class="news-headline-category">{{ article.get_category_display }}</span>
             <strong>{{ article.title }}</strong>

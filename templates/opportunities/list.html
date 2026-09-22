@@ -9,12 +9,20 @@
   </header>
 
   <section class="container">
+    <form class="opportunity-search" method="get" action="/opportunities/">
+      <label for="opportunity-search">Search opportunities</label>
+      <div>
+        <input id="opportunity-search" type="search" name="q" value="{{ query }}" placeholder="Search scholarships, internships, competitions...">
+        {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+        <button type="submit">Search</button>
+      </div>
+    </form>
+
     <nav class="opportunity-filters" aria-label="Opportunity categories">
-      <a href="/opportunities/" class="pill">All</a>
-      <a href="?category=scholarship" class="pill">Scholarships</a>
-      <a href="?category=internship" class="pill">Internships</a>
-      <a href="?category=hackathon" class="pill">Hackathons</a>
-      <a href="?category=workshop" class="pill">Workshops</a>
+      <a href="/opportunities/{% if query %}?q={{ query|urlencode }}{% endif %}" class="pill{% if not selected_category %} is-active{% endif %}">All</a>
+      {% for value, label in categories %}
+      <a href="/opportunities/?category={{ value }}{% if query %}&q={{ query|urlencode }}{% endif %}" class="pill{% if selected_category == value %} is-active{% endif %}">{{ label }}</a>
+      {% endfor %}
     </nav>
 
     <div class="opportunity-list">
@@ -35,11 +43,23 @@
       </a>
       {% empty %}
       <div class="plain-empty">
-        <h2>No opportunities</h2>
-        <p>New opportunities will appear here when they are published.</p>
+        <h2>No opportunities found</h2>
+        <p>Try a different search or category.</p>
       </div>
       {% endfor %}
     </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination" aria-label="Opportunity pages">
+      {% if page_obj.has_previous %}
+      <a href="?{% if filter_query %}{{ filter_query }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+      <a href="?{% if filter_query %}{{ filter_query }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+      {% endif %}
+    </nav>
+    {% endif %}
   </section>
 </div>
 {% endblock %}

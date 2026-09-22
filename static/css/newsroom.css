@@ -1,0 +1,7 @@
+/* Newsroom link interaction */
+.newsroom-page a:hover,
+.newsroom-page a:hover *,
+.newsroom-page a:focus,
+.newsroom-page a:focus * {
+  text-decoration: none;
+}

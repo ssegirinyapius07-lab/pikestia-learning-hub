@@ -161,63 +161,51 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Subtle scroll reveal and header elevation.
-  // CSS remains responsible for the visual effect; this only detects visibility.
+  // Shared scroll reveal for interior editorial pages.
+  // The homepage has its own CSS-scoped scroll motion so its content can
+  // never become dependent on this global visibility system.
   const revealItems = document.querySelectorAll(
-    '[data-reveal], .editorial-section, .newsroom-card, .news-reading-header, .news-related-card'
+    '[data-reveal], .newsroom-card, .news-reading-header, .news-related-card'
   );
-
-  const homepageRevealItems = document.querySelectorAll(
-    '.editorial-home .editorial-section, ' +
-    '.editorial-home .lead-story, ' +
-    '.editorial-home .story-card, ' +
-    '.editorial-home .learning-feature, ' +
-    '.editorial-home .learning-list a, ' +
-    '.editorial-home .subject-tile, ' +
-    '.editorial-home .opportunity-item, ' +
-    '.editorial-home .home-action-card'
-  );
-
-  homepageRevealItems.forEach(function (item, index) {
-    item.setAttribute('data-reveal', 'home');
-    item.style.setProperty('--home-reveal-delay', Math.min(index * 55, 275) + 'ms');
-  });
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Only enable the global hidden/reveal state after reveal targets are prepared.
-  // This prevents a JavaScript load error from leaving page content invisible.
-  if (!prefersReducedMotion) {
+  if (!prefersReducedMotion && revealItems.length) {
     document.documentElement.classList.add('js-reveal');
-  }
 
-  revealItems.forEach(function (item) {
-    if (!item.hasAttribute('data-reveal')) {
-      item.setAttribute('data-reveal', 'soft');
-    }
-  });
+    revealItems.forEach(function (item) {
+      if (!item.hasAttribute('data-reveal')) {
+        item.setAttribute('data-reveal', 'soft');
+      }
+    });
 
-  if (!prefersReducedMotion && 'IntersectionObserver' in window) {
-    const revealObserver = new IntersectionObserver(function (entries, observer) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        entry.target.setAttribute('data-reveal', entry.target.getAttribute('data-reveal') || 'soft');
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver(function (entries, observer) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        });
+      }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
       });
-    }, {
-      threshold: 0.12,
-      rootMargin: '0px 0px -40px 0px'
-    });
 
-    revealItems.forEach(function (item) {
-      revealObserver.observe(item);
-    });
-  } else {
-    revealItems.forEach(function (item) {
-      item.setAttribute('data-reveal', 'soft');
-      item.classList.add('is-visible');
-    });
+      revealItems.forEach(function (item) {
+        revealObserver.observe(item);
+      });
+
+      // Never let animation become a prerequisite for readable content.
+      window.setTimeout(function () {
+        revealItems.forEach(function (item) {
+          item.classList.add('is-visible');
+        });
+      }, 2500);
+    } else {
+      revealItems.forEach(function (item) {
+        item.classList.add('is-visible');
+      });
+    }
   }
 
   const header = document.querySelector('.header');

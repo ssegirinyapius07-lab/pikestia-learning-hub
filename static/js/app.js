@@ -169,6 +169,22 @@ document.addEventListener('DOMContentLoaded', function () {
     '[data-reveal], .editorial-section, .newsroom-card, .news-reading-header, .news-related-card'
   );
 
+  const homepageRevealItems = document.querySelectorAll(
+    '.editorial-home .editorial-section, ' +
+    '.editorial-home .lead-story, ' +
+    '.editorial-home .story-card, ' +
+    '.editorial-home .learning-feature, ' +
+    '.editorial-home .learning-list a, ' +
+    '.editorial-home .subject-tile, ' +
+    '.editorial-home .opportunity-item, ' +
+    '.editorial-home .home-action-card'
+  );
+
+  homepageRevealItems.forEach(function (item, index) {
+    item.setAttribute('data-reveal', 'home');
+    item.style.setProperty('--home-reveal-delay', Math.min(index * 55, 275) + 'ms');
+  });
+
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   revealItems.forEach(function (item) {

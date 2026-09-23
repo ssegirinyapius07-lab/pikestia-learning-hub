@@ -2053,6 +2053,49 @@ img {
   margin: 1rem 0
 }
 
+/* Floating WhatsApp contact button */
+.whatsapp-float {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 130;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #25d366;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.whatsapp-float:hover,
+.whatsapp-float:focus-visible {
+  color: #ffffff;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+}
+
+.whatsapp-float:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.whatsapp-float svg {
+  width: 1.8rem;
+  height: 1.8rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .search-form-large input {
   flex: 1;
   padding: 0.8rem 1rem;
@@ -2579,10 +2622,7 @@ time {
     width: 100%;
     max-width: 100%;
   }
-}
-
-
-@media (max-width: 600px) {
+}@media (max-width: 600px) {
   .whatsapp-float {
     right: 0.9rem;
     bottom: 0.9rem;

@@ -2452,3 +2452,73 @@
     transition: none;
   }
 }
+
+
+/* Homepage motion and overflow protection: reveal sections smoothly without allowing copy to collide. */
+.editorial-home .editorial-section,
+.editorial-home .lead-story,
+.editorial-home .story-card,
+.editorial-home .learning-feature,
+.editorial-home .learning-list a,
+.editorial-home .subject-tile,
+.editorial-home .opportunity-item,
+.editorial-home .home-action-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.js-reveal .editorial-home .editorial-section[data-reveal="home"],
+.js-reveal .editorial-home .lead-story[data-reveal="home"],
+.js-reveal .editorial-home .story-card[data-reveal="home"],
+.js-reveal .editorial-home .learning-feature[data-reveal="home"],
+.js-reveal .editorial-home .learning-list a[data-reveal="home"],
+.js-reveal .editorial-home .subject-tile[data-reveal="home"],
+.js-reveal .editorial-home .opportunity-item[data-reveal="home"],
+.js-reveal .editorial-home .home-action-card[data-reveal="home"] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0) scale(0.985);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--home-reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.js-reveal .editorial-home [data-reveal="home"].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.editorial-home .learning-list,
+.editorial-home .subjects-strip,
+.editorial-home .home-bottom-grid {
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .editorial-home .editorial-section,
+  .editorial-home .lead-story,
+  .editorial-home .story-card,
+  .editorial-home .learning-feature,
+  .editorial-home .learning-list a,
+  .editorial-home .subject-tile,
+  .editorial-home .opportunity-item,
+  .editorial-home .home-action-card {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .js-reveal .editorial-home [data-reveal="home"] {
+    transform: translate3d(0, 20px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal .editorial-home [data-reveal="home"],
+  .js-reveal .editorial-home [data-reveal="home"].is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0ms;
+  }
+}

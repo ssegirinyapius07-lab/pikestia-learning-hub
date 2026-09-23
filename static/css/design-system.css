@@ -1695,6 +1695,18 @@ img {
 }
 
 @media(max-width:700px) {
+  .resource-row {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+    padding: 1.1rem;
+  }
+
+  .resource-row-action {
+    justify-content: flex-start;
+  }
+}
+
+@media(max-width:700px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr;
   }

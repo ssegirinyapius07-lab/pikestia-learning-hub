@@ -1287,6 +1287,25 @@ img {
 }
 
 @media(min-width:801px) {
+  .menu-panel {
+    gap: 0.85rem;
+  }
+
+  .desktop-nav {
+    gap: 0.3rem;
+  }
+
+  .desktop-nav .nav-link {
+    min-height: 40px;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+
+  .desktop-nav .nav-dropdown-toggle {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+
   .desktop-nav {
     display: flex;
   }

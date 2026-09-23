@@ -1351,6 +1351,7 @@ img {
     width: 100%;
     margin-left: 0;
   }
+}
 
 @media(max-width:800px) {
   .news-grid {

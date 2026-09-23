@@ -163,8 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Subtle scroll reveal and header elevation.
   // CSS remains responsible for the visual effect; this only detects visibility.
-  document.documentElement.classList.add('js-reveal');
-
   const revealItems = document.querySelectorAll(
     '[data-reveal], .editorial-section, .newsroom-card, .news-reading-header, .news-related-card'
   );
@@ -186,6 +184,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Only enable the global hidden/reveal state after reveal targets are prepared.
+  // This prevents a JavaScript load error from leaving page content invisible.
+  if (!prefersReducedMotion) {
+    document.documentElement.classList.add('js-reveal');
+  }
 
   revealItems.forEach(function (item) {
     if (!item.hasAttribute('data-reveal')) {

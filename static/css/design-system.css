@@ -2582,7 +2582,8 @@ time {
 }
 
 
-.whatsapp-float {
+@media (max-width: 600px) {
+  .whatsapp-float {
     right: 0.9rem;
     bottom: 0.9rem;
     width: 3rem;

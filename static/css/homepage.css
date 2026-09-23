@@ -530,7 +530,7 @@
 
 /* Homepage layout and motion: content stays visible, while sections move with the scroll. */
 .editorial-home {
-  overflow: clip;
+  overflow: visible;
 }
 
 .editorial-home .home-masthead {
@@ -854,26 +854,6 @@
 
 .editorial-home .home-practice-band .btn {
   flex: 0 0 auto;
-}
-
-@supports (animation-timeline: view()) {
-  .editorial-home .editorial-section,
-  .editorial-home .home-practice-band {
-    animation: pikestia-section-enter linear both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 30%;
-  }
-
-  @keyframes pikestia-section-enter {
-    from {
-      opacity: 0.58;
-      transform: translateY(28px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 }
 
 @media (max-width: 900px) {
@@ -2916,6 +2896,31 @@
 }
 
 
+/* Homepage content remains in normal document flow; no scroll-linked reveal is used. */
+.editorial-home .editorial-section,
+.editorial-home .lead-story,
+.editorial-home .story-card,
+.editorial-home .learning-feature,
+.editorial-home .learning-list a,
+.editorial-home .subject-tile,
+.editorial-home .opportunity-item,
+.editorial-home .home-action-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editorial-home .home-topic-row .badge,
+  .editorial-home .lead-story h3,
+  .editorial-home .story-card h3,
+  .editorial-home .learning-list strong,
+  .editorial-home .subject-tile strong,
+  .editorial-home .opportunity-item strong {
+    transition: none;
+  }
+}
+
+
 /* Homepage motion and overflow protection: reveal sections smoothly without allowing copy to collide. */
 .editorial-home .editorial-section,
 .editorial-home .lead-story,
@@ -2984,3 +2989,10 @@
     transition-delay: 0ms;
   }
 }
+
+/* Subject catalogue visuals */
+.subject-row { grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; }
+.subject-row-visual { width: 46px; height: 46px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-muted); color: var(--accent); }
+.subject-row-visual svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.subject-row:hover .subject-row-visual { border-color: var(--accent); background: var(--bg-card); }
+@media (max-width: 600px) { .subject-row { grid-template-columns: 46px minmax(0, 1fr); gap: 0.8rem; padding: 1rem 0; } .subject-row-visual { width: 40px; height: 40px; } .subject-row-visual svg { width: 21px; height: 21px; } }

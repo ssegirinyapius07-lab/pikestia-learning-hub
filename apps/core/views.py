@@ -1,8 +1,13 @@
+from django.conf import settings
+from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django_ratelimit.decorators import ratelimit
 from django.db.models import Q
 from django.utils import timezone
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from apps.subjects.models import Subject
 from apps.learning.models import LearningResource
 from apps.opportunities.models import Opportunity
@@ -111,8 +116,49 @@ def about_view(request):
     return render(request, 'core/about.html')
 
 
+@ratelimit(key='ip', rate='5/m', block=True)
+@require_http_methods(["GET", "POST"])
 def contact_view(request):
-    return render(request, 'core/contact.html')
+    if request.method == "POST":
+        name = " ".join(request.POST.get("name", "").split())[:100]
+        email = request.POST.get("email", "").strip()[:254]
+        message = request.POST.get("message", "").strip()[:5000]
+
+        if not name or not email or not message:
+            messages.error(request, "Please complete all contact fields.")
+            return render(request, "core/contact.html")
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "Please enter a valid email address.")
+            return render(request, "core/contact.html")
+
+        subject = f"Pikestia Contact Form — Message from {name}"
+        body = (
+            f"Name: {name}\n"
+            f"Email: {email}\n\n"
+            "Message:\n"
+            f"{message}\n\n"
+            f"Submitted from: {request.build_absolute_uri('/contact/')}"
+        )
+
+        email_message = EmailMessage(
+            subject=subject,
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[settings.CONTACT_EMAIL],
+            reply_to=[email],
+        )
+        email_message.send(fail_silently=False)
+
+        messages.success(
+            request,
+            "Your message has been sent successfully. We will get back to you as soon as possible.",
+        )
+        return redirect("contact")
+
+    return render(request, "core/contact.html")
 
 
 def privacy_view(request):

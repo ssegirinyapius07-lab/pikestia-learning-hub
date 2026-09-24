@@ -1,10 +1,11 @@
 from django.contrib import admin
 
 from .models import PracticeQuestion
+from apps.core.admin_permissions import AdminOnlyModelAdmin
 
 
 @admin.register(PracticeQuestion)
-class PracticeQuestionAdmin(admin.ModelAdmin):
+class PracticeQuestionAdmin(AdminOnlyModelAdmin):
     list_display = ('question_preview', 'topic', 'type', 'difficulty', 'status', 'created_at')
     list_filter = ('type', 'status', 'difficulty', 'topic__subject')
     search_fields = (

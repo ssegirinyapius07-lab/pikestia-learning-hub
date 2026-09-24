@@ -206,3 +206,28 @@
     transition: none;
   }
 }
+
+
+/* ── Authentication forms: compact desktop presentation ── */
+.auth-page .auth-container {
+  width: 100%;
+  max-width: 460px;
+}
+
+.auth-page .auth-card {
+  padding: 1.75rem;
+}
+
+.auth-page .auth-header p {
+  max-width: 380px;
+}
+
+@media (max-width: 600px) {
+  .auth-page .auth-container {
+    max-width: 100%;
+  }
+
+  .auth-page .auth-card {
+    padding: 1.35rem;
+  }
+}

@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import Subject, Topic
+from apps.core.admin_permissions import AdminOnlyModelAdmin
 
 
 class TopicInline(admin.TabularInline):
@@ -13,7 +14,7 @@ class TopicInline(admin.TabularInline):
 
 
 @admin.register(Subject)
-class SubjectAdmin(admin.ModelAdmin):
+class SubjectAdmin(AdminOnlyModelAdmin):
     list_display = ('title', 'discipline', 'status', 'topic_count', 'order')
     list_filter = ('discipline', 'status')
     search_fields = ('title', 'description', 'discipline')
@@ -38,7 +39,7 @@ class SubjectAdmin(admin.ModelAdmin):
 
 
 @admin.register(Topic)
-class TopicAdmin(admin.ModelAdmin):
+class TopicAdmin(AdminOnlyModelAdmin):
     list_display = ('title', 'subject', 'status', 'resource_count', 'order')
     list_filter = ('subject', 'status')
     search_fields = ('title', 'summary', 'learning_objectives', 'subject__title')

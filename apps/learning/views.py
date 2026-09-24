@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 
+from apps.bookmarks.models import Bookmark
 from apps.subjects.models import Subject, Topic
 
 from .models import LearningResource
@@ -16,6 +17,10 @@ def resource_detail(request, subject_slug, topic_slug, resource_slug):
         topic__slug=topic_slug,
         slug=resource_slug,
         status='published',
+    )
+    is_bookmarked = (
+        request.user.is_authenticated
+        and Bookmark.objects.filter(user=request.user, resource=resource).exists()
     )
     related = (
         LearningResource.objects.filter(topic=resource.topic, status='published')
@@ -30,6 +35,7 @@ def resource_detail(request, subject_slug, topic_slug, resource_slug):
             'related': related,
             'subject': resource.topic.subject,
             'topic': resource.topic,
+            'is_bookmarked': is_bookmarked,
         },
     )
 

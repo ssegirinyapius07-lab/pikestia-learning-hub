@@ -34,8 +34,11 @@ class LearningResourceAdmin(admin.ModelAdmin):
                 'content_raw',
             ),
             'description': (
-                'Enter the source learning content as HTML. '
-                'It is sanitized automatically before being published.'
+                'Enter the source learning content as HTML. Use semantic blocks such as '
+                '<div class="study-block study-definition">...</div> for definitions, '
+                '<div class="study-block study-formula">...</div> for formulas, '
+                '<div class="study-block study-example">...</div> for worked examples, '
+                'and regular tables for calculations. Content is sanitized automatically before publication.'
             ),
         }),
         ('Sanitized content', {

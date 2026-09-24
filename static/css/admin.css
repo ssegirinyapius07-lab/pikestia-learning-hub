@@ -1,0 +1,262 @@
+/* Pikestia Learning Hub — Django admin presentation */
+:root {
+  --pik-bg: #f7f8fa;
+  --pik-card: #ffffff;
+  --pik-text: #172033;
+  --pik-muted: #667085;
+  --pik-border: #dfe3ea;
+  --pik-accent: #2563eb;
+  --pik-accent-dark: #1d4ed8;
+}
+
+body {
+  background: var(--pik-bg);
+  color: var(--pik-text);
+}
+
+#header {
+  background: #111827;
+  border-bottom: 1px solid #273244;
+  padding: 0.8rem 2rem;
+}
+
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+#branding h1 a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+#user-tools {
+  color: #cbd5e1;
+  font-size: 0.78rem;
+}
+
+#user-tools a:link,
+#user-tools a:visited {
+  color: #fff;
+}
+
+.breadcrumbs {
+  background: transparent;
+  color: var(--pik-muted);
+  padding: 1rem 2rem 0;
+}
+
+.breadcrumbs a {
+  color: var(--pik-accent);
+}
+
+#content {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 3rem;
+}
+
+#content h1 {
+  color: var(--pik-text);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.module,
+.inline-group,
+#changelist-filter,
+.submit-row {
+  border: 1px solid var(--pik-border);
+  border-radius: 12px;
+  background: var(--pik-card);
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: #f2f4f7;
+  color: var(--pik-text);
+  border-bottom: 1px solid var(--pik-border);
+  font-weight: 750;
+}
+
+.dashboard .module {
+  overflow: hidden;
+}
+
+.dashboard .module table {
+  background: transparent;
+}
+
+.dashboard .module table tr:nth-child(even),
+#changelist table tbody tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+#changelist-filter {
+  padding-bottom: 1rem;
+}
+
+#changelist-filter h2 {
+  border-radius: 12px 12px 0 0;
+}
+
+#changelist-filter h3 {
+  color: var(--pik-muted);
+}
+
+#changelist table,
+.results table {
+  border: 1px solid var(--pik-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#changelist table thead th,
+.results table thead th {
+  background: #f2f4f7;
+}
+
+#changelist table tbody tr:hover,
+.results table tbody tr:hover {
+  background: #f7f9fc;
+}
+
+a:link,
+a:visited {
+  color: var(--pik-accent);
+}
+
+a:hover {
+  color: var(--pik-accent-dark);
+}
+
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+button {
+  border-radius: 8px;
+}
+
+input[type="submit"],
+.submit-row input.default {
+  background: var(--pik-accent);
+  border-color: var(--pik-accent);
+}
+
+input[type="submit"]:hover,
+.submit-row input.default:hover {
+  background: var(--pik-accent-dark);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
+input[type="password"],
+textarea,
+select {
+  border: 1px solid var(--pik-border);
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--pik-accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  outline: none;
+}
+
+.object-tools a,
+.addlink,
+.changelink {
+  border-radius: 8px;
+}
+
+#nav-sidebar {
+  border-right: 1px solid var(--pik-border);
+  background: #fff;
+}
+
+#nav-sidebar .current-app .section,
+#nav-sidebar .current-model {
+  color: var(--pik-accent);
+}
+
+@media (max-width: 768px) {
+  #header {
+    padding: 0.8rem 1rem;
+  }
+
+  #content {
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  .breadcrumbs {
+    padding: 0.75rem 0.75rem 0;
+  }
+
+  .module,
+  .inline-group,
+  #changelist-filter,
+  .submit-row {
+    border-radius: 10px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pik-bg: #0f141c;
+    --pik-card: #151b24;
+    --pik-text: #e5e7eb;
+    --pik-muted: #9ca3af;
+    --pik-border: #293241;
+  }
+
+  body,
+  #nav-sidebar {
+    background: var(--pik-bg);
+    color: var(--pik-text);
+  }
+
+  .module,
+  .inline-group,
+  #changelist-filter,
+  .submit-row,
+  #nav-sidebar {
+    background: var(--pik-card);
+    border-color: var(--pik-border);
+  }
+
+  .module h2,
+  .module caption,
+  .inline-group h2,
+  #changelist table thead th,
+  .results table thead th {
+    background: #1b2330;
+    color: var(--pik-text);
+    border-color: var(--pik-border);
+  }
+
+  #changelist table tbody tr:nth-child(even),
+  .results table tbody tr:nth-child(even),
+  #changelist table tbody tr:hover,
+  .results table tbody tr:hover {
+    background: #18202b;
+  }
+
+  input[type="text"], input[type="email"], input[type="url"], input[type="number"],
+  input[type="password"], textarea, select {
+    background: #111822;
+    color: var(--pik-text);
+    border-color: var(--pik-border);
+  }
+}

@@ -32,7 +32,7 @@
       </section>
       {% endif %}
 
-      <div class="reading-content rich-content">
+      <div class="reading-content rich-content" data-learning-subject="{{ subject.title|lower }}">
         {{ resource.content|safe }}
       </div>
 

@@ -1,0 +1,208 @@
+/* Pikestia Learning Hub — focused visual polish layer.
+   Keeps the design-system foundation intact while refining spacing,
+   search controls, long-form reading, and structured academic content. */
+
+/* ── Shared page width ───────────────────────────────────── */
+.container {
+  max-width: 1280px;
+  padding-left: clamp(0.75rem, 1.8vw, 1.25rem);
+  padding-right: clamp(0.75rem, 1.8vw, 1.25rem);
+}
+
+/* ── Header search: remove browser-added search decoration ─ */
+.search-form input[type="search"]::-webkit-search-decoration,
+.search-form input[type="search"]::-webkit-search-cancel-button,
+.search-form input[type="search"]::-webkit-search-results-button,
+.search-form input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.search-form input[type="search"] {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* The keyboard hint was useful during development but is too noisy
+   for the finished header. The / shortcut remains available. */
+.search-shortcut-hint {
+  display: none !important;
+}
+
+.search-form {
+  border-color: var(--border-strong);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 0 transparent;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.search-form:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.search-form input {
+  min-height: 36px;
+  padding-left: 0.9rem;
+  padding-right: 0.65rem;
+}
+
+.search-form button {
+  min-height: 36px;
+  padding: 0 0.9rem;
+  font-weight: 650;
+}
+
+/* ── Homepage and section breathing room ────────────────── */
+.editorial-home .container {
+  max-width: 1280px;
+}
+
+/* ── Long-form progress: only meaningful reading pages ──── */
+.reading-progress-bar {
+  height: 3px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+/* ── Structured academic content ────────────────────────── */
+.reading-content .study-block {
+  margin: 1.5rem 0;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--shadow);
+}
+
+.reading-content .study-block > :first-child {
+  margin-top: 0;
+}
+
+.reading-content .study-block > :last-child {
+  margin-bottom: 0;
+}
+
+.reading-content .study-definition {
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg-card));
+}
+
+.reading-content .study-formula {
+  padding: 1.15rem 1.25rem;
+  text-align: center;
+  background: var(--bg-muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  line-height: 1.55;
+  overflow-x: auto;
+}
+
+.reading-content .study-formula strong {
+  font-family: var(--font-sans);
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reading-content .study-example {
+  border-left: 3px solid var(--border-strong);
+}
+
+.reading-content .study-steps {
+  counter-reset: study-step;
+}
+
+.reading-content .study-step {
+  position: relative;
+  padding-left: 2.25rem;
+}
+
+.reading-content .study-step::before {
+  counter-increment: study-step;
+  content: counter(study-step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.55rem;
+  height: 1.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--bg-muted);
+  color: var(--text);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.reading-content sup,
+.reading-content sub {
+  line-height: 0;
+}
+
+.reading-content figure {
+  margin: 1.75rem 0;
+}
+
+.reading-content figcaption {
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* ── Mobile: use nearly the full device width ───────────── */
+@media (max-width: 600px) {
+  .container,
+  .editorial-home .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .header-inner {
+    gap: 0.6rem;
+  }
+
+  .home-masthead {
+    padding-top: 2.6rem;
+  }
+
+  .home-masthead-grid {
+    gap: 1.5rem;
+  }
+
+  .home-search {
+    gap: 0.45rem;
+  }
+
+  .home-search input {
+    min-width: 0;
+  }
+
+  .home-search .btn {
+    min-width: 92px;
+  }
+
+  .reading-content .study-block {
+    padding: 0.9rem;
+  }
+
+  .reading-content .study-formula {
+    margin-left: -0.15rem;
+    margin-right: -0.15rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-form,
+  .search-form:focus-within {
+    transition: none;
+  }
+}

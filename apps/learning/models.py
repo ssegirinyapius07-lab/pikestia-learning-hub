@@ -2,8 +2,13 @@ from django.db import models
 from django.utils.text import slugify
 import bleach
 
-ALLOWED_TAGS = ['p','h2','h3','h4','ul','ol','li','strong','em','code','pre','blockquote','a','table','thead','tbody','tr','th','td','br','hr']
-ALLOWED_ATTRS = {'a': ['href','title','rel']}
+ALLOWED_TAGS = ['p','h2','h3','h4','ul','ol','li','strong','em','code','pre','blockquote','a','table','thead','tbody','tr','th','td','br','hr','div','span','sup','sub','dl','dt','dd','figure','figcaption','mark']
+ALLOWED_ATTRS = {
+    'a': ['href', 'title', 'rel'],
+    'div': ['class'],
+    'span': ['class'],
+    'mark': ['class'],
+}
 
 class LearningResource(models.Model):
     class Status(models.TextChoices):

@@ -1,63 +1,111 @@
 {% extends "base.html" %}
 {% block title %}{{ resource.title }} | Pikestia Learning Hub{% endblock %}
+
 {% block content %}
 <div class="container section learning-reading">
-  <nav class="breadcrumb">
-    <a href="/subjects/{{ subject.slug }}/">{{ subject.title }}</a> /
-    <a href="/subjects/{{ subject.slug }}/{{ topic.slug }}/">{{ topic.title }}</a> /
-    {{ resource.title }}
+
+  <nav class="breadcrumb" aria-label="Page breadcrumb">
+    <a href="/">Home</a>
+    <a href="/subjects/{{ subject.slug }}/">{{ subject.title }}</a>
+    <a href="/subjects/{{ subject.slug }}/{{ topic.slug }}/">{{ topic.title }}</a>
+    <span aria-current="page">{{ resource.title }}</span>
   </nav>
 
-  <article class="reading-layout">
-    <header class="reading-header">
-      <p class="card-meta">{{ subject.title }} · {{ topic.title }}</p>
-      <h1>{{ resource.title }}</h1>
-      {% if resource.summary %}<p class="lead">{{ resource.summary }}</p>{% endif %}
-    </header>
+  <div class="reading-layout-enhanced">
 
-    {% if resource.objectives_list %}
-    <div class="reading-objectives">
-      <h2>Learning Objectives</h2>
-      <ul>
-        {% for o in resource.objectives_list %}<li>{{ o }}</li>{% endfor %}
-      </ul>
-    </div>
-    {% endif %}
+    <!-- Main reading column -->
+    <main class="reading-main-col" id="main-content">
 
-    <div class="rich-content reading-content">{{ resource.content|safe }}</div>
+      <article>
+        <header class="reading-header">
+          <p class="card-meta">{{ subject.title }} &middot; {{ topic.title }}</p>
+          <h1>{{ resource.title }}</h1>
+          {% if resource.summary %}<p class="lead">{{ resource.summary }}</p>{% endif %}
+          <!-- Reading time is injected here by enhancements.js -->
+        </header>
 
-    {% if resource.key_concepts %}
-    <aside class="reading-key-concepts">
-      <h2>Key Concepts</h2>
-      <p>{{ resource.key_concepts }}</p>
+        {% if resource.objectives_list %}
+        <div class="reading-objectives">
+          <h2>Learning Objectives</h2>
+          <ul>
+            {% for o in resource.objectives_list %}
+            <li>{{ o }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <div class="rich-content reading-content">
+          {{ resource.content|safe }}
+        </div>
+
+        {% if resource.key_concepts %}
+        <aside class="reading-key-concepts">
+          <h2>Key Concepts</h2>
+          <div class="key-concepts-tags">
+            {% for concept in resource.key_concepts.split(',') %}
+            <span class="key-concept-tag">{{ concept|trim }}</span>
+            {% endfor %}
+          </div>
+        </aside>
+        {% endif %}
+
+      </article>
+
+      {% if related %}
+      <section class="related-reading" aria-label="Related learning materials">
+        <div class="section-header">
+          <h2>Related materials</h2>
+        </div>
+        <div class="related-reading-list">
+          {% for r in related %}
+          <a href="/learn/{{ subject.slug }}/{{ topic.slug }}/{{ r.slug }}/">
+            <div>
+              <span class="card-meta">{{ subject.title }} &middot; {{ topic.title }}</span>
+              <h3>{{ r.title }}</h3>
+              {% if r.summary %}<p>{{ r.summary|truncatechars:120 }}</p>{% endif %}
+            </div>
+            <span class="resource-row-action" aria-hidden="true">Read &rarr;</span>
+          </a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+    </main>
+
+    <!-- Sticky sidebar (visible ≥900px; section headings injected by enhancements.js) -->
+    <aside class="reading-sidebar" aria-label="In this material">
+      <!-- Section nav is built by enhancements.js from heading IDs -->
     </aside>
-    {% endif %}
 
-    <form method="post" action="/bookmarks/toggle/" class="reading-action">
+  </div>
+
+</div>
+
+<!-- Sticky bookmark / navigation action bar -->
+{% if user.is_authenticated %}
+<div class="reading-action-bar" role="complementary" aria-label="Reading actions">
+  <div class="reading-action-info">
+    <strong>{{ resource.title|truncatechars:55 }}</strong>
+    <span>{{ subject.title }} &middot; {{ topic.title }}</span>
+  </div>
+  <div class="reading-action-btns">
+    <a href="/practice/{{ subject.slug }}/{{ topic.slug }}/" class="btn btn-ghost">Practice this topic</a>
+    <form method="post" action="/bookmarks/toggle/" style="display:inline">
       {% csrf_token %}
       <input type="hidden" name="resource_id" value="{{ resource.id }}">
-      <button class="btn btn-secondary" type="submit">Bookmark</button>
+      <button
+        class="btn btn-secondary{% if is_bookmarked %} btn-bookmarked{% endif %}"
+        type="submit"
+        data-bookmark-toggle
+        aria-pressed="{{ is_bookmarked|yesno:'true,false' }}"
+      >
+        {% if is_bookmarked %}Bookmarked{% else %}Bookmark{% endif %}
+      </button>
     </form>
-  </article>
-
-  {% if related %}
-  <section class="related-reading">
-    <div class="section-header">
-      <h2>Related</h2>
-    </div>
-    <div class="related-reading-list">
-      {% for r in related %}
-      <a href="/learn/{{ subject.slug }}/{{ topic.slug }}/{{ r.slug }}/">
-        <div>
-          <span class="card-meta">{{ subject.title }} · {{ topic.title }}</span>
-          <h3>{{ r.title }}</h3>
-          {% if r.summary %}<p>{{ r.summary|truncatechars:120 }}</p>{% endif %}
-        </div>
-        <span aria-hidden="true">→</span>
-      </a>
-      {% endfor %}
-    </div>
-  </section>
-  {% endif %}
+  </div>
 </div>
+{% endif %}
+
 {% endblock %}

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/static/css/design-system.css">
   <link rel="stylesheet" href="/static/css/homepage.css">
   <link rel="stylesheet" href="/static/css/newsroom.css">
+  <link rel="stylesheet" href="/static/css/enhancements.css">
   <script>
     (function () {
       const stored = "{{ display_mode }}";
@@ -34,189 +35,190 @@
       <button class="mobile-toggle" id="mobileToggle" aria-expanded="false" aria-controls="mainMenu">Menu</button>
       <div class="menu-panel" id="mainMenu">
         <nav class="nav desktop-nav" id="desktopNav" aria-label="Main navigation">
-        <div class="nav-dropdown">
-          <button type="button" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-            <span>Explore</span>
-            <svg class="nav-dropdown-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="m4 6 4 4 4-4"></path>
-            </svg>
-          </button>
-          <div class="nav-dropdown-panel" role="menu">
-            <div class="nav-dropdown-intro">
-              <span class="nav-dropdown-eyebrow">Discover</span>
-              <strong>Explore Pikestia</strong>
-              <span>Find academic areas, opportunities and useful insights.</span>
-            </div>
-            <div class="nav-dropdown-links">
-              <a href="/subjects/" role="menuitem">
-                <span class="nav-dropdown-link-title">Subjects</span>
-                <span class="nav-dropdown-link-meta">Browse academic areas</span>
-              </a>
-              <a href="/opportunities/" role="menuitem">
-                <span class="nav-dropdown-link-title">Opportunities</span>
-                <span class="nav-dropdown-link-meta">Find programs and openings</span>
-              </a>
-              <a href="/news/" role="menuitem">
-                <span class="nav-dropdown-link-title">News &amp; Insights</span>
-                <span class="nav-dropdown-link-meta">Read useful information</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="nav-dropdown">
-          <button type="button" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-            <span>Learn</span>
-            <svg class="nav-dropdown-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="m4 6 4 4 4-4"></path>
-            </svg>
-          </button>
-          <div class="nav-dropdown-panel" role="menu">
-            <div class="nav-dropdown-intro">
-              <span class="nav-dropdown-eyebrow">Learning</span>
-              <strong>Study and practice</strong>
-              <span>Move from learning materials to practice in one place.</span>
-            </div>
-            <div class="nav-dropdown-links">
-              <a href="/learn/" role="menuitem">
-                <span class="nav-dropdown-link-title">Learning Materials</span>
-                <span class="nav-dropdown-link-meta">Notes, topics and study content</span>
-              </a>
-              <a href="/practice/" role="menuitem">
-                <span class="nav-dropdown-link-title">Practice</span>
-                <span class="nav-dropdown-link-meta">Test your understanding</span>
-              </a>
+          <div class="nav-dropdown">
+            <button type="button" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              <span>Explore</span>
+              <svg class="nav-dropdown-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="m4 6 4 4 4-4"></path>
+              </svg>
+            </button>
+            <div class="nav-dropdown-panel" role="menu">
+              <div class="nav-dropdown-intro">
+                <span class="nav-dropdown-eyebrow">Discover</span>
+                <strong>Explore Pikestia</strong>
+                <span>Find academic areas, opportunities and useful insights.</span>
+              </div>
+              <div class="nav-dropdown-links">
+                <a href="/subjects/" role="menuitem">
+                  <span class="nav-dropdown-link-title">Subjects</span>
+                  <span class="nav-dropdown-link-meta">Browse academic areas</span>
+                </a>
+                <a href="/opportunities/" role="menuitem">
+                  <span class="nav-dropdown-link-title">Opportunities</span>
+                  <span class="nav-dropdown-link-meta">Find programs and openings</span>
+                </a>
+                <a href="/news/" role="menuitem">
+                  <span class="nav-dropdown-link-title">News &amp; Insights</span>
+                  <span class="nav-dropdown-link-meta">Read useful information</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="nav-dropdown">
-          <button type="button" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-            <span>News</span>
-            <svg class="nav-dropdown-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="m4 6 4 4 4-4"></path>
-            </svg>
-          </button>
-          <div class="nav-dropdown-panel" role="menu">
-            <div class="nav-dropdown-intro">
-              <span class="nav-dropdown-eyebrow">News &amp; Insights</span>
-              <strong>Stay informed</strong>
-              <span>Read published stories and explore topics.</span>
-            </div>
-            <div class="nav-dropdown-links">
-              <a href="/news/" role="menuitem">
-                <span class="nav-dropdown-link-title">Latest</span>
-                <span class="nav-dropdown-link-meta">All published news and insights</span>
-              </a>
-              <a href="/news/?category=academic" role="menuitem">
-                <span class="nav-dropdown-link-title">Academic</span>
-                <span class="nav-dropdown-link-meta">Education and learning</span>
-              </a>
-              <a href="/news/?category=technology" role="menuitem">
-                <span class="nav-dropdown-link-title">Technology</span>
-                <span class="nav-dropdown-link-meta">Technology and digital developments</span>
-              </a>
-              <a href="/news/?category=career" role="menuitem">
-                <span class="nav-dropdown-link-title">Career</span>
-                <span class="nav-dropdown-link-meta">Career and professional insights</span>
-              </a>
-              <a href="/news/?category=campus" role="menuitem">
-                <span class="nav-dropdown-link-title">Campus</span>
-                <span class="nav-dropdown-link-meta">Campus and university stories</span>
-              </a>
-              <a href="/news/?category=community" role="menuitem">
-                <span class="nav-dropdown-link-title">Community</span>
-                <span class="nav-dropdown-link-meta">Community stories and perspectives</span>
-              </a>
+          <div class="nav-dropdown">
+            <button type="button" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              <span>Learn</span>
+              <svg class="nav-dropdown-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="m4 6 4 4 4-4"></path>
+              </svg>
+            </button>
+            <div class="nav-dropdown-panel" role="menu">
+              <div class="nav-dropdown-intro">
+                <span class="nav-dropdown-eyebrow">Learning</span>
+                <strong>Study and practice</strong>
+                <span>Move from learning materials to practice in one place.</span>
+              </div>
+              <div class="nav-dropdown-links">
+                <a href="/learn/" role="menuitem">
+                  <span class="nav-dropdown-link-title">Learning Materials</span>
+                  <span class="nav-dropdown-link-meta">Notes, topics and study content</span>
+                </a>
+                <a href="/practice/" role="menuitem">
+                  <span class="nav-dropdown-link-title">Practice</span>
+                  <span class="nav-dropdown-link-meta">Test your understanding</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
 
-        <a href="/opportunities/" class="nav-link">Opportunities</a>
-      </nav>
+          <div class="nav-dropdown">
+            <button type="button" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              <span>News</span>
+              <svg class="nav-dropdown-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="m4 6 4 4 4-4"></path>
+              </svg>
+            </button>
+            <div class="nav-dropdown-panel" role="menu">
+              <div class="nav-dropdown-intro">
+                <span class="nav-dropdown-eyebrow">News &amp; Insights</span>
+                <strong>Stay informed</strong>
+                <span>Read published stories and explore topics.</span>
+              </div>
+              <div class="nav-dropdown-links">
+                <a href="/news/" role="menuitem">
+                  <span class="nav-dropdown-link-title">Latest</span>
+                  <span class="nav-dropdown-link-meta">All published news and insights</span>
+                </a>
+                <a href="/news/?category=academic" role="menuitem">
+                  <span class="nav-dropdown-link-title">Academic</span>
+                  <span class="nav-dropdown-link-meta">Education and learning</span>
+                </a>
+                <a href="/news/?category=technology" role="menuitem">
+                  <span class="nav-dropdown-link-title">Technology</span>
+                  <span class="nav-dropdown-link-meta">Technology and digital developments</span>
+                </a>
+                <a href="/news/?category=career" role="menuitem">
+                  <span class="nav-dropdown-link-title">Career</span>
+                  <span class="nav-dropdown-link-meta">Career and professional insights</span>
+                </a>
+                <a href="/news/?category=campus" role="menuitem">
+                  <span class="nav-dropdown-link-title">Campus</span>
+                  <span class="nav-dropdown-link-meta">Campus and university stories</span>
+                </a>
+                <a href="/news/?category=community" role="menuitem">
+                  <span class="nav-dropdown-link-title">Community</span>
+                  <span class="nav-dropdown-link-meta">Community stories and perspectives</span>
+                </a>
+              </div>
+            </div>
+          </div>
 
-      <nav class="nav mobile-nav" id="mobileNav" aria-label="Mobile navigation">
-        <a href="/explore/" class="nav-link">Explore</a>
-        <a href="/subjects/" class="nav-link">Subjects</a>
-        <a href="/learn/" class="nav-link">Learning Materials</a>
-        <a href="/practice/" class="nav-link">Practice</a>
-        <a href="/opportunities/" class="nav-link">Opportunities</a>
-        <a href="/news/" class="nav-link">News</a>
-      </nav>
+          <a href="/opportunities/" class="nav-link">Opportunities</a>
+        </nav>
+
+        <nav class="nav mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+          <a href="/explore/" class="nav-link">Explore</a>
+          <a href="/subjects/" class="nav-link">Subjects</a>
+          <a href="/learn/" class="nav-link">Learning Materials</a>
+          <a href="/practice/" class="nav-link">Practice</a>
+          <a href="/opportunities/" class="nav-link">Opportunities</a>
+          <a href="/news/" class="nav-link">News</a>
+        </nav>
         <div class="header-actions">
-        <form action="/search/" method="get" class="search-form" role="search">
-          <input type="search" name="q" placeholder="Search materials..." aria-label="Search" maxlength="100" required>
-          <button type="submit" aria-label="Search">Search</button>
-        </form>
-        <div class="theme-switcher" role="group" aria-label="Theme preference">
-          <form method="post" action="/theme/set/" class="inline-form">
-            {% csrf_token %}
-            <input type="hidden" name="display_mode" value="light">
-            <button type="submit" class="theme-option{% if display_mode == 'light' %} is-active{% endif %}"
-              aria-label="Use light theme" title="Light theme">
-              <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <circle cx="12" cy="12" r="4"></circle>
-                <path
-                  d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42">
-                </path>
-              </svg>
-              <span>Light</span>
-            </button>
+          <form action="/search/" method="get" class="search-form" role="search">
+            <input type="search" name="q" placeholder="Search materials..." aria-label="Search" maxlength="100"
+              required>
+            <button type="submit" aria-label="Search">Search</button>
           </form>
+          <div class="theme-switcher" role="group" aria-label="Theme preference">
+            <form method="post" action="/theme/set/" class="inline-form">
+              {% csrf_token %}
+              <input type="hidden" name="display_mode" value="light">
+              <button type="submit" class="theme-option{% if display_mode == 'light' %} is-active{% endif %}"
+                aria-label="Use light theme" title="Light theme">
+                <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path
+                    d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42">
+                  </path>
+                </svg>
+                <span>Light</span>
+              </button>
+            </form>
 
-          <form method="post" action="/theme/set/" class="inline-form">
-            {% csrf_token %}
-            <input type="hidden" name="display_mode" value="dark">
-            <button type="submit" class="theme-option{% if display_mode == 'dark' %} is-active{% endif %}"
-              aria-label="Use dark theme" title="Dark theme">
-              <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.7 6.7 0 0 0 9.8 9.8Z"></path>
-              </svg>
-              <span>Dark</span>
-            </button>
-          </form>
+            <form method="post" action="/theme/set/" class="inline-form">
+              {% csrf_token %}
+              <input type="hidden" name="display_mode" value="dark">
+              <button type="submit" class="theme-option{% if display_mode == 'dark' %} is-active{% endif %}"
+                aria-label="Use dark theme" title="Dark theme">
+                <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.7 6.7 0 0 0 9.8 9.8Z"></path>
+                </svg>
+                <span>Dark</span>
+              </button>
+            </form>
 
-          <form method="post" action="/theme/set/" class="inline-form">
-            {% csrf_token %}
-            <input type="hidden" name="display_mode" value="system">
-            <button type="submit" class="theme-option{% if display_mode == 'system' %} is-active{% endif %}"
-              aria-label="Use system theme" title="Follow system theme">
-              <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <rect x="3" y="4" width="18" height="13" rx="2"></rect>
-                <path d="M8 21h8M12 17v4"></path>
-              </svg>
-              <span>System</span>
-            </button>
-          </form>
-        </div>
-        {% if user.is_authenticated %}
-        <details class="account-menu">
-          <summary class="account-menu-summary">
-            <span>Account</span>
-            <svg class="account-menu-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="m4 6 4 4 4-4"></path>
-            </svg>
-          </summary>
-          <div class="account-menu-panel">
-            <div class="account-menu-user">
-              <span class="account-menu-label">Signed in as</span>
-              <strong class="account-menu-email">{{ user.email }}</strong>
-            </div>
-            <div class="account-menu-links">
-              <a href="/accounts/profile/">Profile</a>
-              <a href="/bookmarks/">Bookmarks</a>
-              <a href="/accounts/settings/">Settings</a>
-              <form method="post" action="{% url 'account_logout' %}" class="account-logout-form">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-              </form>
-            </div>
+            <form method="post" action="/theme/set/" class="inline-form">
+              {% csrf_token %}
+              <input type="hidden" name="display_mode" value="system">
+              <button type="submit" class="theme-option{% if display_mode == 'system' %} is-active{% endif %}"
+                aria-label="Use system theme" title="Follow system theme">
+                <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <rect x="3" y="4" width="18" height="13" rx="2"></rect>
+                  <path d="M8 21h8M12 17v4"></path>
+                </svg>
+                <span>System</span>
+              </button>
+            </form>
           </div>
-        </details>
-        {% else %}
-        <a href="/accounts/login/" class="btn btn-ghost">Login</a>
-        <a href="/accounts/register/" class="btn btn-primary">Sign up</a>
-        {% endif %}
+          {% if user.is_authenticated %}
+          <details class="account-menu">
+            <summary class="account-menu-summary">
+              <span>Account</span>
+              <svg class="account-menu-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="m4 6 4 4 4-4"></path>
+              </svg>
+            </summary>
+            <div class="account-menu-panel">
+              <div class="account-menu-user">
+                <span class="account-menu-label">Signed in as</span>
+                <strong class="account-menu-email">{{ user.email }}</strong>
+              </div>
+              <div class="account-menu-links">
+                <a href="/accounts/profile/">Profile</a>
+                <a href="/bookmarks/">Bookmarks</a>
+                <a href="/accounts/settings/">Settings</a>
+                <form method="post" action="{% url 'account_logout' %}" class="account-logout-form">
+                  {% csrf_token %}
+                  <button type="submit">Logout</button>
+                </form>
+              </div>
+            </div>
+          </details>
+          {% else %}
+          <a href="/accounts/login/" class="btn btn-ghost">Login</a>
+          <a href="/accounts/register/" class="btn btn-primary">Sign up</a>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -243,7 +245,8 @@
         <p>University-focused learning platform. Explore. Learn. Practice. Grow.</p>
       </div>
       <div>
-        <h5>Learn</h5><a href="/subjects/">Subjects</a><a href="/learn/">Learning Materials</a><a href="/practice/">Practice</a>
+        <h5>Learn</h5><a href="/subjects/">Subjects</a><a href="/learn/">Learning Materials</a><a
+          href="/practice/">Practice</a>
       </div>
       <div>
         <h5>Explore</h5><a href="/opportunities/">Opportunities</a><a href="/news/">News &amp; Insights</a>
@@ -257,10 +260,13 @@
     <div class="container footer-bottom">© {% now "Y" %} Pikestia Learning Hub. All rights reserved.</div>
   </footer>
 
-  <a class="whatsapp-float" href="https://wa.me/256745624829" target="_blank" rel="noopener noreferrer" aria-label="Contact Pikestia on WhatsApp" title="Contact Pikestia on WhatsApp">
+  <a class="whatsapp-float" href="https://wa.me/256745624829" target="_blank" rel="noopener noreferrer"
+    aria-label="Contact Pikestia on WhatsApp" title="Contact Pikestia on WhatsApp">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path d="M20.5 11.1a8.5 8.5 0 0 1-12.6 7.5L3.5 20l1.4-4.2A8.5 8.5 0 1 1 20.5 11.1Z"></path>
-      <path d="M8.7 7.9c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.1.3 0 .4.4.8 1 1.4 1.8 1.8.1.1.3.1.4 0l.6-.5c.2-.1.4-.2.6-.1l1.7.7c.3.1.4.3.4.5v.5c0 .3-.1.5-.4.7-.4.3-.9.4-1.4.3-1.3-.2-2.7-.9-3.8-2-1.1-1.1-1.8-2.5-2-3.8-.1-.5 0-1 .3-1.4Z"></path>
+      <path
+        d="M8.7 7.9c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.1.3 0 .4.4.8 1 1.4 1.8 1.8.1.1.3.1.4 0l.6-.5c.2-.1.4-.2.6-.1l1.7.7c.3.1.4.3.4.5v.5c0 .3-.1.5-.4.7-.4.3-.9.4-1.4.3-1.3-.2-2.7-.9-3.8-2-1.1-1.1-1.8-2.5-2-3.8-.1-.5 0-1 .3-1.4Z">
+      </path>
     </svg>
   </a>
 
@@ -282,6 +288,7 @@
 
   <script src="/static/js/theme.js"></script>
   <script src="/static/js/app.js"></script>
+  <script src="/static/js/enhancements.js" defer></script>
 </body>
 
 </html>

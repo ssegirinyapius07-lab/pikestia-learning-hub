@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ resource.title }} | Pikestia Learning Hub{% endblock %}
+
+{% block content %}
+<section class="learning-reading">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Home</a> /
+      <a href="/subjects/{{ subject.slug }}/">{{ subject.title }}</a> /
+      <a href="/learn/">Learning Materials</a> /
+      {{ resource.title }}
+    </div>
+
+    <article class="reading-layout">
+      <header class="reading-header">
+        <p class="card-meta">{{ subject.title }} · {{ topic.title }}</p>
+        <h1>{{ resource.title }}</h1>
+        {% if resource.summary %}
+        <p class="lead">{{ resource.summary }}</p>
+        {% endif %}
+      </header>
+
+      {% if resource.objectives_list %}
+      <section class="reading-objectives" aria-labelledby="objectives-heading">
+        <h2 id="objectives-heading">Learning objectives</h2>
+        <ul>
+          {% for objective in resource.objectives_list %}
+          <li>{{ objective }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %}
+
+      <div class="reading-content rich-content">
+        {{ resource.content|safe }}
+      </div>
+
+      {% if resource.key_concepts %}
+      <section class="reading-key-concepts" aria-labelledby="key-concepts-heading">
+        <h2 id="key-concepts-heading">Key concepts</h2>
+        <p>{{ resource.key_concepts }}</p>
+      </section>
+      {% endif %}
+
+      <div class="reading-action">
+        <a href="/learn/" class="btn btn-secondary">Back to Learning Materials</a>
+      </div>
+    </article>
+
+    {% if related %}
+    <section class="related-reading" aria-labelledby="related-heading">
+      <div class="section-header">
+        <h2 id="related-heading">Related materials</h2>
+      </div>
+      <div class="related-reading-list">
+        {% for item in related %}
+        <a href="/learn/{{ subject.slug }}/{{ topic.slug }}/{{ item.slug }}/">
+          <div>
+            <div class="card-meta">{{ topic.title }}</div>
+            <h3>{{ item.title }}</h3>
+            {% if item.summary %}<p>{{ item.summary|truncatechars:140 }}</p>{% endif %}
+          </div>
+          <span aria-hidden="true">→</span>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

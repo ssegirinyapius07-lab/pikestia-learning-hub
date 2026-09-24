@@ -1,0 +1,24 @@
+/* Subjects catalogue interaction */
+/* ── Subjects list: hover accent bar ─────────────────────── */
+.subject-row {
+  position: relative;
+  transition: padding-left 0.18s ease;
+}
+
+.subject-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 2px;
+}
+
+.subject-row:hover::before {
+  transform: scaleY(1);
+}

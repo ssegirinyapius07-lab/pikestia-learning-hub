@@ -1,0 +1,11 @@
+/* Practice interaction */
+/* ── Practice: richer option feedback ────────────────────── */
+.practice-option:has(input:checked) {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+.practice-option:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}

@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ── Reading progress bar ─────────────────────────────── */
   (function setupReadingProgress() {
+    if (!document.querySelector('.reading-content')) return;
+
     const bar = document.createElement('div');
     bar.className = 'reading-progress-bar';
     bar.setAttribute('role', 'presentation');

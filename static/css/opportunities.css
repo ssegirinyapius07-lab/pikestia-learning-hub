@@ -1,0 +1,53 @@
+/* Opportunities presentation */
+/* ── Opportunities: deadline urgency ─────────────────────── */
+.deadline-urgent {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .deadline-urgent {
+  color: #fca5a5;
+}
+
+.deadline-soon {
+  color: #92400e;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .deadline-soon {
+  color: #fde68a;
+}
+
+/* ── Opportunities detail: info grid ────────────────────── */
+.opportunity-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-muted);
+  margin: 1.25rem 0;
+}
+
+.opportunity-detail-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 120px;
+}
+
+.opportunity-detail-meta-item label {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.opportunity-detail-meta-item strong {
+  color: var(--text);
+  font-size: 0.92rem;
+}

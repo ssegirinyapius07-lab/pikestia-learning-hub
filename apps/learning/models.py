@@ -3,6 +3,7 @@ from django.utils.text import slugify
 import bleach
 
 ALLOWED_TAGS = ['p','h2','h3','h4','ul','ol','li','strong','em','code','pre','blockquote','a','table','thead','tbody','tr','th','td','br','hr','div','span','sup','sub','dl','dt','dd','figure','figcaption','mark']
+ALLOWED_PROTOCOLS = {'http', 'https', 'mailto'}
 ALLOWED_ATTRS = {
     'a': ['href', 'title', 'rel'],
     'div': ['class'],
@@ -38,7 +39,7 @@ class LearningResource(models.Model):
         if not self.slug: self.slug = slugify(self.title)
         # Sanitize
         raw = self.content_raw or self.content
-        cleaned = bleach.clean(raw, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRS, strip=True)
+        cleaned = bleach.clean(raw, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRS, protocols=ALLOWED_PROTOCOLS, strip=True, strip_comments=True)
         self.content = cleaned
         if not self.content_raw: self.content_raw = raw
         super().save(*args,**kwargs)

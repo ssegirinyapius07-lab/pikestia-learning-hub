@@ -1,0 +1,77 @@
+{% extends "admin/index.html" %}
+{% load static %}
+{% load admin_dashboard %}
+
+{% block content %}
+<div class="pik-admin-dashboard">
+  {% admin_dashboard_summary as summary %}
+
+  <section class="pik-admin-welcome">
+    <div>
+      <p class="pik-admin-eyebrow">Pikestia Administration</p>
+      <h1>Administration overview</h1>
+      <p>Manage learning content, newsroom publishing, opportunities, practice materials, and user accounts from one place.</p>
+    </div>
+  </section>
+
+  <section class="pik-admin-stats" aria-label="Pikestia statistics">
+    <a class="pik-admin-stat" href="{% url 'admin:accounts_user_changelist' %}">
+      <span>Users</span><strong>{{ summary.users }}</strong>
+    </a>
+    <a class="pik-admin-stat" href="{% url 'admin:learning_learningresource_changelist' %}">
+      <span>Learning materials</span><strong>{{ summary.learning }}</strong>
+    </a>
+    <a class="pik-admin-stat" href="{% url 'admin:news_newsarticle_changelist' %}">
+      <span>News articles</span><strong>{{ summary.news }}</strong>
+    </a>
+    <a class="pik-admin-stat" href="{% url 'admin:subjects_subject_changelist' %}">
+      <span>Subjects</span><strong>{{ summary.subjects }}</strong>
+    </a>
+    <a class="pik-admin-stat" href="{% url 'admin:practice_practicequestion_changelist' %}">
+      <span>Practice questions</span><strong>{{ summary.practice }}</strong>
+    </a>
+    <a class="pik-admin-stat" href="{% url 'admin:opportunities_opportunity_changelist' %}">
+      <span>Opportunities</span><strong>{{ summary.opportunities }}</strong>
+    </a>
+  </section>
+
+  <section class="pik-admin-panels">
+    <div class="pik-admin-panel">
+      <div class="pik-admin-panel-header">
+        <h2>Content status</h2>
+        <span>Current database state</span>
+      </div>
+      <div class="pik-admin-status-list">
+        <div><span>Published learning materials</span><strong>{{ summary.published_learning }}</strong></div>
+        <div><span>Published news articles</span><strong>{{ summary.published_news }}</strong></div>
+        <div><span>News awaiting review</span><strong>{{ summary.review_news }}</strong></div>
+        <div><span>Active opportunities</span><strong>{{ summary.active_opportunities }}</strong></div>
+      </div>
+    </div>
+
+    <div class="pik-admin-panel">
+      <div class="pik-admin-panel-header">
+        <h2>Recent activity</h2>
+        <a href="{% url 'admin:accounts_auditlog_changelist' %}">View audit log</a>
+      </div>
+      {% if summary.recent_activity %}
+        <div class="pik-admin-activity-list">
+          {% for item in summary.recent_activity %}
+            <div class="pik-admin-activity">
+              <div>
+                <strong>{{ item.action }}</strong>
+                <span>{% if item.user %}{{ item.user.email }}{% else %}System{% endif %}</span>
+              </div>
+              <time datetime="{{ item.created_at|date:'c' }}">{{ item.created_at|date:"M j, Y H:i" }}</time>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="pik-admin-empty">No audit activity has been recorded yet.</p>
+      {% endif %}
+    </div>
+  </section>
+</div>
+
+{{ block.super }}
+{% endblock %}

@@ -47,3 +47,7 @@ class LearningResource(models.Model):
     @property
     def objectives_list(self):
         return [o.strip() for o in self.objectives.splitlines() if o.strip()]
+
+    @property
+    def key_concepts_list(self):
+        return [c.strip() for c in self.key_concepts.split(',') if c.strip()]

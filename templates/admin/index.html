@@ -15,15 +15,18 @@
   </section>
 
   <section class="pik-admin-stats" aria-label="Pikestia statistics">
+    {% if request.user.is_superuser or request.user.role == 'admin' %}
     <a class="pik-admin-stat" href="{% url 'admin:accounts_user_changelist' %}">
       <span>Users</span><strong>{{ summary.users }}</strong>
     </a>
+    {% endif %}
     <a class="pik-admin-stat" href="{% url 'admin:learning_learningresource_changelist' %}">
       <span>Learning materials</span><strong>{{ summary.learning }}</strong>
     </a>
     <a class="pik-admin-stat" href="{% url 'admin:news_newsarticle_changelist' %}">
       <span>News articles</span><strong>{{ summary.news }}</strong>
     </a>
+    {% if request.user.is_superuser or request.user.role == 'admin' %}
     <a class="pik-admin-stat" href="{% url 'admin:subjects_subject_changelist' %}">
       <span>Subjects</span><strong>{{ summary.subjects }}</strong>
     </a>
@@ -33,6 +36,7 @@
     <a class="pik-admin-stat" href="{% url 'admin:opportunities_opportunity_changelist' %}">
       <span>Opportunities</span><strong>{{ summary.opportunities }}</strong>
     </a>
+    {% endif %}
   </section>
 
   <section class="pik-admin-panels">
@@ -49,6 +53,7 @@
       </div>
     </div>
 
+    {% if request.user.is_superuser or request.user.role == 'admin' %}
     <div class="pik-admin-panel">
       <div class="pik-admin-panel-header">
         <h2>Recent activity</h2>
@@ -70,6 +75,7 @@
         <p class="pik-admin-empty">No audit activity has been recorded yet.</p>
       {% endif %}
     </div>
+    {% endif %}
   </section>
 </div>
 

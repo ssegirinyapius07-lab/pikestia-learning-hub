@@ -5,6 +5,20 @@ from .models import NewsArticle
 
 @admin.register(NewsArticle)
 class NewsArticleAdmin(admin.ModelAdmin):
+    def has_module_permission(self, request):
+        return bool(request.user.is_superuser or request.user.role in {'admin', 'publisher'})
+
+    def has_add_permission(self, request):
+        return bool(request.user.is_superuser or request.user.role in {'admin', 'publisher'})
+
+    def has_change_permission(self, request, obj=None):
+        return bool(request.user.is_superuser or request.user.role in {'admin', 'publisher'})
+
+    def has_delete_permission(self, request, obj=None):
+        return bool(request.user.is_superuser or request.user.role == 'admin')
+
+    def has_view_permission(self, request, obj=None):
+        return bool(request.user.is_superuser or request.user.role in {'admin', 'publisher'})
     list_display = (
         'title',
         'category',

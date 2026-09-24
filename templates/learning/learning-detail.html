@@ -95,12 +95,8 @@
     <form method="post" action="/bookmarks/toggle/" style="display:inline">
       {% csrf_token %}
       <input type="hidden" name="resource_id" value="{{ resource.id }}">
-      <button
-        class="btn btn-secondary{% if is_bookmarked %} btn-bookmarked{% endif %}"
-        type="submit"
-        data-bookmark-toggle
-        aria-pressed="{{ is_bookmarked|yesno:'true,false' }}"
-      >
+      <button class="btn btn-secondary{% if is_bookmarked %} btn-bookmarked{% endif %}" type="submit"
+        data-bookmark-toggle aria-pressed="{{ is_bookmarked|yesno:'true,false' }}">
         {% if is_bookmarked %}Bookmarked{% else %}Bookmark{% endif %}
       </button>
     </form>

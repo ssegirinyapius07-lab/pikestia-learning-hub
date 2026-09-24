@@ -1,44 +1,81 @@
 {% extends "base.html" %}
 {% block title %}Subjects | Pikestia Learning Hub{% endblock %}
+
 {% block content %}
 <div class="subject-index">
+
   <header class="page-intro container">
     <p class="page-kicker">Learning catalogue</p>
     <h1>Subjects</h1>
-    <p>Explore the academic areas available on Pikestia and move from a subject into its topics and learning materials.</p>
+    <p>
+      Explore the academic areas available on Pikestia. Select a subject to find
+      its topics, structured learning materials and practice questions.
+    </p>
   </header>
 
   <section class="container subject-index-list" aria-label="Available subjects">
     {% for s in subjects %}
-    <a class="subject-row" href="/subjects/{{ s.slug }}/">
+    <a class="subject-row" href="/subjects/{{ s.slug }}/" data-reveal="soft">
+
       <div class="subject-row-visual" aria-hidden="true">
         {% if s.icon == "monitor" %}
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg>
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="13" rx="2"></rect>
+          <path d="M8 21h8M12 17v4"></path>
+        </svg>
         {% elif s.icon == "code" %}
-        <svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"></path></svg>
+        <svg viewBox="0 0 24 24">
+          <path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"></path>
+        </svg>
         {% elif s.icon == "network" %}
-        <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="6" rx="1"></rect><rect x="3" y="15" width="6" height="6" rx="1"></rect><rect x="15" y="15" width="6" height="6" rx="1"></rect><path d="M12 9v3M6 15v-2h12v2"></path></svg>
+        <svg viewBox="0 0 24 24">
+          <rect x="9" y="3" width="6" height="6" rx="1"></rect>
+          <rect x="3" y="15" width="6" height="6" rx="1"></rect>
+          <rect x="15" y="15" width="6" height="6" rx="1"></rect>
+          <path d="M12 9v3M6 15v-2h12v2"></path>
+        </svg>
         {% elif s.icon == "database" %}
-        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="7" ry="3"></ellipse><path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"></path></svg>
+        <svg viewBox="0 0 24 24">
+          <ellipse cx="12" cy="5" rx="7" ry="3"></ellipse>
+          <path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"></path>
+        </svg>
         {% elif s.icon == "shield" %}
-        <svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 4.5-2.8 8-7 10-4.2-2-7-5.5-7-10V6z"></path><path d="m9 12 2 2 4-4"></path></svg>
+        <svg viewBox="0 0 24 24">
+          <path d="M12 3 19 6v5c0 4.5-2.8 8-7 10-4.2-2-7-5.5-7-10V6z"></path>
+          <path d="m9 12 2 2 4-4"></path>
+        </svg>
         {% elif s.icon == "briefcase" %}
-        <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"></path></svg>
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="7" width="18" height="13" rx="2"></rect>
+          <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"></path>
+        </svg>
         {% elif s.icon == "calculator" %}
-        <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"></rect><path d="M8 6h8M8 11h2M14 11h2M8 15h2M14 15h2M8 19h2M14 19h2"></path></svg>
+        <svg viewBox="0 0 24 24">
+          <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+          <path d="M8 6h8M8 11h2M14 11h2M8 15h2M14 15h2M8 19h2M14 19h2"></path>
+        </svg>
         {% elif s.icon == "book" %}
-        <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16M8 7h8M8 11h8"></path></svg>
+        <svg viewBox="0 0 24 24">
+          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path>
+          <path d="M4 5.5v16M8 7h8M8 11h8"></path>
+        </svg>
         {% else %}
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg>
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="8"></circle>
+          <path d="M12 8v4l3 2"></path>
+        </svg>
         {% endif %}
       </div>
+
       <div class="subject-row-content">
         <div class="subject-row-meta">{{ s.discipline }}</div>
         <h2>{{ s.title }}</h2>
-        {% if s.description %}<p>{{ s.description|truncatechars:180 }}</p>{% endif %}
+        {% if s.description %}<p>{{ s.description|truncatechars:200 }}</p>{% endif %}
       </div>
-      <span class="subject-row-action" aria-hidden="true">Explore</span>
+
+      <span class="subject-row-action" aria-hidden="true">Explore &rarr;</span>
     </a>
+
     {% empty %}
     <div class="plain-empty">
       <h2>No subjects yet</h2>
@@ -46,5 +83,6 @@
     </div>
     {% endfor %}
   </section>
+
 </div>
 {% endblock %}

@@ -9,6 +9,7 @@ ALLOWED_CONTENT_TAGS = [
 ALLOWED_CONTENT_ATTRS = {
     'a': ['href', 'title', 'rel'],
 }
+ALLOWED_CONTENT_PROTOCOLS = {'http', 'https', 'mailto'}
 
 
 def sanitize_content(value):
@@ -16,5 +17,7 @@ def sanitize_content(value):
         value or '',
         tags=ALLOWED_CONTENT_TAGS,
         attributes=ALLOWED_CONTENT_ATTRS,
+        protocols=ALLOWED_CONTENT_PROTOCOLS,
         strip=True,
+        strip_comments=True,
     )

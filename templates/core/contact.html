@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container section">
   <article class="card contact-page">
-    <h1>Contact Pikestia</h1>
+    <h1>Contact Pikestia</h1>\n\n    {% if messages %}\n      {% for message in messages %}\n        <div class="message {{ message.tags }}" role="status">{{ message }}</div>\n      {% endfor %}\n    {% endif %}
 
     <p>Have a question, correction, suggestion, partnership idea, content concern, or technical problem? Use the information below to contact Pikestia Learning Hub.</p>
 
@@ -23,16 +23,16 @@
     <p>If you represent a student organization, university community, educational project, or other relevant initiative and want to discuss a legitimate collaboration, contact the team with a clear description of the proposal and the organization involved.</p>
 
     <h2>Send a message</h2>
-    <form class="card" method="post">
+    <form class="card" method="post" action="{% url 'contact' %}">
       {% csrf_token %}
       <label for="contact-name">Name</label>
-      <input id="contact-name" type="text" name="name" autocomplete="name" required>
+      <input id="contact-name" type="text" name="name" autocomplete="name" maxlength="100" required>
 
       <label for="contact-email">Email</label>
-      <input id="contact-email" type="email" name="email" autocomplete="email" required>
+      <input id="contact-email" type="email" name="email" autocomplete="email" maxlength="254" required>
 
       <label for="contact-message">Message</label>
-      <textarea id="contact-message" name="message" rows="7" required></textarea>
+      <textarea id="contact-message" name="message" rows="7" maxlength="5000" required></textarea>
 
       <button class="btn btn-primary" type="submit">Send Message</button>
     </form>

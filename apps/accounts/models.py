@@ -22,6 +22,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Role(models.TextChoices):
         USER = 'user', 'User'
         ADMIN = 'admin', 'Administrator'
+        PUBLISHER = 'publisher', 'Publisher'
     class DisplayMode(models.TextChoices):
         LIGHT = 'light', 'Light'
         DARK = 'dark', 'Dark'
@@ -47,6 +48,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_admin(self):
         return self.role == self.Role.ADMIN or self.is_superuser
+
+    def save(self, *args, **kwargs):
+        if self.is_superuser:
+            self.role = self.Role.ADMIN
+            self.is_staff = True
+        elif self.role in {self.Role.ADMIN, self.Role.PUBLISHER}:
+            self.is_staff = True
+        else:
+            self.is_staff = False
+        super().save(*args, **kwargs)
 
 class AuditLog(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)

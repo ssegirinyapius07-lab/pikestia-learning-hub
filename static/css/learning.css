@@ -1036,3 +1036,69 @@
   .reading-objectives, .reading-key-concepts { border: 1px solid #ccc; background: #f8f8f8; }
   body { background: #fff; color: #000; }
 }
+
+/* Keep the learning library independent from shared subject/topic row styles.
+   homepage.css also targets .resource-row, so these scoped rules reset those
+   generic layout, border, card and metadata styles only inside the library. */
+.resource-index {
+  display: block;
+  gap: 0;
+}
+
+.resource-index > .resource-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem;
+  align-items: center;
+  padding: 1.35rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transition: none;
+}
+
+.resource-index > .resource-row:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.resource-index > .resource-row .card-meta {
+  margin: 0 0 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.resource-index > .resource-row h3 {
+  margin: 0;
+  font-size: 1.18rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.resource-index > .resource-row p {
+  margin: 0.4rem 0 0;
+}
+
+.resource-index > .resource-row:hover,
+.resource-index > .resource-row:focus-visible {
+  border-color: var(--border);
+  border-bottom-color: var(--border);
+  background: transparent;
+  box-shadow: none;
+}
+
+@media (max-width: 600px) {
+  .resource-index > .resource-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.6rem;
+    padding: 1.15rem 0;
+  }
+
+  .resource-index > .resource-row .resource-row-action {
+    justify-content: flex-start;
+  }
+}
+

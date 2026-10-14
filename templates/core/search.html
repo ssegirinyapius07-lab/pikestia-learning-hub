@@ -1,61 +1,150 @@
 {% extends "base.html" %}
 
-{% block title %}Search | Pikestia Learning Hub{% endblock %}
+{% block title %}Search Pikestia | Pikestia Learning Hub{% endblock %}
 
 {% block content %}
-<div class="container section">
-  <h1>Search</h1>
+<section class="container section search-page">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a> / Search
+  </nav>
 
-  <form method="get" class="search-form-large" role="search">
+  <header class="page-intro">
+    <p class="page-kicker">Find what you need</p>
+    <h1>Search Pikestia</h1>
+    <p>Search subjects, topics, learning materials, opportunities and news from one place.</p>
+  </header>
+
+  <form method="get" class="search-form-large" role="search" aria-label="Search all Pikestia content">
     <input
       type="search"
       name="q"
       value="{{ query }}"
-      placeholder="Search Pikestia..."
+      placeholder="Try a subject, topic, skill or opportunity..."
+      aria-label="Search Pikestia"
       maxlength="100"
+      required
     >
     <button class="btn btn-primary" type="submit">Search</button>
   </form>
 
   {% if query %}
-  <div class="grid grid-2">
-    <div class="card">
-      <h3>Subjects ({{ results.subjects|length }})</h3>
-      {% for subject in results.subjects %}
-      <a class="list-item" href="/subjects/{{ subject.slug }}/">{{ subject.title }}</a>
-      {% empty %}<p>No results</p>{% endfor %}
+    <div class="search-results-summary" aria-live="polite">
+      {% if has_results %}
+        <h2>Results for “{{ query }}”</h2>
+        <p class="text-muted">{{ result_count }} matches shown across Pikestia. Each section shows up to 10 matches.</p>
+      {% else %}
+        <h2>No matches for “{{ query }}”</h2>
+        <p class="text-muted">Try a shorter search, check the spelling, or browse a section directly.</p>
+      {% endif %}
     </div>
 
-    <div class="card">
-      <h3>Topics ({{ results.topics|length }})</h3>
-      {% for topic in results.topics %}
-      <a class="list-item" href="/subjects/{{ topic.subject.slug }}/{{ topic.slug }}/">{{ topic.title }}</a>
-      {% empty %}<p>No results</p>{% endfor %}
-    </div>
+    {% if has_results %}
+    <div class="grid grid-2 search-results-grid">
+      {% if results.subjects %}
+      <section class="card search-results-group" aria-labelledby="search-subjects">
+        <h2 id="search-subjects">Subjects <span class="text-muted">({{ results.subjects|length }})</span></h2>
+        <div class="stack">
+          {% for subject in results.subjects %}
+          <a class="list-item" href="/subjects/{{ subject.slug }}/">{{ subject.title }} <span aria-hidden="true">→</span></a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
 
-    <div class="card">
-      <h3>Learning Materials ({{ results.resources|length }})</h3>
-      {% for resource in results.resources %}
-      <a class="list-item" href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
-        {{ resource.title }}
-      </a>
-      {% empty %}<p>No results</p>{% endfor %}
-    </div>
+      {% if results.topics %}
+      <section class="card search-results-group" aria-labelledby="search-topics">
+        <h2 id="search-topics">Topics <span class="text-muted">({{ results.topics|length }})</span></h2>
+        <div class="stack">
+          {% for topic in results.topics %}
+          <a class="list-item" href="/subjects/{{ topic.subject.slug }}/{{ topic.slug }}/">
+            <span><small class="text-muted">{{ topic.subject.title }}</small><br>{{ topic.title }}</span>
+            <span aria-hidden="true">→</span>
+          </a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
 
-    <div class="card">
-      <h3>Opportunities ({{ results.opportunities|length }})</h3>
-      {% for opportunity in results.opportunities %}
-      <a class="list-item" href="/opportunities/{{ opportunity.slug }}/">{{ opportunity.title }}</a>
-      {% empty %}<p>No results</p>{% endfor %}
-    </div>
+      {% if results.resources %}
+      <section class="card search-results-group" aria-labelledby="search-resources">
+        <h2 id="search-resources">Learning Materials <span class="text-muted">({{ results.resources|length }})</span></h2>
+        <div class="stack">
+          {% for resource in results.resources %}
+          <a class="list-item" href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
+            <span><small class="text-muted">{{ resource.topic.subject.title }} · {{ resource.topic.title }}</small><br>{{ resource.title }}</span>
+            <span aria-hidden="true">→</span>
+          </a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
 
-    <div class="card">
-      <h3>News ({{ results.news|length }})</h3>
-      {% for article in results.news %}
-      <a class="list-item" href="/news/{{ article.slug }}/">{{ article.title }}</a>
-      {% empty %}<p>No results</p>{% endfor %}
+      {% if results.opportunities %}
+      <section class="card search-results-group" aria-labelledby="search-opportunities">
+        <h2 id="search-opportunities">Opportunities <span class="text-muted">({{ results.opportunities|length }})</span></h2>
+        <div class="stack">
+          {% for opportunity in results.opportunities %}
+          <a class="list-item" href="/opportunities/{{ opportunity.slug }}/">{{ opportunity.title }} <span aria-hidden="true">→</span></a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      {% if results.news %}
+      <section class="card search-results-group" aria-labelledby="search-news">
+        <h2 id="search-news">News &amp; Insights <span class="text-muted">({{ results.news|length }})</span></h2>
+        <div class="stack">
+          {% for article in results.news %}
+          <a class="list-item" href="/news/{{ article.slug }}/">{{ article.title }} <span aria-hidden="true">→</span></a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
     </div>
-  </div>
+    {% endif %}
+
+    <nav class="search-recovery" aria-label="Browse Pikestia sections">
+      <h2>{% if has_results %}Continue exploring{% else %}Browse a section instead{% endif %}</h2>
+      <div class="pill-row">
+        <a class="pill" href="/subjects/">Subjects</a>
+        <a class="pill" href="/learn/">Learning Materials</a>
+        <a class="pill" href="/practice/">Practice</a>
+        <a class="pill" href="/opportunities/">Opportunities</a>
+        <a class="pill" href="/news/">News &amp; Insights</a>
+      </div>
+    </nav>
+  {% else %}
+    <section class="search-start">
+      <h2>Start with what you need</h2>
+      <p class="text-muted">Choose a section or search above to get there quickly.</p>
+      <div class="grid grid-2">
+        <a class="card card-hover search-start-link" href="/subjects/">
+          <span class="card-meta">LEARN</span>
+          <h3>Browse subjects</h3>
+          <p>Find academic areas and their topics.</p>
+        </a>
+        <a class="card card-hover search-start-link" href="/learn/">
+          <span class="card-meta">STUDY</span>
+          <h3>Learning materials</h3>
+          <p>Find structured notes and learning content.</p>
+        </a>
+        <a class="card card-hover search-start-link" href="/practice/">
+          <span class="card-meta">REVISE</span>
+          <h3>Practice and revision</h3>
+          <p>Test your understanding by topic.</p>
+        </a>
+        <a class="card card-hover search-start-link" href="/opportunities/">
+          <span class="card-meta">GROW</span>
+          <h3>Student opportunities</h3>
+          <p>Explore scholarships, internships and programmes.</p>
+        </a>
+        <a class="card card-hover search-start-link" href="/news/">
+          <span class="card-meta">DISCOVER</span>
+          <h3>News and insights</h3>
+          <p>Keep up with university, career and technology stories.</p>
+        </a>
+      </div>
+    </section>
   {% endif %}
-</div>
+</section>
 {% endblock %}

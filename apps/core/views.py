@@ -77,40 +77,88 @@ def explore_view(request):
 @ratelimit(key='ip', rate='30/m', block=True)
 def search_view(request):
     q = request.GET.get('q', '').strip()[:100]
-    results = {'subjects': [], 'topics': [], 'resources': [], 'opportunities': [], 'news': []}
+    results = {
+        'subjects': [],
+        'topics': [],
+        'resources': [],
+        'opportunities': [],
+        'news': [],
+    }
+
     if q:
         from apps.subjects.models import Subject, Topic
-        from apps.learning.models import LearningResource
-        from apps.opportunities.models import Opportunity
 
         results['subjects'] = Subject.objects.filter(
-            Q(title__icontains=q) | Q(description__icontains=q),
-            status='published',
-        )[:10]
+            Q(title__icontains=q)
+            | Q(description__icontains=q)
+            | Q(discipline__icontains=q),
+            status=Subject.Status.PUBLISHED,
+        ).order_by('order', 'title')[:10]
+
         results['topics'] = Topic.objects.filter(
-            Q(title__icontains=q) | Q(summary__icontains=q),
-            status='published',
-        ).select_related('subject')[:10]
-        results['resources'] = LearningResource.objects.filter(
-            Q(title__icontains=q) | Q(summary__icontains=q),
-            status='published',
+            Q(title__icontains=q)
+            | Q(summary__icontains=q)
+            | Q(subject__title__icontains=q),
+            status=Topic.Status.PUBLISHED,
+            subject__status=Subject.Status.PUBLISHED,
+        ).select_related('subject').order_by(
+            'subject__order', 'subject__title', 'order', 'title'
         )[:10]
+
+        results['resources'] = LearningResource.objects.filter(
+            Q(title__icontains=q)
+            | Q(summary__icontains=q)
+            | Q(key_concepts__icontains=q)
+            | Q(topic__title__icontains=q)
+            | Q(topic__subject__title__icontains=q),
+            status=LearningResource.Status.PUBLISHED,
+            topic__status='published',
+            topic__subject__status='published',
+        ).select_related(
+            'topic', 'topic__subject'
+        ).order_by(
+            'topic__subject__order',
+            'topic__subject__title',
+            'topic__order',
+            'order',
+            'title',
+        )[:10]
+
         now = timezone.now()
         results['opportunities'] = Opportunity.objects.filter(
-            Q(title__icontains=q) | Q(description__icontains=q),
-            status='active',
+            Q(title__icontains=q)
+            | Q(description__icontains=q)
+            | Q(eligibility__icontains=q)
+            | Q(location__icontains=q)
+            | Q(source_name__icontains=q)
+            | Q(category__icontains=q),
+            status=Opportunity.Status.ACTIVE,
         ).filter(
             Q(deadline__isnull=True) | Q(deadline__gt=now)
-        )[:10]
+        ).order_by('-published_at', 'title')[:10]
+
         results['news'] = NewsArticle.objects.filter(
             Q(title__icontains=q)
             | Q(summary__icontains=q)
             | Q(body__icontains=q)
+            | Q(category__icontains=q)
             | Q(author__full_name__icontains=q),
             status=NewsArticle.Status.PUBLISHED,
-        ).select_related('author').order_by('-published_at')[:10]
-    return render(request, 'core/search.html', {'query': q, 'results': results})
+        ).select_related(
+            'author'
+        ).order_by('-published_at', '-created_at')[:10]
 
+    result_count = sum(len(items) for items in results.values())
+    return render(
+        request,
+        'core/search.html',
+        {
+            'query': q,
+            'results': results,
+            'result_count': result_count,
+            'has_results': result_count > 0,
+        },
+    )
 
 def about_view(request):
     return render(request, 'core/about.html')

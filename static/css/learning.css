@@ -1123,3 +1123,64 @@
   color: var(--text);
   font-weight: 700;
 }
+
+/* Ordered lesson navigation keeps students moving through a topic. */
+.lesson-sequence-nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  margin: 2rem 0 2.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.lesson-sequence-side {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.lesson-sequence-side .card-meta {
+  margin: 0;
+}
+
+.lesson-sequence-side a {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  color: var(--text);
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.lesson-sequence-side a:hover {
+  color: var(--accent);
+}
+
+.lesson-sequence-next {
+  text-align: right;
+  justify-items: end;
+}
+
+.lesson-sequence-next a {
+  justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+  .lesson-sequence-nav {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.15rem;
+  }
+
+  .lesson-sequence-next {
+    text-align: left;
+    justify-items: start;
+  }
+
+  .lesson-sequence-next a {
+    justify-content: flex-start;
+  }
+}

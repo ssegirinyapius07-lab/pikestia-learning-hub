@@ -46,7 +46,7 @@ class LearningResource(models.Model):
         indexes = [
             models.Index(fields=['status']),
             models.Index(fields=['slug']),
-            models.Index(fields=['is_featured', 'status']),
+            models.Index(fields=['is_featured', 'status'], name='lr_featured_status_idx'),
         ]
 
     def __str__(self):

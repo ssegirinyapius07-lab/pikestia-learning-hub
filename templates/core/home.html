@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Pikestia Learning Hub — Learn. Discover. Grow.{% endblock %}
+{% block title %}Pikestia Learning Hub | Learning materials, practice and opportunities{% endblock %}
 {% block content %}
 <div class="editorial-home">
 
@@ -8,11 +8,11 @@
       <div class="home-masthead-copy">
         <p class="home-kicker">Pikestia Learning Hub</p>
         <h1>
-          <span>Learn with purpose.</span>
-          <span class="home-masthead-muted">Stay informed. Move forward.</span>
+          <span>Find your next lesson.</span>
+          <span class="home-masthead-muted">Build skills. Keep moving.</span>
         </h1>
         <p class="home-intro">
-          University-focused learning, useful opportunities and thoughtful stories brought together in one place.
+          Explore organised study materials, practice questions, campus updates and opportunities for your next step.
         </p>
         <form action="/search/" method="get" class="home-search" role="search">
           <input type="search" name="q" placeholder="Search subjects, learning materials, opportunities and news..." maxlength="100" aria-label="Search Pikestia">
@@ -22,8 +22,8 @@
 
       <aside class="home-masthead-aside">
         <span class="home-aside-label">Explore Pikestia</span>
-        <strong>Study. Discover. Prepare.</strong>
-        <p>Find learning materials, university stories and practical opportunities in one place.</p>
+        <strong>A clear way to learn</strong>
+        <p>Start with a subject, follow its topics, work through the lessons, then practise what you have learned.</p>
         {% if subjects %}
         <div class="home-topic-row">
           {% for subject in subjects|slice:":5" %}
@@ -135,7 +135,7 @@
       <div class="learning-feature">
         {% if featured %}
         {% with resource=featured|first %}
-        <span class="story-tag">{{ resource.topic.subject.title }}</span>
+        <span class="story-tag">{{ resource.topic.subject.discipline }} / {{ resource.topic.subject.title }} / {% if resource.topic.parent %}{{ resource.topic.parent.title }} / {% endif %}{{ resource.topic.title }}</span>
         <h3>{{ resource.title }}</h3>
         <p>{{ resource.summary|truncatechars:220 }}</p>
         <div class="home-feature-actions">
@@ -149,11 +149,11 @@
       </div>
 
       <div class="learning-list">
-        {% for resource in featured|slice:":5" %}
+        {% for resource in featured|slice:"1:5" %}
         <a href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
           <div>
             <strong>{{ resource.title }}</strong>
-            <span>{{ resource.topic.title }}</span>
+            <span>{{ resource.topic.subject.discipline }} / {{ resource.topic.subject.title }} / {% if resource.topic.parent %}{{ resource.topic.parent.title }} / {% endif %}{{ resource.topic.title }}</span>
           </div>
           <span aria-hidden="true">Read</span>
         </a>

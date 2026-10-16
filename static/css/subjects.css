@@ -22,3 +22,50 @@
 .subject-row:hover::before {
   transform: scaleY(1);
 }
+
+/* Navigable table of contents on long learning materials. */
+.reading-sidebar ul li a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.reading-sidebar ul li a:hover {
+  color: var(--accent);
+}
+
+.reading-sidebar ul li a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.reading-sidebar ul li a[aria-current="location"] {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* A measured, grouped subject index that mirrors the academic catalogue. */
+.subject-discipline-group + .subject-discipline-group {
+  margin-top: 2.75rem;
+}
+
+.subject-discipline-group > .editorial-section-header {
+  margin: 0 0 0.65rem;
+  padding: 0 0 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.subject-discipline-group > .editorial-section-header h2 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  letter-spacing: -0.025em;
+}
+
+.subject-discipline-group > .editorial-section-header p {
+  margin-bottom: 0.25rem;
+}
+
+.subject-discipline-group > .subject-row {
+  margin: 0;
+}

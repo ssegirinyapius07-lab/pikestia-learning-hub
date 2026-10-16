@@ -79,6 +79,23 @@
       </section>
       {% endif %}
 
+      {% if results.practice %}
+      <section class="card search-results-group" aria-labelledby="search-practice">
+        <h2 id="search-practice">Practice Questions <span class="text-muted">({{ results.practice|length }})</span></h2>
+        <div class="stack">
+          {% for question in results.practice %}
+          <a class="list-item" href="/practice/{{ question.topic.subject.slug }}/{{ question.topic.slug }}/">
+            <span>
+              <small class="text-muted">{{ question.topic.subject.discipline }} / {{ question.topic.subject.title }} / {% if question.topic.parent %}{{ question.topic.parent.title }} / {% endif %}{{ question.topic.title }}</small><br>
+              {{ question.question|truncatechars:180 }}
+            </span>
+            <span aria-hidden="true">→</span>
+          </a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
       {% if results.opportunities %}
       <section class="card search-results-group" aria-labelledby="search-opportunities">
         <h2 id="search-opportunities">Opportunities <span class="text-muted">({{ results.opportunities|length }})</span></h2>

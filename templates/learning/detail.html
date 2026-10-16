@@ -53,6 +53,33 @@
         {% endif %}
       </article>
 
+      <nav class="lesson-sequence-nav" aria-label="Lesson sequence">
+        <div class="lesson-sequence-side">
+          {% if previous_resource %}
+          <span class="card-meta">Previous lesson</span>
+          <a href="/learn/{{ subject.slug }}/{{ topic.slug }}/{{ previous_resource.slug }}/">
+            <span aria-hidden="true">&larr;</span>
+            <span>{{ previous_resource.title }}</span>
+          </a>
+          {% else %}
+          <span class="card-meta">Topic</span>
+          <a href="/subjects/{{ subject.slug }}/{{ topic.slug }}/">Back to {{ topic.title }}</a>
+          {% endif %}
+        </div>
+        <div class="lesson-sequence-side lesson-sequence-next">
+          {% if next_resource %}
+          <span class="card-meta">Next lesson</span>
+          <a href="/learn/{{ subject.slug }}/{{ topic.slug }}/{{ next_resource.slug }}/">
+            <span>{{ next_resource.title }}</span>
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+          {% else %}
+          <span class="card-meta">Topic complete</span>
+          <a href="/practice/{{ subject.slug }}/{{ topic.slug }}/">Practise this topic</a>
+          {% endif %}
+        </div>
+      </nav>
+
       {% if related %}
       <section class="related-reading" aria-label="Related learning materials">
         <div class="section-header">

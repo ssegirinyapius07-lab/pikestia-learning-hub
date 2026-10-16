@@ -8,12 +8,17 @@ def _with_public_counts(queryset):
     return queryset.annotate(
         resource_count=Count(
             'resources',
-            filter=Q(resources__status='published'),
+            filter=Q(resources__status=Topic.Status.PUBLISHED),
             distinct=True,
         ),
         question_count=Count(
             'questions',
             filter=Q(questions__status='published'),
+            distinct=True,
+        ),
+        child_count=Count(
+            'children',
+            filter=Q(children__status=Topic.Status.PUBLISHED),
             distinct=True,
         ),
     )

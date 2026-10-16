@@ -235,4 +235,39 @@ document.addEventListener('DOMContentLoaded', function () {
       }, 5000);
     }
   });
+
+
+  // Keep subject and topic filters in sync on the learning and practice pages.
+  // The user can choose a subject first, then see only topics from that subject.
+  function connectSubjectAndTopicFilters(subjectSelector, topicSelector) {
+    const subjectSelect = document.querySelector(subjectSelector);
+    const topicSelect = document.querySelector(topicSelector);
+    if (!subjectSelect || !topicSelect) return;
+
+    const topicOptions = Array.from(topicSelect.options).filter(function (option) {
+      return option.value !== '';
+    });
+
+    function updateTopicOptions() {
+      const chosenSubject = subjectSelect.value;
+
+      topicOptions.forEach(function (option) {
+        const belongsToSubject = !chosenSubject || option.dataset.subjectId === chosenSubject;
+        option.hidden = !belongsToSubject;
+        option.disabled = !belongsToSubject;
+      });
+
+      const currentOption = topicSelect.options[topicSelect.selectedIndex];
+      if (currentOption && currentOption.value && currentOption.disabled) {
+        topicSelect.value = '';
+      }
+    }
+
+    subjectSelect.addEventListener('change', updateTopicOptions);
+    updateTopicOptions();
+  }
+
+  connectSubjectAndTopicFilters('#subject-filter', '#topic-filter');
+  connectSubjectAndTopicFilters('#practice-subject-filter', '#practice-topic-filter');
+
 });

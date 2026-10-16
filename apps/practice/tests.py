@@ -98,7 +98,7 @@ class PracticeTopicTests(TestCase):
         self.assertContains(response, exercise.correct_answer)
         self.assertContains(response, 'Finish practice')
 
-def test_practice_library_searches_question_text(self):
+    def test_practice_library_searches_question_text(self):
         response = self.client.get('/practice/?q=language%20example')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['page_obj'].paginator.count, 1)

@@ -71,7 +71,7 @@ def home_view(request):
                 distinct=True,
             )
         )
-        .order_by('order', 'title')[:8]
+        .order_by('discipline', 'order', 'title')[:8]
     )
 
     featured = _public_resources().order_by(
@@ -142,7 +142,7 @@ def explore_view(request):
                 distinct=True,
             )
         )
-        .order_by('order', 'title')
+        .order_by('discipline', 'order', 'title')
     )
     return render(request, 'core/explore.html', {'subjects': subjects})
 

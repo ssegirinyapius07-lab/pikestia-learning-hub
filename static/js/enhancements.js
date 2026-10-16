@@ -214,8 +214,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const dot = document.createElement('span');
       dot.className = 'reading-progress-dot';
       dot.setAttribute('aria-hidden', 'true');
+      const link = document.createElement('a');
+      link.href = '#' + h.id;
+      link.textContent = h.textContent.replace(/#$/, '').trim();
+      link.setAttribute('aria-label', 'Jump to ' + link.textContent);
+
       li.appendChild(dot);
-      li.appendChild(document.createTextNode(h.textContent.replace(/#$/, '').trim()));
+      li.appendChild(link);
       navList.appendChild(li);
     });
 
@@ -231,9 +236,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!entry.isIntersecting) return;
         navList.querySelectorAll('li').forEach(function (li) {
           li.classList.remove('is-active');
+          const link = li.querySelector('a');
+          if (link) link.removeAttribute('aria-current');
         });
         const active = navList.querySelector('[data-target="' + entry.target.id + '"]');
-        if (active) active.classList.add('is-active');
+        if (active) {
+          active.classList.add('is-active');
+          const link = active.querySelector('a');
+          if (link) link.setAttribute('aria-current', 'location');
+        }
       });
     }, {
       rootMargin: '-20% 0px -70% 0px',

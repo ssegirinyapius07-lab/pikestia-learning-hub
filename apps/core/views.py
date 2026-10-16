@@ -14,6 +14,7 @@ from apps.core.search import filter_by_terms, with_title_relevance
 from apps.learning.models import LearningResource
 from apps.news.models import NewsArticle
 from apps.opportunities.models import Opportunity
+from apps.practice.models import PracticeQuestion
 from apps.subjects.models import Subject, Topic
 
 
@@ -71,8 +72,8 @@ def home_view(request):
 
     featured = _public_resources().order_by(
         '-is_featured',
-        '-created_at',
         'topic__subject__order',
+        'topic__subject__title',
         'topic__parent__order',
         'topic__order',
         'order',
@@ -149,6 +150,7 @@ def search_view(request):
         'subjects': [],
         'topics': [],
         'resources': [],
+        'practice': [],
         'opportunities': [],
         'news': [],
     }
@@ -217,6 +219,38 @@ def search_view(request):
             'topic__order',
             'order',
             'title',
+        )[:15]
+
+        practice_questions = PracticeQuestion.objects.filter(
+            status=PracticeQuestion.Status.PUBLISHED,
+            topic__status=Topic.Status.PUBLISHED,
+            topic__subject__status=Subject.Status.PUBLISHED,
+        ).filter(
+            Q(topic__parent__isnull=True) | Q(topic__parent__status=Topic.Status.PUBLISHED)
+        )
+        results['practice'] = with_title_relevance(
+            filter_by_terms(
+                practice_questions,
+                query,
+                (
+                    'question',
+                    'topic__title',
+                    'topic__summary',
+                    'topic__parent__title',
+                    'topic__subject__title',
+                    'topic__subject__discipline',
+                ),
+            ),
+            query,
+            title_field='question',
+        ).select_related(
+            'topic', 'topic__subject', 'topic__parent'
+        ).order_by(
+            '_search_title_rank',
+            'topic__subject__order',
+            'topic__parent__order',
+            'topic__order',
+            'id',
         )[:15]
 
         now = timezone.now()

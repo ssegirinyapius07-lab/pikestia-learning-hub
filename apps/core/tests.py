@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from apps.learning.models import LearningResource
 from apps.opportunities.models import Opportunity
+from apps.practice.models import PracticeQuestion
 from apps.subjects.models import Subject, Topic
 
 
@@ -140,3 +141,20 @@ def test_search_matches_lesson_body_and_multiple_terms(self):
         self.assertEqual(response.status_code, 200)
         self.assertIn(resource, response.context['recommended_resources'])
         self.assertContains(response, resource.title)
+
+    def test_search_includes_practice_questions_without_exposing_answers(self):
+        question = PracticeQuestion.objects.create(
+            topic=self.topic,
+            type=PracticeQuestion.QType.MCQ,
+            question='Which device forwards network packets?',
+            options=['Router', 'Keyboard', 'Monitor'],
+            correct_answer='Router',
+            explanation='Routers forward packets between networks.',
+            status=PracticeQuestion.Status.PUBLISHED,
+        )
+
+        response = self.client.get('/search/?q=forwards%20network')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(question, response.context['results']['practice'])
+        self.assertContains(response, question.question)
+        self.assertNotContains(response, question.explanation)

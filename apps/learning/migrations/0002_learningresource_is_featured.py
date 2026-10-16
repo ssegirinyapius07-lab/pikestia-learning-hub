@@ -20,6 +20,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='learningresource',
-            index=models.Index(fields=['is_featured', 'status'], name='learning_res_featured_status_idx'),
+            index=models.Index(fields=['is_featured', 'status'], name='lr_featured_status_idx'),
         ),
     ]

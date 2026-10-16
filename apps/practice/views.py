@@ -127,6 +127,10 @@ def practice_by_topic(request, subject_slug, topic_slug):
     )
 
     action = request.POST.get('action', '').strip()
+    if request.method == 'POST' and not action:
+        # Keep grading resilient when a client submits the answer field without
+        # the button name (for example, keyboard submission or older forms).
+        action = 'check'
 
     if request.method == 'POST':
         answer = request.POST.get(
@@ -136,11 +140,27 @@ def practice_by_topic(request, subject_slug, topic_slug):
 
         if action == 'check':
             current_answer = answer
-
-            practice_session['answers'][str(current_question.id)] = answer
+            answer_key = str(current_question.id)
+            practice_session['answers'][answer_key] = answer
             submitted = True
 
-            if current_question.type in (
+            was_checked = practice_session['checked'].get(answer_key, False)
+            if not was_checked:
+                # Exercise questions are reviewed against a model answer rather
+                # than automatically graded, but must still unlock Next/Finish.
+                practice_session['checked'][answer_key] = True
+
+                if current_question.type in (
+                    PracticeQuestion.QType.MCQ,
+                    PracticeQuestion.QType.SHORT,
+                ):
+                    is_correct = (
+                        _normalise_answer(answer)
+                        == _normalise_answer(current_question.correct_answer)
+                    )
+                    if is_correct:
+                        practice_session['score'] += 1
+            elif current_question.type in (
                 PracticeQuestion.QType.MCQ,
                 PracticeQuestion.QType.SHORT,
             ):
@@ -148,17 +168,6 @@ def practice_by_topic(request, subject_slug, topic_slug):
                     _normalise_answer(answer)
                     == _normalise_answer(current_question.correct_answer)
                 )
-
-                was_checked = practice_session['checked'].get(
-                    str(current_question.id),
-                    False,
-                )
-
-                if not was_checked:
-                    practice_session['checked'][str(current_question.id)] = True
-
-                    if is_correct:
-                        practice_session['score'] += 1
 
             practice_session['current_index'] = current_index
             request.session[session_key] = practice_session

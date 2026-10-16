@@ -207,6 +207,7 @@ def resource_list(request):
             'selected_subject': selected_subject,
             'selected_topic': selected_topic,
             'recommended_resources': recommended_resources,
+            'has_curated_recommendations': recommendation_base.filter(is_featured=True).exists(),
             'filter_query': urlencode(filter_params),
         },
     )

@@ -1,42 +1,55 @@
 {% extends "base.html" %}
+
 {% block title %}{{ subject.title }} | Pikestia Learning Hub{% endblock %}
+
 {% block content %}
-<div class="subject-detail">
-  <div class="container">
-    <div class="breadcrumb"><a href="/subjects/">Subjects</a> / {{ subject.title }}</div>
+<section class="container section subject-detail">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <a href="/subjects/">Subjects</a>
+    <span aria-current="page">{{ subject.title }}</span>
+  </nav>
 
-    <header class="page-intro subject-detail-intro">
-      <p class="page-kicker">{{ subject.discipline }}</p>
-      <h1>{{ subject.title }}</h1>
-      {% if subject.description %}<p>{{ subject.description }}</p>{% endif %}
-    </header>
+  <header class="page-intro subject-detail-intro">
+    <p class="page-kicker">{{ subject.discipline }} / Academic catalogue</p>
+    <h1>{{ subject.title }}</h1>
+    {% if subject.description %}<p class="lead">{{ subject.description }}</p>{% endif %}
+    <p class="text-muted">Choose a main topic to view its learning sequence, lessons and practice questions.</p>
+  </header>
 
-    <section class="topic-index" aria-labelledby="topics-heading">
-      <div class="editorial-section-header">
-        <div>
-          <h2 id="topics-heading">Topics</h2>
-          <p>Choose a topic to continue learning.</p>
-        </div>
+  <section class="topic-index" aria-labelledby="topics-heading">
+    <div class="editorial-section-header">
+      <div>
+        <h2 id="topics-heading">Topics</h2>
+        <p>Topics are arranged in the order they should be studied.</p>
       </div>
+      <span class="text-muted">{{ topics|length }} main topic{% if topics|length != 1 %}s{% endif %}</span>
+    </div>
 
-      <div class="topic-list">
-        {% for t in topics %}
-        <a class="topic-row" href="/subjects/{{ subject.slug }}/{{ t.slug }}/">
-          <div class="topic-row-index" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</div>
-          <div class="topic-row-content">
-            <h3>{{ t.title }}</h3>
-            {% if t.summary %}<p>{{ t.summary|truncatechars:220 }}</p>{% endif %}
-          </div>
-          <span class="topic-row-action" aria-hidden="true">Open topic</span>
-        </a>
-        {% empty %}
-        <div class="plain-empty">
-          <h2>No topics yet</h2>
-          <p>Published topics for this subject will appear here.</p>
+    <div class="topic-list">
+      {% for topic in topics %}
+      <article class="topic-row">
+        <div class="topic-row-index" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</div>
+        <div class="topic-row-content">
+          <h3><a href="/subjects/{{ subject.slug }}/{{ topic.slug }}/">{{ topic.title }}</a></h3>
+          {% if topic.summary %}<p>{{ topic.summary|truncatechars:220 }}</p>{% endif %}
+          <p class="text-muted">
+            {{ topic.child_count }} section{% if topic.child_count != 1 %}s{% endif %}
+            · {{ topic.resource_count }} lesson{% if topic.resource_count != 1 %}s{% endif %}
+            {% if topic.question_count %} · {{ topic.question_count }} practice question{% if topic.question_count != 1 %}s{% endif %}{% endif %}
+          </p>
         </div>
-        {% endfor %}
+        <div class="topic-row-action">
+          <a href="/subjects/{{ subject.slug }}/{{ topic.slug }}/">Open topic &rarr;</a>
+        </div>
+      </article>
+      {% empty %}
+      <div class="plain-empty">
+        <h2>No topics published yet</h2>
+        <p>This subject is available in the catalogue, but its learning sequence has not been published yet.</p>
       </div>
-    </section>
-  </div>
-</div>
+      {% endfor %}
+    </div>
+  </section>
+</section>
 {% endblock %}

@@ -58,3 +58,43 @@ class PracticeTopicTests(TestCase):
         self.assertEqual(response.context['graded_count'], 1)
         self.assertContains(response, 'Review this answer')
         self.assertContains(response, 'Python is the correct answer.')
+
+    def test_answer_submission_without_action_is_still_checked(self):
+        response = self.client.post(
+            '/practice/information-technology/programming-fundamentals/',
+            {f'question_{self.question.id}': 'Python'},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['score'], 1)
+        self.assertContains(response, 'Correct')
+
+    def test_written_exercise_can_be_reviewed_and_finished(self):
+        exercise = PracticeQuestion.objects.create(
+            topic=self.topic,
+            type=PracticeQuestion.QType.EXERCISE,
+            question='Explain why semantic HTML matters.',
+            correct_answer='Semantic HTML gives structure and meaning to page content.',
+            explanation='Meaningful elements improve structure and accessibility.',
+            status=PracticeQuestion.Status.PUBLISHED,
+        )
+        url = '/practice/information-technology/programming-fundamentals/'
+
+        # Check the first automatically graded question, then move on.
+        first = self.client.get(url)
+        self.assertEqual(first.status_code, 200)
+        self.client.post(
+            url,
+            {'action': 'check', f'question_{self.question.id}': 'Python'},
+        )
+        self.client.post(url, {'action': 'next'})
+
+        response = self.client.post(
+            url,
+            {'action': 'check', f'question_{exercise.id}': 'It gives page sections meaning.'},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['checked'])
+        self.assertContains(response, 'Compare with the model answer')
+        self.assertContains(response, exercise.correct_answer)
+        self.assertContains(response, 'Finish practice')
+

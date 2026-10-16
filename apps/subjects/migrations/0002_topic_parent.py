@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 help_text='Optional parent topic. Use this to group lessons, for example Web Design → HTML Fundamentals.',
                 null=True,
-                on_delete=django.db.models.deletion.CASCADE,
+                on_delete=django.db.models.deletion.SET_NULL,
                 related_name='children',
                 to='subjects.topic',
             ),

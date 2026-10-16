@@ -93,7 +93,7 @@ class LearningResourceListTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['page_obj'].paginator.count, 0)
 
-def test_search_matches_all_terms_across_lesson_content(self):
+    def test_search_matches_all_terms_across_lesson_content(self):
         LearningResource.objects.create(
             topic=self.programming,
             title='Semantic Markup Guide',
@@ -135,7 +135,7 @@ def test_search_matches_all_terms_across_lesson_content(self):
         self.assertTrue(response.context['has_curated_recommendations'])
         self.assertIn(featured, response.context['recommended_resources'])
 
-def test_next_and_previous_links_follow_resource_order(self):
+    def test_next_and_previous_links_follow_resource_order(self):
         for title, slug, order in (
             ('Sequence A', 'sequence-a', 100),
             ('Sequence B', 'sequence-b', 101),

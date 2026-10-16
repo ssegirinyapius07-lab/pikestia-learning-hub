@@ -69,7 +69,7 @@ class Topic(models.Model):
         indexes = [
             models.Index(fields=['slug']),
             models.Index(fields=['status']),
-            models.Index(fields=['parent', 'order']),
+            models.Index(fields=['parent', 'order'], name='subjects_to_parent_order_idx'),
         ]
 
     def __str__(self):

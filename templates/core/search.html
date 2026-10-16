@@ -57,7 +57,7 @@
         <div class="stack">
           {% for topic in results.topics %}
           <a class="list-item" href="/subjects/{{ topic.subject.slug }}/{{ topic.slug }}/">
-            <span><small class="text-muted">{{ topic.subject.title }}</small><br>{{ topic.title }}</span>
+            <span><small class="text-muted">{{ topic.subject.discipline }} / {{ topic.subject.title }} / {% if topic.parent %}{{ topic.parent.title }} / {% endif %}</small><br>{{ topic.title }}</span>
             <span aria-hidden="true">→</span>
           </a>
           {% endfor %}
@@ -71,7 +71,7 @@
         <div class="stack">
           {% for resource in results.resources %}
           <a class="list-item" href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
-            <span><small class="text-muted">{{ resource.topic.subject.title }} · {{ resource.topic.title }}</small><br>{{ resource.title }}</span>
+            <span><small class="text-muted">{{ resource.topic.subject.discipline }} / {{ resource.topic.subject.title }} / {% if resource.topic.parent %}{{ resource.topic.parent.title }} / {% endif %}{{ resource.topic.title }}</small><br>{{ resource.title }}</span>
             <span aria-hidden="true">→</span>
           </a>
           {% endfor %}

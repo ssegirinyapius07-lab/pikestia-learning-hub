@@ -39,6 +39,23 @@ def resource_detail(request, subject_slug, topic_slug, resource_slug):
         and Bookmark.objects.filter(user=request.user, resource=resource).exists()
     )
 
+    # Lessons within a topic follow the editor's order, then title and ID as
+    # stable tie-breakers. These links provide a real next/previous pathway.
+    sequence = LearningResource.objects.filter(
+        **PUBLIC_RESOURCE_FILTERS,
+        topic=resource.topic,
+    )
+    previous_resource = sequence.filter(
+        Q(order__lt=resource.order)
+        | (Q(order=resource.order) & Q(title__lt=resource.title))
+        | (Q(order=resource.order) & Q(title=resource.title) & Q(pk__lt=resource.pk))
+    ).order_by('-order', '-title', '-pk').first()
+    next_resource = sequence.filter(
+        Q(order__gt=resource.order)
+        | (Q(order=resource.order) & Q(title__gt=resource.title))
+        | (Q(order=resource.order) & Q(title=resource.title) & Q(pk__gt=resource.pk))
+    ).order_by('order', 'title', 'pk').first()
+
     related = list(
         LearningResource.objects.filter(**PUBLIC_RESOURCE_FILTERS, topic=resource.topic)
         .exclude(pk=resource.pk)
@@ -75,6 +92,8 @@ def resource_detail(request, subject_slug, topic_slug, resource_slug):
         {
             'resource': resource,
             'related': related,
+            'previous_resource': previous_resource,
+            'next_resource': next_resource,
             'subject': resource.topic.subject,
             'topic': resource.topic,
             'is_bookmarked': is_bookmarked,

@@ -6,7 +6,7 @@ ALLOWED_TAGS = [
     'p', 'h2', 'h3', 'h4', 'ul', 'ol', 'li', 'strong', 'em', 'code',
     'pre', 'blockquote', 'a', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
     'br', 'hr', 'div', 'span', 'sup', 'sub', 'dl', 'dt', 'dd', 'figure',
-    'figcaption', 'mark',
+    'figcaption', 'mark', 'img',
 ]
 ALLOWED_PROTOCOLS = {'http', 'https', 'mailto'}
 ALLOWED_ATTRS = {
@@ -14,6 +14,7 @@ ALLOWED_ATTRS = {
     'div': ['class'],
     'span': ['class'],
     'mark': ['class'],
+    'img': ['src', 'alt', 'title', 'width', 'height', 'loading'],
 }
 
 

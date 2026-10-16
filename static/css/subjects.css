@@ -23,28 +23,6 @@
   transform: scaleY(1);
 }
 
-/* Navigable table of contents on long learning materials. */
-.reading-sidebar ul li a {
-  display: block;
-  color: inherit;
-  text-decoration: none;
-}
-
-.reading-sidebar ul li a:hover {
-  color: var(--accent);
-}
-
-.reading-sidebar ul li a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-
-.reading-sidebar ul li a[aria-current="location"] {
-  color: var(--text);
-  font-weight: 700;
-}
-
 /* A measured, grouped subject index that mirrors the academic catalogue. */
 .subject-discipline-group + .subject-discipline-group {
   margin-top: 2.75rem;

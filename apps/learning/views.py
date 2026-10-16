@@ -174,16 +174,31 @@ def resource_list(request):
 
     recommended_resources = list(
         recommendation_base.filter(is_featured=True).order_by(
-            'topic__subject__order', 'topic__parent__order', 'topic__order', 'order', 'title'
+            'topic__subject__order',
+            'topic__subject__title',
+            'topic__parent__order',
+            'topic__order',
+            'order',
+            'title',
         )[:4]
     )
-    if not recommended_resources:
-        # A useful, honest fallback: start at the beginning of the published
-        # curriculum rather than pretending that recent items are personalised.
-        recommended_resources = list(
-            recommendation_base.order_by(
-                'topic__subject__order', 'topic__parent__order', 'topic__order', 'order', 'title'
-            )[:4]
+    curated_recommendation_count = len(recommended_resources)
+
+    if len(recommended_resources) < 4:
+        selected_ids = [resource.pk for resource in recommended_resources]
+        remaining = 4 - len(recommended_resources)
+        # Recommendations remain useful even when the editorial team has
+        # only selected a small number of resources: fill the list in syllabus
+        # order and do not repeat items.
+        recommended_resources.extend(
+            recommendation_base.exclude(pk__in=selected_ids).order_by(
+                'topic__subject__order',
+                'topic__subject__title',
+                'topic__parent__order',
+                'topic__order',
+                'order',
+                'title',
+            )[:remaining]
         )
 
     filter_params = {}
@@ -211,7 +226,8 @@ def resource_list(request):
             'selected_subject': selected_subject,
             'selected_topic': selected_topic,
             'recommended_resources': recommended_resources,
-            'has_curated_recommendations': recommendation_base.filter(is_featured=True).exists(),
+            'has_curated_recommendations': curated_recommendation_count > 0,
+            'curated_recommendation_count': curated_recommendation_count,
             'filter_query': urlencode(filter_params),
         },
     )

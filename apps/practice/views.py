@@ -16,7 +16,11 @@ def _normalise_answer(value):
 
 def practice_by_topic(request, subject_slug, topic_slug):
     topic = get_object_or_404(
-        Topic.objects.select_related('subject'),
+        Topic.objects.select_related('subject', 'parent').filter(
+            subject__status=Subject.Status.PUBLISHED,
+        ).filter(
+            Q(parent__isnull=True) | Q(parent__status=Topic.Status.PUBLISHED)
+        ),
         subject__slug=subject_slug,
         slug=topic_slug,
         status=Topic.Status.PUBLISHED,

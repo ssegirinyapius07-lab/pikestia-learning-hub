@@ -111,3 +111,14 @@ class HierarchicalSubjectCatalogueTests(TestCase):
         self.web_design.save(update_fields=['status'])
         response = self.client.get('/subjects/information-technology/html-fundamentals/')
         self.assertEqual(response.status_code, 404)
+
+    def test_removing_parent_preserves_child_topics_as_root_topics(self):
+        child_id = self.html.pk
+        parent_id = self.web_design.pk
+        self.web_design.delete()
+
+        surviving_child = Topic.objects.get(pk=child_id)
+        self.assertIsNone(surviving_child.parent_id)
+        self.assertEqual(surviving_child.subject_id, self.it.pk)
+        self.assertTrue(LearningResource.objects.filter(topic=surviving_child).exists())
+        self.assertFalse(Topic.objects.filter(pk=parent_id).exists())

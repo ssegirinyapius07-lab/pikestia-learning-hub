@@ -40,18 +40,22 @@ def _starting_resources(limit=4):
             'title',
         )[:limit]
     )
-    if featured:
+    featured_ids = [resource.pk for resource in featured]
+    remaining = limit - len(featured)
+    if remaining <= 0:
         return featured
 
-    return list(
-        resources.order_by(
+    curriculum_fallback = list(
+        resources.exclude(pk__in=featured_ids).order_by(
             'topic__subject__order',
+            'topic__subject__title',
             'topic__parent__order',
             'topic__order',
             'order',
             'title',
-        )[:limit]
+        )[:remaining]
     )
+    return featured + curriculum_fallback
 
 
 def home_view(request):

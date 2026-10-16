@@ -103,6 +103,41 @@
     </div>
     {% endif %}
 
+    {% if not has_results %}
+    <section class="search-recommendations" aria-labelledby="search-recommendations-heading">
+      <div class="editorial-section-header">
+        <div>
+          <p class="page-kicker">Keep learning</p>
+          <h2 id="search-recommendations-heading">A few good places to start</h2>
+          <p>Nothing matched every word in your search. Try one of these published lessons or browse the main subject areas.</p>
+        </div>
+      </div>
+
+      {% if recommended_resources %}
+      <div class="resource-index">
+        {% for resource in recommended_resources %}
+        <a class="resource-row" href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
+          <div class="resource-row-content">
+            <div class="card-meta">{{ resource.topic.subject.discipline }} / {{ resource.topic.subject.title }} / {% if resource.topic.parent %}{{ resource.topic.parent.title }} / {% endif %}{{ resource.topic.title }}</div>
+            <h3>{{ resource.title }}</h3>
+            {% if resource.summary %}<p>{{ resource.summary|truncatechars:180 }}</p>{% endif %}
+          </div>
+          <div class="resource-row-action"><span>Open lesson</span><span aria-hidden="true">&rarr;</span></div>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if recommended_subjects %}
+      <div class="pill-row" aria-label="Suggested subjects">
+        {% for subject in recommended_subjects %}
+        <a class="pill" href="/subjects/{{ subject.slug }}/">{{ subject.discipline }} / {{ subject.title }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </section>
+    {% endif %}
+
     <nav class="search-recovery" aria-label="Browse Pikestia sections">
       <h2>{% if has_results %}Continue exploring{% else %}Browse a section instead{% endif %}</h2>
       <div class="pill-row">

@@ -84,8 +84,10 @@
       <div>
         <p class="page-kicker">A good place to begin</p>
         <h2 id="recommended-heading">Recommended starting points</h2>
-        {% if has_curated_recommendations %}
+        {% if curated_recommendation_count == recommended_resources|length %}
           <p>These lessons have been selected by the Pikestia editorial team.</p>
+        {% elif has_curated_recommendations %}
+          <p>The list starts with editor-selected lessons, then follows the published learning sequence.</p>
         {% else %}
           <p>Start with the first available lessons in the published learning sequence.</p>
         {% endif %}

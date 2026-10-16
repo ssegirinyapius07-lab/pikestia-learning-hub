@@ -272,6 +272,8 @@ def practice_list(request):
         status=Subject.Status.PUBLISHED,
     ).order_by('order', 'title')
     selected_subject = subjects.filter(pk=subject_id).first() if subject_id else None
+    if subject_id and selected_subject is None:
+        subject_id = ''
 
     visible_topics = Topic.objects.filter(
         status=Topic.Status.PUBLISHED,
@@ -280,6 +282,8 @@ def practice_list(request):
         Q(parent__isnull=True) | Q(parent__status=Topic.Status.PUBLISHED)
     )
     selected_topic = visible_topics.filter(pk=topic_id).first() if topic_id else None
+    if topic_id and selected_topic is None:
+        topic_id = ''
 
     if selected_subject and selected_topic and selected_topic.subject_id != selected_subject.pk:
         topic_id = ''

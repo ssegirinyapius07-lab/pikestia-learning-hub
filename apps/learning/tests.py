@@ -134,3 +134,45 @@ def test_search_matches_all_terms_across_lesson_content(self):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['has_curated_recommendations'])
         self.assertIn(featured, response.context['recommended_resources'])
+
+def test_next_and_previous_links_follow_resource_order(self):
+        for title, slug, order in (
+            ('Sequence A', 'sequence-a', 100),
+            ('Sequence B', 'sequence-b', 101),
+            ('Sequence C', 'sequence-c', 102),
+        ):
+            LearningResource.objects.create(
+                topic=self.programming,
+                title=title,
+                slug=slug,
+                summary='A sequence lesson.',
+                content='<p>Sequence content.</p>',
+                order=order,
+                status=LearningResource.Status.PUBLISHED,
+            )
+
+        response = self.client.get(
+            '/learn/information-technology/programming-fundamentals/sequence-b/'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['previous_resource'].slug, 'sequence-a')
+        self.assertEqual(response.context['next_resource'].slug, 'sequence-c')
+        self.assertContains(response, 'Previous lesson')
+        self.assertContains(response, 'Next lesson')
+
+    def test_learning_material_keeps_safe_diagrams_but_removes_event_handlers(self):
+        resource = LearningResource.objects.create(
+            topic=self.programming,
+            title='Accessible Diagram Example',
+            slug='accessible-diagram-example',
+            summary='An image should have descriptive alternative text.',
+            content=(
+                '<p>Document structure</p>'
+                '<img src="https://example.com/html.png" alt="HTML page structure" '
+                'onerror="alert(1)">'
+            ),
+            status=LearningResource.Status.PUBLISHED,
+        )
+        self.assertIn('src="https://example.com/html.png"', resource.content)
+        self.assertIn('alt="HTML page structure"', resource.content)
+        self.assertNotIn('onerror=', resource.content)

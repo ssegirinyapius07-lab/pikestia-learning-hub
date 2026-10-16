@@ -8,7 +8,7 @@ def _with_public_counts(queryset):
     return queryset.annotate(
         resource_count=Count(
             'resources',
-            filter=Q(resources__status=Topic.Status.PUBLISHED),
+            filter=Q(resources__status='published'),
             distinct=True,
         ),
         question_count=Count(
@@ -37,7 +37,7 @@ def subject_list(request):
                 distinct=True,
             )
         )
-        .order_by('order', 'title')
+        .order_by('discipline', 'order', 'title')
     )
     return render(request, 'subjects/list.html', {'subjects': subjects})
 

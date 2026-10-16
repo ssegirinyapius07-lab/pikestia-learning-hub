@@ -48,7 +48,7 @@ class Topic(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='topics')
     parent = models.ForeignKey(
         'self',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='children',
         null=True,
         blank=True,
@@ -91,8 +91,8 @@ class Topic(models.Model):
         elif self.parent.parent_id:
             errors['parent'] = 'Choose a top-level topic as the parent. Pikestia supports one subgroup level beneath a topic.'
 
-        if self.pk and self.children.exists():
-            errors['parent'] = 'This topic already contains subtopics and cannot be moved beneath another topic.'
+        if self.parent_id and self.pk and self.children.exists():
+            errors['parent'] = 'A topic with subtopics cannot itself be moved beneath another topic.'
 
         if errors:
             raise ValidationError(errors)

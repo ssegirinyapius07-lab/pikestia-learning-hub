@@ -88,7 +88,7 @@ class GlobalSearchTests(TestCase):
         self.assertContains(response, 'href="/opportunities/"')
         self.assertContains(response, 'href="/news/"')
 
-def test_search_matches_lesson_body_and_multiple_terms(self):
+    def test_search_matches_lesson_body_and_multiple_terms(self):
         resource = LearningResource.objects.create(
             topic=self.topic,
             title='Accessible Markup',

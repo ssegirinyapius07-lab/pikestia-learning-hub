@@ -123,7 +123,7 @@ class GlobalSearchTests(TestCase):
         )
 
         response = self.client.get('/search/?q=Network%20Routing')
-        results = response.context['results']['resources']
+        results = list(response.context['results']['resources'])
         self.assertLess(results.index(title_match), results.index(body_match))
 
     def test_no_results_offer_real_published_learning_recommendations(self):

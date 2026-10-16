@@ -14,6 +14,9 @@ class TopicInline(admin.TabularInline):
     verbose_name = 'Top-level topic'
     verbose_name_plural = 'Top-level topics'
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(parent__isnull=True)
+
 
 @admin.register(Subject)
 class SubjectAdmin(AdminOnlyModelAdmin):
@@ -39,7 +42,7 @@ class SubjectAdmin(AdminOnlyModelAdmin):
         }),
     )
 
-    @admin.display(description='Top-level topics', ordering='topic_count')
+    @admin.display(description='Top-level topics')
     def topic_count(self, obj):
         return obj.topics.filter(parent__isnull=True).count()
 

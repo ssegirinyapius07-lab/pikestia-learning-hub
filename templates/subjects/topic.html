@@ -1,1 +1,125 @@
-{% extends "base.html" %}{% block content %}<div class="container section"><a href="/subjects/{{ subject.slug }}/" class="link">← {{ subject.title }}</a><h1>{{ topic.title }}</h1><p>{{ topic.summary }}</p>{% if topic.learning_objectives %}<div class="card"><h3>Learning Objectives</h3><pre>{{ topic.learning_objectives }}</pre></div>{% endif %}<h2>Learning Materials</h2><div class="stack">{% for r in resources %}<a class="card card-hover" href="/learn/{{ subject.slug }}/{{ topic.slug }}/{{ r.slug }}/"><h3>{{ r.title }}</h3><p>{{ r.summary|truncatechars:120 }}</p></a>{% endfor %}</div><h3>Related Topics</h3><div class="pill-row">{% for rt in related %}<a href="/subjects/{{ subject.slug }}/{{ rt.slug }}/" class="pill">{{ rt.title }}</a>{% endfor %}</div><a href="/practice/{{ subject.slug }}/{{ topic.slug }}/" class="btn btn-primary">Practice {{ topic.title }}</a></div>{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}{{ topic.title }} | {{ subject.title }} | Pikestia Learning Hub{% endblock %}
+
+{% block content %}
+<section class="container section topic-detail-page">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <a href="/subjects/">Subjects</a>
+    <a href="/subjects/{{ subject.slug }}/">{{ subject.title }}</a>
+    {% if topic.parent %}
+      <a href="/subjects/{{ subject.slug }}/{{ topic.parent.slug }}/">{{ topic.parent.title }}</a>
+    {% endif %}
+    <span aria-current="page">{{ topic.title }}</span>
+  </nav>
+
+  <header class="page-intro topic-detail-intro">
+    <p class="page-kicker">{{ subject.discipline }} / {{ subject.title }}</p>
+    <h1>{{ topic.title }}</h1>
+    {% if topic.summary %}
+      <p class="lead">{{ topic.summary }}</p>
+    {% else %}
+      <p class="lead">Work through the material in order, then use the practice questions to check your understanding.</p>
+    {% endif %}
+    {% if topic.learning_objectives %}
+      <div class="reading-objectives">
+        <h2>Learning objectives</h2>
+        <p>{{ topic.learning_objectives|linebreaksbr }}</p>
+      </div>
+    {% endif %}
+  </header>
+
+  {% if children %}
+  <section class="topic-index" aria-labelledby="subtopics-heading">
+    <div class="editorial-section-header">
+      <div>
+        <p class="page-kicker">Learning sequence</p>
+        <h2 id="subtopics-heading">Topics in this section</h2>
+        <p>Follow the sequence below. Each topic can contain its own lessons and practice.</p>
+      </div>
+    </div>
+
+    <div class="topic-list">
+      {% for child in children %}
+      <article class="topic-row">
+        <div class="topic-row-index" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</div>
+        <div class="topic-row-content">
+          <h3><a href="/subjects/{{ subject.slug }}/{{ child.slug }}/">{{ child.title }}</a></h3>
+          {% if child.summary %}<p>{{ child.summary|truncatechars:220 }}</p>{% endif %}
+          <p class="text-muted">
+            {{ child.resource_count }} lesson{% if child.resource_count != 1 %}s{% endif %}
+            {% if child.question_count %} · {{ child.question_count }} practice question{% if child.question_count != 1 %}s{% endif %}{% endif %}
+          </p>
+        </div>
+        <div class="topic-row-action">
+          <a href="/subjects/{{ subject.slug }}/{{ child.slug }}/">Open topic &rarr;</a>
+          {% if child.question_count %}
+            <a href="/practice/{{ subject.slug }}/{{ child.slug }}/">Practice</a>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="topic-materials" aria-labelledby="materials-heading">
+    <div class="editorial-section-header">
+      <div>
+        <p class="page-kicker">Study material</p>
+        <h2 id="materials-heading">{% if children %}Introduction and supporting lessons{% else %}Lessons{% endif %}</h2>
+        <p>Read each lesson in sequence. Learning objectives and key concepts are shown inside the material.</p>
+      </div>
+      {% if topic.question_count %}
+        <a href="/practice/{{ subject.slug }}/{{ topic.slug }}/" class="btn btn-primary">Practice this topic</a>
+      {% endif %}
+    </div>
+
+    <div class="resource-index">
+      {% for resource in resources %}
+      <a class="resource-row" href="/learn/{{ subject.slug }}/{{ topic.slug }}/{{ resource.slug }}/">
+        <div class="resource-row-content">
+          <div class="card-meta">{{ subject.title }} · {{ topic.title }} · Lesson {{ forloop.counter }}</div>
+          <h3>{{ resource.title }}</h3>
+          {% if resource.summary %}<p>{{ resource.summary|truncatechars:220 }}</p>{% endif %}
+        </div>
+        <div class="resource-row-action">
+          <span>Read lesson</span>
+          <span aria-hidden="true">&rarr;</span>
+        </div>
+      </a>
+      {% empty %}
+        {% if not children %}
+          <div class="plain-empty">
+            <h2>No lessons published yet</h2>
+            <p>This topic is in the catalogue, but its learning materials have not been published. Please check back later.</p>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+
+  {% if related %}
+  <section class="related-reading" aria-labelledby="related-topics-heading">
+    <div class="editorial-section-header">
+      <div>
+        <h2 id="related-topics-heading">{% if topic.parent %}Other topics in {{ topic.parent.title }}{% else %}Related topics{% endif %}</h2>
+        <p>Continue with another topic in the same subject.</p>
+      </div>
+    </div>
+    <div class="topic-list">
+      {% for related_topic in related %}
+      <a class="topic-row" href="/subjects/{{ subject.slug }}/{{ related_topic.slug }}/">
+        <div class="topic-row-content">
+          <h3>{{ related_topic.title }}</h3>
+          {% if related_topic.summary %}<p>{{ related_topic.summary|truncatechars:180 }}</p>{% endif %}
+        </div>
+        <span class="topic-row-action">Open topic &rarr;</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</section>
+{% endblock %}

@@ -10,7 +10,7 @@
       <div>
         <p class="card-meta">University Learning Library</p>
         <h1>Learning Materials</h1>
-        <p class="lead">Find structured study materials by subject, topic, or keyword.</p>
+        <p class="lead">Find lessons by academic group, subject, topic or keyword.</p>
       </div>
       <div class="library-count" aria-label="{{ page_obj.paginator.count }} published materials">
         <strong>{{ page_obj.paginator.count }}</strong>
@@ -26,7 +26,7 @@
       <div class="filter-search">
         <label for="materials-query">Search the library</label>
         <div class="search-form-large">
-          <input id="materials-query" type="search" name="q" value="{{ query }}" placeholder="Search titles, topics, subjects, key concepts..." maxlength="100">
+          <input id="materials-query" type="search" name="q" value="{{ query }}" placeholder="Search lesson titles, explanations, objectives, topics or key concepts" maxlength="100">
           <button type="submit" class="btn btn-primary">Search</button>
         </div>
       </div>
@@ -34,20 +34,24 @@
       <div class="filter-grid">
         <div>
           <label for="subject-filter">Subject</label>
-          <select id="subject-filter" name="subject">
+          <select id="subject-filter" name="subject" data-subject-filter>
             <option value="">All subjects</option>
             {% for subject in subjects %}
-            <option value="{{ subject.id }}"{% if selected_subject_id == subject.id|stringformat:"s" %} selected{% endif %}>{{ subject.title }}</option>
+            <option value="{{ subject.id }}"{% if selected_subject_id == subject.id|stringformat:"s" %} selected{% endif %}>
+              {{ subject.discipline }} / {{ subject.title }}
+            </option>
             {% endfor %}
           </select>
         </div>
 
         <div>
           <label for="topic-filter">Topic</label>
-          <select id="topic-filter" name="topic">
+          <select id="topic-filter" name="topic" data-topic-filter>
             <option value="">All topics</option>
             {% for topic in topics %}
-            <option value="{{ topic.id }}"{% if selected_topic_id == topic.id|stringformat:"s" %} selected{% endif %}>{{ topic.subject.title }} — {{ topic.title }}</option>
+            <option value="{{ topic.id }}" data-subject-id="{{ topic.subject_id }}"{% if selected_topic_id == topic.id|stringformat:"s" %} selected{% endif %}>
+              {{ topic.subject.title }} / {% if topic.parent %}{{ topic.parent.title }} / {% endif %}{{ topic.title }}
+            </option>
             {% endfor %}
           </select>
         </div>
@@ -64,13 +68,45 @@
 
     {% if query or selected_subject_id or selected_topic_id %}
     <div class="active-filters" aria-label="Active filters">
-      <span class="active-filters-label">Showing filtered results</span>
+      <span class="active-filters-label">Active filters</span>
       {% if query %}<span class="badge">Search: {{ query }}</span>{% endif %}
-      {% if selected_subject_id %}<span class="badge">Subject filter</span>{% endif %}
-      {% if selected_topic_id %}<span class="badge">Topic filter</span>{% endif %}
+      {% if selected_subject %}<span class="badge">{{ selected_subject.discipline }} / {{ selected_subject.title }}</span>{% endif %}
+      {% if selected_topic %}
+        <span class="badge">Topic: {% if selected_topic.parent %}{{ selected_topic.parent.title }} / {% endif %}{{ selected_topic.title }}</span>
+      {% endif %}
     </div>
     {% endif %}
   </div>
+
+  {% if not query and not selected_subject_id and not selected_topic_id and recommended_resources %}
+  <section class="recommended-starting-points" aria-labelledby="recommended-heading">
+    <div class="editorial-section-header">
+      <div>
+        <p class="page-kicker">A good place to begin</p>
+        <h2 id="recommended-heading">Recommended starting points</h2>
+        {% if curated_recommendation_count == recommended_resources|length %}
+          <p>These lessons have been selected by the Pikestia editorial team.</p>
+        {% elif has_curated_recommendations %}
+          <p>The list starts with editor-selected lessons, then follows the published learning sequence.</p>
+        {% else %}
+          <p>Start with the first available lessons in the published learning sequence.</p>
+        {% endif %}
+      </div>
+    </div>
+    <div class="resource-index">
+      {% for resource in recommended_resources %}
+      <a class="resource-row recommended-resource-row" href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
+        <div class="resource-row-content">
+          <div class="card-meta">{{ resource.topic.subject.discipline }} / {{ resource.topic.subject.title }} / {% if resource.topic.parent %}{{ resource.topic.parent.title }} / {% endif %}{{ resource.topic.title }}</div>
+          <h3>{{ resource.title }}</h3>
+          {% if resource.summary %}<p>{{ resource.summary|truncatechars:180 }}</p>{% endif %}
+        </div>
+        <div class="resource-row-action"><span>Start here</span><span aria-hidden="true">&rarr;</span></div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
 
   <div class="library-results-header">
     <div>
@@ -90,7 +126,7 @@
     {% for resource in resources %}
     <a class="resource-row" href="/learn/{{ resource.topic.subject.slug }}/{{ resource.topic.slug }}/{{ resource.slug }}/">
       <div class="resource-row-content">
-        <div class="card-meta">{{ resource.topic.subject.title }} · {{ resource.topic.title }}</div>
+        <div class="card-meta">{{ resource.topic.subject.discipline }} / {{ resource.topic.subject.title }} / {% if resource.topic.parent %}{{ resource.topic.parent.title }} / {% endif %}{{ resource.topic.title }}</div>
         <h3>{{ resource.title }}</h3>
         {% if resource.summary %}<p>{{ resource.summary|truncatechars:190 }}</p>{% endif %}
       </div>
@@ -104,7 +140,7 @@
   {% else %}
   <div class="plain-empty">
     <h2>No materials found</h2>
-    <p>Try a different keyword, subject, or topic filter.</p>
+    <p>Try a shorter keyword, choose another topic, or remove one of the filters.</p>
     <a href="/learn/" class="btn btn-secondary">View all materials</a>
   </div>
   {% endif %}

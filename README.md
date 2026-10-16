@@ -32,3 +32,19 @@ ORM only, CSRF, CSP, HSTS, rate limiting, bleach sanitization, HttpOnly cookies,
 
 ## Theming
 Light / Dark / System stored server-side in User.display_mode
+
+## Learning content standards
+
+Use the [Learning Content Guide](docs/LEARNING_CONTENT_GUIDE.md) when adding or reorganising courses. It defines the academic group → subject → main topic → subtopic → ordered lesson and practice structure, writing standards, search metadata, and publishing checklist.
+
+## Quality checks
+
+Run the Django system check and test suite before merging changes:
+
+```bash
+python manage.py check
+python manage.py makemigrations --check --dry-run
+python manage.py test
+```
+
+The repository's GitHub Actions workflow runs these checks for pushes and pull requests.

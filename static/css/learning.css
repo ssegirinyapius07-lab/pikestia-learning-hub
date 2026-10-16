@@ -1102,3 +1102,104 @@
   }
 }
 
+/* Navigable table of contents on long learning materials. */
+.reading-sidebar ul li a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.reading-sidebar ul li a:hover {
+  color: var(--accent);
+}
+
+.reading-sidebar ul li a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.reading-sidebar ul li a[aria-current="location"] {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* Ordered lesson navigation keeps students moving through a topic. */
+.lesson-sequence-nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  margin: 2rem 0 2.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.lesson-sequence-side {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.lesson-sequence-side .card-meta {
+  margin: 0;
+}
+
+.lesson-sequence-side a {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  color: var(--text);
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.lesson-sequence-side a:hover {
+  color: var(--accent);
+}
+
+.lesson-sequence-next {
+  text-align: right;
+  justify-items: end;
+}
+
+.lesson-sequence-next a {
+  justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+  .lesson-sequence-nav {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.15rem;
+  }
+
+  .lesson-sequence-next {
+    text-align: left;
+    justify-items: start;
+  }
+
+  .lesson-sequence-next a {
+    justify-content: flex-start;
+  }
+}
+
+/* Diagrams in learning material stay readable on narrow screens. */
+.reading-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.25rem auto;
+}
+
+.reading-content figure {
+  margin: 1.5rem 0;
+}
+
+.reading-content figcaption {
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}

@@ -1,32 +1,92 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
+from django.core.validators import validate_email
+from django.db.models import Count, Q
 from django.shortcuts import render, redirect
-from django.views.decorators.http import require_http_methods
-from django_ratelimit.decorators import ratelimit
-from django.db.models import Q
 from django.utils import timezone
 from django.contrib import messages
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
-from apps.subjects.models import Subject
-from apps.learning.models import LearningResource
-from apps.opportunities.models import Opportunity
+from django.views.decorators.http import require_http_methods
+from django_ratelimit.decorators import ratelimit
+
 from apps.accounts.models import CookiePreference
+from apps.core.search import filter_by_terms, with_title_relevance
+from apps.learning.models import LearningResource
 from apps.news.models import NewsArticle
+from apps.opportunities.models import Opportunity
+from apps.practice.models import PracticeQuestion
+from apps.subjects.models import Subject, Topic
+
+
+def _public_resources():
+    return LearningResource.objects.filter(
+        status=LearningResource.Status.PUBLISHED,
+        topic__status=Topic.Status.PUBLISHED,
+        topic__subject__status=Subject.Status.PUBLISHED,
+    ).filter(
+        Q(topic__parent__isnull=True) | Q(topic__parent__status=Topic.Status.PUBLISHED)
+    ).select_related('topic', 'topic__subject', 'topic__parent')
+
+
+def _starting_resources(limit=4):
+    """Return editor-selected resources, or an orderly curriculum-based fallback."""
+    resources = _public_resources()
+    featured = list(
+        resources.filter(is_featured=True).order_by(
+            'topic__subject__order',
+            'topic__parent__order',
+            'topic__order',
+            'order',
+            'title',
+        )[:limit]
+    )
+    featured_ids = [resource.pk for resource in featured]
+    remaining = limit - len(featured)
+    if remaining <= 0:
+        return featured
+
+    curriculum_fallback = list(
+        resources.exclude(pk__in=featured_ids).order_by(
+            'topic__subject__order',
+            'topic__subject__title',
+            'topic__parent__order',
+            'topic__order',
+            'order',
+            'title',
+        )[:remaining]
+    )
+    return featured + curriculum_fallback
 
 
 def home_view(request):
-    subjects = Subject.objects.filter(status='published').order_by('order')[:8]
-
-    featured = (
-        LearningResource.objects.filter(status='published')
-        .select_related('topic', 'topic__subject')
-        .order_by('-created_at')[:6]
+    subjects = (
+        Subject.objects.filter(status=Subject.Status.PUBLISHED)
+        .annotate(
+            topic_count=Count(
+                'topics',
+                filter=Q(
+                    topics__status=Topic.Status.PUBLISHED,
+                    topics__parent__isnull=True,
+                ),
+                distinct=True,
+            )
+        )
+        .order_by('discipline', 'order', 'title')[:8]
     )
+
+    featured = _public_resources().order_by(
+        '-is_featured',
+        'topic__subject__order',
+        'topic__subject__title',
+        'topic__parent__order',
+        'topic__order',
+        'order',
+        'title',
+    )[:6]
 
     now = timezone.now()
     opportunities = (
-        Opportunity.objects.filter(status='active')
+        Opportunity.objects.filter(status=Opportunity.Status.ACTIVE)
         .filter(Q(deadline__isnull=True) | Q(deadline__gt=now))
         .order_by('-published_at')[:4]
     )
@@ -70,95 +130,195 @@ def home_view(request):
 
 
 def explore_view(request):
-    subjects = Subject.objects.filter(status='published')
+    subjects = (
+        Subject.objects.filter(status=Subject.Status.PUBLISHED)
+        .annotate(
+            topic_count=Count(
+                'topics',
+                filter=Q(
+                    topics__status=Topic.Status.PUBLISHED,
+                    topics__parent__isnull=True,
+                ),
+                distinct=True,
+            )
+        )
+        .order_by('discipline', 'order', 'title')
+    )
     return render(request, 'core/explore.html', {'subjects': subjects})
 
 
 @ratelimit(key='ip', rate='30/m', block=True)
 def search_view(request):
-    q = request.GET.get('q', '').strip()[:100]
+    query = request.GET.get('q', '').strip()[:100]
     results = {
         'subjects': [],
         'topics': [],
         'resources': [],
+        'practice': [],
         'opportunities': [],
         'news': [],
     }
 
-    if q:
-        from apps.subjects.models import Subject, Topic
+    if query:
+        subjects = Subject.objects.filter(status=Subject.Status.PUBLISHED)
+        results['subjects'] = with_title_relevance(
+            filter_by_terms(subjects, query, ('title', 'description', 'discipline')),
+            query,
+        ).order_by('_search_title_rank', 'order', 'title')[:15]
 
-        results['subjects'] = Subject.objects.filter(
-            Q(title__icontains=q)
-            | Q(description__icontains=q)
-            | Q(discipline__icontains=q),
-            status=Subject.Status.PUBLISHED,
-        ).order_by('order', 'title')[:10]
-
-        results['topics'] = Topic.objects.filter(
-            Q(title__icontains=q)
-            | Q(summary__icontains=q)
-            | Q(subject__title__icontains=q),
+        visible_topics = Topic.objects.filter(
             status=Topic.Status.PUBLISHED,
             subject__status=Subject.Status.PUBLISHED,
-        ).select_related('subject').order_by(
-            'subject__order', 'subject__title', 'order', 'title'
-        )[:10]
-
-        results['resources'] = LearningResource.objects.filter(
-            Q(title__icontains=q)
-            | Q(summary__icontains=q)
-            | Q(key_concepts__icontains=q)
-            | Q(topic__title__icontains=q)
-            | Q(topic__subject__title__icontains=q),
-            status=LearningResource.Status.PUBLISHED,
-            topic__status='published',
-            topic__subject__status='published',
+        ).filter(
+            Q(parent__isnull=True) | Q(parent__status=Topic.Status.PUBLISHED)
+        )
+        results['topics'] = with_title_relevance(
+            filter_by_terms(
+                visible_topics,
+                query,
+                (
+                    'title',
+                    'summary',
+                    'learning_objectives',
+                    'subject__title',
+                    'subject__discipline',
+                    'parent__title',
+                ),
+            ),
+            query,
         ).select_related(
-            'topic', 'topic__subject'
+            'subject', 'parent'
         ).order_by(
+            '_search_title_rank',
+            'subject__order',
+            'subject__title',
+            'parent__order',
+            'order',
+            'title',
+        )[:15]
+
+        results['resources'] = with_title_relevance(
+            filter_by_terms(
+                _public_resources(),
+                query,
+                (
+                    'title',
+                    'summary',
+                    'objectives',
+                    'key_concepts',
+                    'content',
+                    'topic__title',
+                    'topic__summary',
+                    'topic__learning_objectives',
+                    'topic__parent__title',
+                    'topic__subject__title',
+                    'topic__subject__discipline',
+                ),
+            ),
+            query,
+        ).order_by(
+            '_search_title_rank',
             'topic__subject__order',
-            'topic__subject__title',
+            'topic__parent__order',
             'topic__order',
             'order',
             'title',
-        )[:10]
+        )[:15]
+
+        practice_questions = PracticeQuestion.objects.filter(
+            status=PracticeQuestion.Status.PUBLISHED,
+            topic__status=Topic.Status.PUBLISHED,
+            topic__subject__status=Subject.Status.PUBLISHED,
+        ).filter(
+            Q(topic__parent__isnull=True) | Q(topic__parent__status=Topic.Status.PUBLISHED)
+        )
+        results['practice'] = with_title_relevance(
+            filter_by_terms(
+                practice_questions,
+                query,
+                (
+                    'question',
+                    'topic__title',
+                    'topic__summary',
+                    'topic__parent__title',
+                    'topic__subject__title',
+                    'topic__subject__discipline',
+                ),
+            ),
+            query,
+            title_field='question',
+        ).select_related(
+            'topic', 'topic__subject', 'topic__parent'
+        ).order_by(
+            '_search_title_rank',
+            'topic__subject__order',
+            'topic__parent__order',
+            'topic__order',
+            'id',
+        )[:15]
 
         now = timezone.now()
-        results['opportunities'] = Opportunity.objects.filter(
-            Q(title__icontains=q)
-            | Q(description__icontains=q)
-            | Q(eligibility__icontains=q)
-            | Q(location__icontains=q)
-            | Q(source_name__icontains=q)
-            | Q(category__icontains=q),
+        opportunities = Opportunity.objects.filter(
             status=Opportunity.Status.ACTIVE,
         ).filter(
             Q(deadline__isnull=True) | Q(deadline__gt=now)
-        ).order_by('-published_at', 'title')[:10]
+        )
+        results['opportunities'] = with_title_relevance(
+            filter_by_terms(
+                opportunities,
+                query,
+                (
+                    'title',
+                    'description',
+                    'eligibility',
+                    'location',
+                    'source_name',
+                    'category',
+                ),
+            ),
+            query,
+        ).order_by('_search_title_rank', '-published_at', 'title')[:15]
 
-        results['news'] = NewsArticle.objects.filter(
-            Q(title__icontains=q)
-            | Q(summary__icontains=q)
-            | Q(body__icontains=q)
-            | Q(category__icontains=q)
-            | Q(author__full_name__icontains=q),
-            status=NewsArticle.Status.PUBLISHED,
-        ).select_related(
-            'author'
-        ).order_by('-published_at', '-created_at')[:10]
+        articles = NewsArticle.objects.filter(status=NewsArticle.Status.PUBLISHED)
+        results['news'] = with_title_relevance(
+            filter_by_terms(
+                articles,
+                query,
+                (
+                    'title',
+                    'summary',
+                    'body',
+                    'category',
+                    'author__full_name',
+                ),
+            ),
+            query,
+        ).select_related('author').order_by(
+            '_search_title_rank',
+            '-published_at',
+            '-created_at',
+        )[:15]
 
     result_count = sum(len(items) for items in results.values())
+    has_results = result_count > 0
+
     return render(
         request,
         'core/search.html',
         {
-            'query': q,
+            'query': query,
             'results': results,
             'result_count': result_count,
-            'has_results': result_count > 0,
+            'has_results': has_results,
+            'recommended_resources': [] if has_results else _starting_resources(),
+            'recommended_subjects': (
+                Subject.objects.filter(status=Subject.Status.PUBLISHED)
+                .order_by('order', 'title')[:4]
+                if not has_results else []
+            ),
         },
     )
+
 
 def about_view(request):
     return render(request, 'core/about.html')
@@ -236,20 +396,19 @@ def set_theme_view(request):
         return redirect('/')
     if request.user.is_authenticated:
         request.user.display_mode = mode
-        from django.utils import timezone
         request.user.last_theme_sync = timezone.now()
         request.user.save(update_fields=['display_mode', 'last_theme_sync'])
     request.session['display_mode'] = mode
-    resp = redirect(request.META.get('HTTP_REFERER', '/'))
-    resp.set_cookie(
+    response = redirect(request.META.get('HTTP_REFERER', '/'))
+    response.set_cookie(
         'display_mode',
         mode,
         max_age=60 * 60 * 24 * 365,
         samesite='Lax',
-        secure=False,
+        secure=not settings.DEBUG,
         httponly=False,
     )
-    return resp
+    return response
 
 
 @require_http_methods(["POST"])
@@ -262,26 +421,33 @@ def set_cookie_consent_view(request):
         marketing = False
 
     if request.user.is_authenticated:
-        pref, _ = CookiePreference.objects.get_or_create(user=request.user)
-        pref.analytics = analytics
-        pref.marketing = marketing
-        pref.save()
+        preference, _ = CookiePreference.objects.get_or_create(user=request.user)
+        preference.analytics = analytics
+        preference.marketing = marketing
+        preference.save()
     else:
-        session_key = request.session.session_key or ''
-        pref, _ = CookiePreference.objects.get_or_create(session_key=session_key, user=None)
-        pref.analytics = analytics
-        pref.marketing = marketing
-        pref.save()
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+        preference, _ = CookiePreference.objects.get_or_create(
+            session_key=session_key,
+            user=None,
+        )
+        preference.analytics = analytics
+        preference.marketing = marketing
+        preference.save()
 
-    resp = redirect(request.META.get('HTTP_REFERER', '/'))
+    response = redirect(request.META.get('HTTP_REFERER', '/'))
     import json
-    resp.set_cookie(
+    response.set_cookie(
         'cookie_consent',
         json.dumps({'analytics': analytics, 'marketing': marketing}),
         max_age=60 * 60 * 24 * 365,
         samesite='Lax',
+        secure=not settings.DEBUG,
     )
-    return resp
+    return response
 
 
 def error_400(request, exception=None):

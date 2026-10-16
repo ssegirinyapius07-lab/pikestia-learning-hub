@@ -47,11 +47,41 @@
       </div>
       <div class="pik-admin-status-list">
         <div><span>Published learning materials</span><strong>{{ summary.published_learning }}</strong></div>
+        <div><span>Featured lessons</span><strong>{{ summary.featured_learning }}</strong></div>
+        <div><span>Draft learning materials</span><strong>{{ summary.draft_learning }}</strong></div>
         <div><span>Published news articles</span><strong>{{ summary.published_news }}</strong></div>
         <div><span>News awaiting review</span><strong>{{ summary.review_news }}</strong></div>
         <div><span>Active opportunities</span><strong>{{ summary.active_opportunities }}</strong></div>
       </div>
     </div>
+
+    {% if request.user.is_superuser or request.user.role == 'admin' %}
+    <div class="pik-admin-panel">
+      <div class="pik-admin-panel-header">
+        <h2>Catalogue quality</h2>
+        <span>Editorial checks</span>
+      </div>
+      <div class="pik-admin-status-list">
+        <div>
+          <span>Published subjects without topics</span>
+          <strong>{{ summary.published_subjects_without_topics }}</strong>
+        </div>
+        <div>
+          <span>Published topics without lessons or subtopics</span>
+          <strong>{{ summary.published_topics_without_learning }}</strong>
+        </div>
+        <div>
+          <span>Published lessons missing a summary, objectives or key concepts</span>
+          <strong>{{ summary.resources_needing_editorial_review }}</strong>
+        </div>
+      </div>
+      <div class="pik-admin-panel-header">
+        <a href="{% url 'admin:subjects_subject_changelist' %}">Review subjects</a>
+        <a href="{% url 'admin:subjects_topic_changelist' %}">Arrange topics</a>
+        <a href="{% url 'admin:learning_learningresource_changelist' %}">Edit lessons</a>
+      </div>
+    </div>
+    {% endif %}
 
     {% if request.user.is_superuser or request.user.role == 'admin' %}
     <div class="pik-admin-panel">

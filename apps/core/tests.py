@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from apps.learning.models import LearningResource
 from apps.opportunities.models import Opportunity
+from apps.practice.models import PracticeQuestion
 from apps.subjects.models import Subject, Topic
 
 
@@ -86,3 +87,74 @@ class GlobalSearchTests(TestCase):
         self.assertContains(response, 'Start with what you need')
         self.assertContains(response, 'href="/opportunities/"')
         self.assertContains(response, 'href="/news/"')
+
+    def test_search_matches_lesson_body_and_multiple_terms(self):
+        resource = LearningResource.objects.create(
+            topic=self.topic,
+            title='Accessible Markup',
+            slug='accessible-markup',
+            summary='A guide to semantic elements.',
+            objectives='Use semantic HTML in a document',
+            key_concepts='HTML, semantics, accessibility',
+            content='<p>Semantic elements give structure and meaning to a web page.</p>',
+            status=LearningResource.Status.PUBLISHED,
+        )
+
+        response = self.client.get('/search/?q=semantic%20elements')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(resource, response.context['results']['resources'])
+
+    def test_title_matches_are_ranked_ahead_of_body_only_matches(self):
+        title_match = LearningResource.objects.create(
+            topic=self.topic,
+            title='Network Routing Basics',
+            slug='network-routing-basics',
+            summary='Learn the foundations.',
+            content='<p>Moving information across networks.</p>',
+            status=LearningResource.Status.PUBLISHED,
+        )
+        body_match = LearningResource.objects.create(
+            topic=self.topic,
+            title='Moving Data',
+            slug='moving-data',
+            summary='An overview.',
+            content='<p>Network routing makes this possible.</p>',
+            status=LearningResource.Status.PUBLISHED,
+        )
+
+        response = self.client.get('/search/?q=Network%20Routing')
+        results = list(response.context['results']['resources'])
+        self.assertLess(results.index(title_match), results.index(body_match))
+
+    def test_no_results_offer_real_published_learning_recommendations(self):
+        resource = LearningResource.objects.create(
+            topic=self.topic,
+            title='Recommended Networking Introduction',
+            slug='recommended-networking-introduction',
+            summary='Start learning the basics.',
+            content='<p>An introduction.</p>',
+            status=LearningResource.Status.PUBLISHED,
+            is_featured=True,
+        )
+
+        response = self.client.get('/search/?q=no-result-will-match')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(resource, response.context['recommended_resources'])
+        self.assertContains(response, resource.title)
+
+    def test_search_includes_practice_questions_without_exposing_answers(self):
+        question = PracticeQuestion.objects.create(
+            topic=self.topic,
+            type=PracticeQuestion.QType.MCQ,
+            question='Which device forwards network packets?',
+            options=['Router', 'Keyboard', 'Monitor'],
+            correct_answer='Router',
+            explanation='Routers forward packets between networks.',
+            status=PracticeQuestion.Status.PUBLISHED,
+        )
+
+        response = self.client.get('/search/?q=forwards%20network')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(question, response.context['results']['practice'])
+        self.assertContains(response, question.question)
+        self.assertNotContains(response, question.explanation)

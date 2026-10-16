@@ -12,9 +12,9 @@
         <h1>Practice & Revision</h1>
         <p class="lead">Strengthen your understanding with topic-based questions and self-assessment.</p>
       </div>
-      <div class="library-count" aria-label="{{ questions|length }} practice questions shown">
-        <strong>{{ questions|length }}</strong>
-        <span>questions shown</span>
+      <div class="library-count" aria-label="{{ page_obj.paginator.count }} published practice questions">
+        <strong>{{ page_obj.paginator.count }}</strong>
+        <span>published questions</span>
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@
             type="search"
             name="q"
             value="{{ query }}"
-            placeholder="Search questions, topics, or subjects..."
+            placeholder="Search questions, topic names or subject areas"
             maxlength="100"
           >
           <button type="submit" class="btn btn-primary">Search</button>
@@ -41,11 +41,11 @@
       <div class="filter-grid">
         <div>
           <label for="practice-subject-filter">Subject</label>
-          <select id="practice-subject-filter" name="subject">
+          <select id="practice-subject-filter" name="subject" data-subject-filter>
             <option value="">All subjects</option>
             {% for subject in subjects %}
             <option value="{{ subject.id }}"{% if selected_subject_id == subject.id|stringformat:"s" %} selected{% endif %}>
-              {{ subject.title }}
+              {{ subject.discipline }} / {{ subject.title }}
             </option>
             {% endfor %}
           </select>
@@ -53,11 +53,11 @@
 
         <div>
           <label for="practice-topic-filter">Topic</label>
-          <select id="practice-topic-filter" name="topic">
+          <select id="practice-topic-filter" name="topic" data-topic-filter>
             <option value="">All topics</option>
             {% for topic in topics %}
-            <option value="{{ topic.id }}"{% if selected_topic_id == topic.id|stringformat:"s" %} selected{% endif %}>
-              {{ topic.subject.title }} — {{ topic.title }}
+            <option value="{{ topic.id }}" data-subject-id="{{ topic.subject_id }}"{% if selected_topic_id == topic.id|stringformat:"s" %} selected{% endif %}>
+              {{ topic.subject.title }} / {% if topic.parent %}{{ topic.parent.title }} / {% endif %}{{ topic.title }}
             </option>
             {% endfor %}
           </select>
@@ -72,6 +72,17 @@
         </div>
       </div>
     </form>
+
+    {% if query or selected_subject_id or selected_topic_id %}
+    <div class="active-filters" aria-label="Active filters">
+      <span class="active-filters-label">Active filters</span>
+      {% if query %}<span class="badge">Search: {{ query }}</span>{% endif %}
+      {% if selected_subject %}<span class="badge">{{ selected_subject.discipline }} / {{ selected_subject.title }}</span>{% endif %}
+      {% if selected_topic %}
+        <span class="badge">Topic: {% if selected_topic.parent %}{{ selected_topic.parent.title }} / {% endif %}{{ selected_topic.title }}</span>
+      {% endif %}
+    </div>
+    {% endif %}
   </div>
 
   {% if questions %}
@@ -79,7 +90,7 @@
     {% for question in questions %}
     <article class="card practice-index-card">
       <div class="practice-question-meta">
-        <span class="card-meta">{{ question.topic.subject.title }} · {{ question.topic.title }}</span>
+        <span class="card-meta">{{ question.topic.subject.discipline }} / {{ question.topic.subject.title }} / {% if question.topic.parent %}{{ question.topic.parent.title }} / {% endif %}{{ question.topic.title }}</span>
         <span class="badge">{{ question.get_type_display }}</span>
         <span class="badge">{{ question.difficulty|title }}</span>
       </div>
@@ -99,16 +110,36 @@
   </div>
   {% else %}
   <div class="empty-state card">
-    <div class="empty-state-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" focusable="false">
-        <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"></path>
-        <path d="M4 5.5v15M7 7h9M7 10h7"></path>
-      </svg>
-    </div>
     <h2>No practice questions found</h2>
-    <p>Try a different search or remove one of the filters.</p>
+    <p>Try a shorter search, choose another topic, or remove one of the filters.</p>
     <a href="/practice/" class="btn btn-secondary">View all practice</a>
   </div>
+  {% endif %}
+
+  {% if page_obj.paginator.num_pages > 1 %}
+  <nav class="pagination" aria-label="Practice question pages">
+    {% if page_obj.has_previous %}
+    <a class="pagination-link" href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+    {% else %}
+    <span class="pagination-link is-disabled">Previous</span>
+    {% endif %}
+
+    <div class="pagination-pages">
+      {% for number in page_obj.paginator.page_range %}
+        {% if number == page_obj.number %}
+        <span class="pagination-link is-current" aria-current="page">{{ number }}</span>
+        {% elif number >= page_obj.number|add:"-2" and number <= page_obj.number|add:"2" %}
+        <a class="pagination-link" href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ number }}">{{ number }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_next %}
+    <a class="pagination-link" href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+    {% else %}
+    <span class="pagination-link is-disabled">Next</span>
+    {% endif %}
+  </nav>
   {% endif %}
 </section>
 {% endblock %}

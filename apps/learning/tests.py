@@ -92,3 +92,45 @@ class LearningResourceListTests(TestCase):
         response = self.client.get('/learn/?q=not%20publicly%20visible')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['page_obj'].paginator.count, 0)
+
+def test_search_matches_all_terms_across_lesson_content(self):
+        LearningResource.objects.create(
+            topic=self.programming,
+            title='Semantic Markup Guide',
+            slug='semantic-markup-guide',
+            summary='A practical lesson.',
+            objectives='Choose meaningful page elements',
+            content='<p>HTML semantic elements describe the structure of the page.</p>',
+            key_concepts='HTML, accessibility, semantic elements',
+            status=LearningResource.Status.PUBLISHED,
+        )
+
+        response = self.client.get('/learn/?q=HTML%20semantic')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['page_obj'].paginator.count, 1)
+        self.assertContains(response, 'Semantic Markup Guide')
+
+    def test_topic_filter_cannot_conflict_with_selected_subject(self):
+        response = self.client.get(
+            f'/learn/?subject={self.business.id}&topic={self.programming.id}'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['selected_topic_id'], '')
+        self.assertEqual(response.context['page_obj'].paginator.count, 0)
+
+    def test_featured_material_appears_in_recommendations(self):
+        featured = LearningResource.objects.create(
+            topic=self.programming,
+            title='Start with Python',
+            slug='start-with-python',
+            summary='A curated introduction to programming.',
+            content='<p>Start with the core ideas.</p>',
+            status=LearningResource.Status.PUBLISHED,
+            is_featured=True,
+            order=0,
+        )
+
+        response = self.client.get('/learn/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['has_curated_recommendations'])
+        self.assertIn(featured, response.context['recommended_resources'])

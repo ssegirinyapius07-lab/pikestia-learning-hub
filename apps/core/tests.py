@@ -1,9 +1,13 @@
 from datetime import timedelta
 
-from django.test import TestCase
+from django.contrib import admin
+from django.test import RequestFactory, TestCase
 from django.utils import timezone
 
+from apps.accounts.models import User
 from apps.learning.models import LearningResource
+from apps.news.models import NewsArticle
+from apps.practice.models import PracticeQuestion
 from apps.opportunities.models import Opportunity
 from apps.subjects.models import Subject, Topic
 
@@ -101,3 +105,171 @@ class GlobalSearchTests(TestCase):
         self.assertContains(response, 'Start with what you need')
         self.assertContains(response, 'href="/opportunities/"')
         self.assertContains(response, 'href="/news/"')
+
+
+
+class AdminRolePermissionTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.admin_user = User.objects.create_user(
+            email='admin@example.org',
+            password='Strong-admin-password-123',
+            role=User.Role.ADMIN,
+        )
+        cls.publisher = User.objects.create_user(
+            email='publisher@example.org',
+            password='Strong-publisher-password-123',
+            role=User.Role.PUBLISHER,
+        )
+        cls.other_publisher = User.objects.create_user(
+            email='other-publisher@example.org',
+            password='Strong-other-password-123',
+            role=User.Role.PUBLISHER,
+        )
+        cls.student = User.objects.create_user(
+            email='student@example.org',
+            password='Strong-student-password-123',
+            role=User.Role.USER,
+        )
+        cls.subject = Subject.objects.create(
+            title='Permission Test Computing',
+            slug='permission-test-computing',
+            discipline='Computing',
+            status=Subject.Status.PUBLISHED,
+        )
+        cls.topic = Topic.objects.create(
+            subject=cls.subject,
+            title='Permission Test Topic',
+            slug='permission-test-topic',
+            status=Topic.Status.PUBLISHED,
+        )
+        cls.owned_resource = LearningResource.objects.create(
+            topic=cls.topic,
+            title='Publisher A Resource',
+            slug='publisher-a-resource',
+            content='<p>Owned resource.</p>',
+            created_by=cls.publisher,
+            status=LearningResource.Status.REVIEW,
+        )
+        cls.other_resource = LearningResource.objects.create(
+            topic=cls.topic,
+            title='Publisher B Resource',
+            slug='publisher-b-resource',
+            content='<p>Other resource.</p>',
+            created_by=cls.other_publisher,
+            status=LearningResource.Status.REVIEW,
+        )
+        cls.owned_article = NewsArticle.objects.create(
+            title='Publisher A Article',
+            slug='publisher-a-article',
+            body_raw='<p>Owned article.</p>',
+            author=cls.publisher,
+            status=NewsArticle.Status.REVIEW,
+        )
+        cls.other_article = NewsArticle.objects.create(
+            title='Publisher B Article',
+            slug='publisher-b-article',
+            body_raw='<p>Other article.</p>',
+            author=cls.other_publisher,
+            status=NewsArticle.Status.REVIEW,
+        )
+
+    def request_for(self, user):
+        request = RequestFactory().get('/admin/')
+        request.user = user
+        return request
+
+    def test_normal_user_is_not_staff_and_cannot_open_admin(self):
+        self.assertFalse(self.student.is_staff)
+        self.client.force_login(self.student)
+        response = self.client.get('/admin/')
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/admin/login/', response.url)
+
+    def test_publisher_can_see_only_learning_and_news_admin_modules(self):
+        request = self.request_for(self.publisher)
+        resource_admin = admin.site._registry[LearningResource]
+        news_admin = admin.site._registry[NewsArticle]
+        subject_admin = admin.site._registry[Subject]
+        practice_admin = admin.site._registry[PracticeQuestion]
+        opportunity_admin = admin.site._registry[Opportunity]
+        user_admin = admin.site._registry[User]
+
+        self.assertTrue(resource_admin.has_module_permission(request))
+        self.assertTrue(news_admin.has_module_permission(request))
+        self.assertFalse(subject_admin.has_module_permission(request))
+        self.assertFalse(practice_admin.has_module_permission(request))
+        self.assertFalse(opportunity_admin.has_module_permission(request))
+        self.assertFalse(user_admin.has_module_permission(request))
+
+    def test_publisher_queryset_contains_only_owned_content(self):
+        request = self.request_for(self.publisher)
+        resource_admin = admin.site._registry[LearningResource]
+        news_admin = admin.site._registry[NewsArticle]
+
+        self.assertEqual(
+            list(resource_admin.get_queryset(request)),
+            [self.owned_resource],
+        )
+        self.assertEqual(
+            list(news_admin.get_queryset(request)),
+            [self.owned_article],
+        )
+
+    def test_publisher_cannot_change_or_delete_another_publishers_content(self):
+        request = self.request_for(self.publisher)
+        resource_admin = admin.site._registry[LearningResource]
+        news_admin = admin.site._registry[NewsArticle]
+
+        self.assertTrue(resource_admin.has_change_permission(request, self.owned_resource))
+        self.assertFalse(resource_admin.has_change_permission(request, self.other_resource))
+        self.assertFalse(resource_admin.has_delete_permission(request, self.owned_resource))
+
+        self.assertTrue(news_admin.has_change_permission(request, self.owned_article))
+        self.assertFalse(news_admin.has_change_permission(request, self.other_article))
+        self.assertFalse(news_admin.has_delete_permission(request, self.owned_article))
+
+    def test_publisher_submissions_are_owned_and_sent_to_review(self):
+        request = self.request_for(self.publisher)
+        resource_admin = admin.site._registry[LearningResource]
+        news_admin = admin.site._registry[NewsArticle]
+
+        resource = LearningResource(
+            topic=self.topic,
+            title='New Publisher Resource',
+            slug='new-publisher-resource',
+            content_raw='<p>New content.</p>',
+            status=LearningResource.Status.PUBLISHED,
+        )
+        resource_admin.save_model(request, resource, form=None, change=False)
+        resource.refresh_from_db()
+        self.assertEqual(resource.created_by, self.publisher)
+        self.assertEqual(resource.status, LearningResource.Status.REVIEW)
+
+        article = NewsArticle(
+            title='New Publisher Article',
+            slug='new-publisher-article',
+            body_raw='<p>New article.</p>',
+            status=NewsArticle.Status.PUBLISHED,
+            featured=True,
+        )
+        news_admin.save_model(request, article, form=None, change=False)
+        article.refresh_from_db()
+        self.assertEqual(article.author, self.publisher)
+        self.assertEqual(article.status, NewsArticle.Status.REVIEW)
+        self.assertFalse(article.featured)
+        self.assertIsNone(article.published_at)
+
+    def test_administrator_retains_full_admin_permissions(self):
+        request = self.request_for(self.admin_user)
+        for model in (
+            LearningResource,
+            NewsArticle,
+            Subject,
+            PracticeQuestion,
+            Opportunity,
+            User,
+        ):
+            model_admin = admin.site._registry[model]
+            self.assertTrue(model_admin.has_module_permission(request))
+            self.assertTrue(model_admin.has_add_permission(request))

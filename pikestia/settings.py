@@ -202,8 +202,12 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 X_FRAME_OPTIONS = 'DENY'
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
-SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
-SECURE_HSTS_PRELOAD = not DEBUG
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv(
+    'SECURE_HSTS_INCLUDE_SUBDOMAINS', 'False'
+).strip().lower() in {'1', 'true', 'yes'}
+SECURE_HSTS_PRELOAD = os.getenv(
+    'SECURE_HSTS_PRELOAD', 'False'
+).strip().lower() in {'1', 'true', 'yes'}
 SECURE_SSL_REDIRECT = os.getenv(
     'SECURE_SSL_REDIRECT', 'False'
 ).strip().lower() in {'1', 'true', 'yes'}

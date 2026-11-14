@@ -273,3 +273,20 @@ class AdminRolePermissionTests(TestCase):
             model_admin = admin.site._registry[model]
             self.assertTrue(model_admin.has_module_permission(request))
             self.assertTrue(model_admin.has_add_permission(request))
+
+
+    def test_publisher_can_select_only_published_topics(self):
+        unpublished_topic = Topic.objects.create(
+            subject=self.subject,
+            title='Unpublished Topic',
+            slug='unpublished-topic-for-publisher',
+            status=Topic.Status.DRAFT,
+        )
+        request = self.request_for(self.publisher)
+        resource_admin = admin.site._registry[LearningResource]
+        topic_field = resource_admin.formfield_for_foreignkey(
+            LearningResource._meta.get_field('topic'),
+            request,
+        )
+        self.assertIn(self.topic, topic_field.queryset)
+        self.assertNotIn(unpublished_topic, topic_field.queryset)

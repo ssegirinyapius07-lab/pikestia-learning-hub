@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 class ThemeMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -25,7 +28,7 @@ class ThemeMiddleware:
             request.display_mode,
             max_age=60 * 60 * 24 * 365,
             samesite='Lax',
-            secure=False,
+            secure=not settings.DEBUG,
             httponly=False,
         )
 

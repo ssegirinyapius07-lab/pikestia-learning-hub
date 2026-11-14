@@ -27,9 +27,9 @@ class Opportunity(models.Model):
     is_remote = models.BooleanField(default=False)
     source_url = models.URLField(blank=True)
     source_name = models.CharField(max_length=200, blank=True)
-    status = models.CharField(max_length=20, choices=Status.choices, default=Status.ACTIVE)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
     is_verified = models.BooleanField(default=False)
-    published_at = models.DateTimeField(default=timezone.now)
+    published_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -44,6 +44,8 @@ class Opportunity(models.Model):
         # auto-expire
         if self.deadline and self.deadline < timezone.now() and self.status == self.Status.ACTIVE:
             self.status = self.Status.EXPIRED
+        if self.status == self.Status.ACTIVE and self.is_verified and self.published_at is None:
+            self.published_at = timezone.now()
         super().save(*args,**kwargs)
 
     @property

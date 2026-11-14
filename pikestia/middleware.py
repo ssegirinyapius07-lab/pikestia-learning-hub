@@ -20,9 +20,6 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
             "connect-src 'self'; "
         )
         response['Content-Security-Policy'] = csp
-        if not response.get('Strict-Transport-Security') and not request.is_secure() is False:
-            # Only set in production HTTPS - safe to set header anyway
-            response['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         return response
 
 class AuditLogMiddleware(MiddlewareMixin):

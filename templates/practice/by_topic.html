@@ -105,6 +105,10 @@
       >{{ current_answer }}</textarea>
       {% endif %}
 
+      {% if answer_error %}
+      <p class="form-error" role="alert">{{ answer_error }}</p>
+      {% endif %}
+
       {% if checked %}
       <div class="practice-feedback {% if is_correct == True %}is-correct{% elif is_correct == False %}is-incorrect{% else %}is-review{% endif %}">
         {% if is_correct == True %}

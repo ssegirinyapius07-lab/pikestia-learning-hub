@@ -35,9 +35,9 @@ class Bookmark(models.Model):
         constraints = [
             models.CheckConstraint(
                 condition=(
-                    Q(resource__isnull=False, topic__isnull=True, opportunity__isnull=True)
-                    | Q(resource__isnull=True, topic__isnull=False, opportunity__isnull=True)
-                    | Q(resource__isnull=True, topic__isnull=True, opportunity__isnull=False)
+                    Q(('resource__isnull', False), ('topic__isnull', True), ('opportunity__isnull', True))
+                    | Q(('resource__isnull', True), ('topic__isnull', False), ('opportunity__isnull', True))
+                    | Q(('resource__isnull', True), ('topic__isnull', True), ('opportunity__isnull', False))
                 ),
                 name='bookmark_exactly_one_target',
             ),

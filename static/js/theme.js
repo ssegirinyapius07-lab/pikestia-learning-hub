@@ -59,8 +59,9 @@
         updateActiveButton(nextMode);
 
         if (nextMode !== 'system') {
+          const secureCookie = window.location.protocol === 'https:' ? '; Secure' : '';
           document.cookie = 'display_mode=' + encodeURIComponent(nextMode)
-            + '; Max-Age=31536000; Path=/; SameSite=Lax';
+            + '; Max-Age=31536000; Path=/; SameSite=Lax' + secureCookie;
         }
 
         persistTheme(form).catch(function () {

@@ -7,3 +7,4 @@ requests
 Pillow
 PyJWT>=2.14,<3
 cryptography>=50,<51
+tzdata

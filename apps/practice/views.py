@@ -110,7 +110,11 @@ def practice_by_topic(request, subject_slug, topic_slug):
             current_answer = answer
 
             if current_question.type == PracticeQuestion.QType.MCQ:
-                valid_answer = answer in current_question.options
+                valid_options = {
+                    str(option).strip()
+                    for option in (current_question.options or [])
+                }
+                valid_answer = answer in valid_options
                 if not valid_answer:
                     answer_error = 'Please select one of the available options.'
             elif not answer:
@@ -231,6 +235,8 @@ def practice_by_topic(request, subject_slug, topic_slug):
             'graded_count': graded_count,
         },
     )
+
+
 def practice_list(request):
     query = request.GET.get('q', '').strip()[:100]
     subject_id = request.GET.get('subject', '').strip()

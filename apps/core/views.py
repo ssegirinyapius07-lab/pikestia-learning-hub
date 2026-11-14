@@ -26,7 +26,7 @@ def home_view(request):
 
     now = timezone.now()
     opportunities = (
-        Opportunity.objects.filter(status='active')
+        Opportunity.objects.filter(status='active', is_verified=True)
         .filter(Q(deadline__isnull=True) | Q(deadline__gt=now))
         .order_by('-published_at')[:4]
     )
@@ -133,6 +133,7 @@ def search_view(request):
             | Q(source_name__icontains=q)
             | Q(category__icontains=q),
             status=Opportunity.Status.ACTIVE,
+            is_verified=True,
         ).filter(
             Q(deadline__isnull=True) | Q(deadline__gt=now)
         ).order_by('-published_at', 'title')[:10]
@@ -246,7 +247,7 @@ def set_theme_view(request):
         mode,
         max_age=60 * 60 * 24 * 365,
         samesite='Lax',
-        secure=False,
+        secure=not settings.DEBUG,
         httponly=False,
     )
     return resp
@@ -280,6 +281,7 @@ def set_cookie_consent_view(request):
         json.dumps({'analytics': analytics, 'marketing': marketing}),
         max_age=60 * 60 * 24 * 365,
         samesite='Lax',
+        secure=not settings.DEBUG,
     )
     return resp
 

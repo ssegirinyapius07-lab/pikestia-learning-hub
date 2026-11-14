@@ -21,9 +21,23 @@ else:
                 k, v = line.split("=", 1)
                 os.environ.setdefault(k.strip(), v.strip())
 
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-key-please-change-1234567890")
-DEBUG = os.getenv("DEBUG", "True") == "True"
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+from django.core.exceptions import ImproperlyConfigured
+
+DEBUG = os.getenv("DEBUG", "False").strip().lower() in {"1", "true", "yes"}
+SECRET_KEY = os.getenv("SECRET_KEY", "").strip()
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = "development-only-key-do-not-use-in-production"
+    else:
+        raise ImproperlyConfigured(
+            "SECRET_KEY must be set in the environment when DEBUG is disabled."
+        )
+
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    if host.strip()
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -117,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.getenv('TIME_ZONE', 'Africa/Kampala').strip()
 USE_I18N = True
 USE_TZ = True
 
@@ -183,6 +197,16 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = not DEBUG
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
+SECURE_SSL_REDIRECT = os.getenv(
+    'SECURE_SSL_REDIRECT', 'False'
+).strip().lower() in {'1', 'true', 'yes'}
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

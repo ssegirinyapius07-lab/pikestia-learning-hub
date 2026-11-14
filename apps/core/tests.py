@@ -43,6 +43,7 @@ class GlobalSearchTests(TestCase):
             deadline=timezone.now() + timedelta(days=30),
             location='Kampala',
             status=Opportunity.Status.ACTIVE,
+            is_verified=True,
         )
         cls.expired_opportunity = Opportunity.objects.create(
             title='Old Technology Scholarship',
@@ -51,6 +52,7 @@ class GlobalSearchTests(TestCase):
             category=Opportunity.Category.SCHOLARSHIP,
             deadline=timezone.now() - timedelta(days=1),
             status=Opportunity.Status.EXPIRED,
+            is_verified=True,
         )
 
     def test_search_finds_material_by_key_concept(self):
@@ -70,6 +72,19 @@ class GlobalSearchTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.live_opportunity, response.context['results']['opportunities'])
         self.assertNotIn(self.expired_opportunity, response.context['results']['opportunities'])
+
+    def test_search_hides_active_but_unverified_opportunities(self):
+        unverified = Opportunity.objects.create(
+            title='Unverified Technology Internship',
+            slug='unverified-technology-internship',
+            description='This listing has not been checked.',
+            category=Opportunity.Category.INTERNSHIP,
+            status=Opportunity.Status.ACTIVE,
+            is_verified=False,
+        )
+        response = self.client.get('/search/?q=Unverified')
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn(unverified, response.context['results']['opportunities'])
 
     def test_no_results_provides_direct_navigation_links(self):
         response = self.client.get('/search/?q=no-matching-result')

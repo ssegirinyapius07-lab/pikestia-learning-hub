@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import LearningResource
+from apps.subjects.models import Subject, Topic
 
 
 @admin.register(LearningResource)
@@ -39,6 +40,15 @@ class LearningResourceAdmin(admin.ModelAdmin):
         if self._is_publisher(request):
             return queryset.filter(created_by=request.user)
         return queryset
+
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if self._is_publisher(request) and db_field.name == 'topic':
+            kwargs['queryset'] = Topic.objects.filter(
+                status=Topic.Status.PUBLISHED,
+                subject__status=Subject.Status.PUBLISHED,
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_fieldsets(self, request, obj=None):
         if self._is_publisher(request):

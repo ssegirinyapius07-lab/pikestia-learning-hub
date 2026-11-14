@@ -57,10 +57,10 @@ class NewsArticle(EditorialContent):
     class Meta:
         ordering = ['-published_at', '-created_at']
         indexes = [
-            models.Index(fields=['status', '-published_at']),
-            models.Index(fields=['category', '-published_at']),
-            models.Index(fields=['author', '-created_at']),
-            models.Index(fields=['featured', '-published_at']),
+            models.Index(fields=['status', '-published_at'], name='news_newsart_status_1d9a9e_idx'),
+            models.Index(fields=['category', '-published_at'], name='news_newsart_categor_ae8903_idx'),
+            models.Index(fields=['author', '-created_at'], name='news_newsart_author_8ba9e3_idx'),
+            models.Index(fields=['featured', '-published_at'], name='news_newsart_featur_5bb4d0_idx'),
         ]
 
     def __str__(self):

@@ -36,9 +36,9 @@ Light / Dark / System stored server-side in User.display_mode
 
 ## Local configuration
 
-Copy \`.env.example\` to \`.env\` and replace \`SECRET_KEY\` with a long random value before running the application. Keep \`DEBUG=True\` only for local development. Production must set \`DEBUG=False\`, provide a private \`SECRET_KEY\`, configure \`ALLOWED_HOSTS\`, and serve the site over HTTPS. \`SECURE_SSL_REDIRECT\` is configurable because reverse-proxy deployments must forward HTTPS information correctly.
+Copy `.env.example` to `.env` and set `SECRET_KEY` to a long random value. The development-only fallback is intended for an isolated local run, not a shared environment. Keep `DEBUG=True` only for local development. Production must set `DEBUG=False`, provide a private `SECRET_KEY`, configure `ALLOWED_HOSTS`, and serve the site over HTTPS. `SECURE_SSL_REDIRECT` is configurable because reverse-proxy deployments must forward HTTPS information correctly.
 
-The default timezone is \`Africa/Kampala\`; set \`TIME_ZONE\` in \`.env\` when deploying for a different region.
+The default timezone is `Africa/Kampala`; set `TIME_ZONE` in `.env` when deploying for a different region.
 
 ## Publishing and verification
 

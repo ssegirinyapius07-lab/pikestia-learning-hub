@@ -14,6 +14,7 @@ def opp_list(request):
 
     opportunities = Opportunity.objects.filter(
         status=Opportunity.Status.ACTIVE,
+        is_verified=True,
     ).filter(
         Q(deadline__isnull=True) | Q(deadline__gt=timezone.now())
     ).order_by('-published_at')
@@ -62,6 +63,7 @@ def opp_detail(request, slug):
         Opportunity,
         slug=slug,
         status=Opportunity.Status.ACTIVE,
+        is_verified=True,
     )
 
     if opp.deadline and opp.deadline <= now:

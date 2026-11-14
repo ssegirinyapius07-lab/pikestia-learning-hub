@@ -42,6 +42,13 @@ class LearningResourceAdmin(admin.ModelAdmin):
         return queryset
 
 
+    def get_autocomplete_fields(self, request):
+        # TopicAdmin is administrator-only. Publishers receive a filtered
+        # normal choice field instead of the protected autocomplete endpoint.
+        if self._is_publisher(request):
+            return ()
+        return super().get_autocomplete_fields(request)
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if self._is_publisher(request) and db_field.name == 'topic':
             kwargs['queryset'] = Topic.objects.filter(
